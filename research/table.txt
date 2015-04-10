@@ -1,0 +1,7 @@
+name: google
+demo script: demo_google.py
+url: https://breakingcode.wordpress.com/2010/06/29/google-search-python/
+requirements: beautifulsoup4
+portability: Python3 OK, Python2 ?
+
+

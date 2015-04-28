@@ -2,6 +2,21 @@ name: google
 demo script: demo_google.py
 url: https://breakingcode.wordpress.com/2010/06/29/google-search-python/
 requirements: beautifulsoup4
-portability: Python3 OK, Python2 ?
+portability: Python3 OK, Python2 OK
+how it works: TODO
+notes: This is nice!
 
+name: Google-Search-API
+demo script: demo_Google-Search-API.py
+url: https://github.com/abenassi/Google-Search-API
+requirements: ?
+portability: Python2 maybe, Python3 ?
+notes: This is awkward. Installation and this script don't work, it tries to
+import "google", which might have not been on a correct place. I fixed it
+few weeks ago and it ran, but now I don't commit it. Futhermore, I this
+library is not done yet.
 
+name: xgoogle
+demo: TODO
+url: http://www.catonmat.net/blog/python-library-for-google-search/ 
+notes: Looks good, but I haven't tried it yet.

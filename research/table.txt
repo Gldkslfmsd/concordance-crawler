@@ -28,7 +28,7 @@ demo:
 	-- one of main source codes: <your virtualenv dir>/lib/python3.3/site-packages/google_search_cli/__init__.py
 url: https://github.com/zweifisch/google-search-cli
 requirements: ? many
-portability: probably both
+portability: probably both, checked Python3
 how does it work: 
 	-- it uses http request on http://ajax.googleapis.com/ajax/services/search/web
 	-- this downloads result site in json format, then it's parsed via "json"
@@ -36,3 +36,10 @@ how does it work:
 notes: You can search on google easily through your command line with this
 application, it behaves like Shell. It's quite highly-developed. It uses
 other libraries for handling with data.
+
+name: web_search
+demo: http://www.connellybarnes.com/code/web_search/web_search
+url: http://www.connellybarnes.com/code/web_search/
+portability: "Compatible with Python 2.3 - 2.5."
+notes: Run with python2.4: fails by assertion error. This library is too old and
+unusable.

@@ -23,12 +23,11 @@ i=0
 while [ $i -lt $LIMIT ]; do
 	echo "`$DATE` attempt number $i"
 	# run demo_google
-	python3 demo_google.py starve > `printf "$OUTPUTFILE%03d.txt" $i`
-		2> `printf "$ERRORFILE%03d.txt" $i`
+	python3 demo_google.py starve > `printf "$OUTPUTFILE%03d.txt" $i` 2> `printf "$ERRORFILE%03d.txt" $i`
 	echo "`$DATE` attempt number $i ended"
 
 	sleep $FIVEMINUTES
-	i=$(($i + 10))
+	i=$(($i + 1))
 done
 
 echo "`$DATE` script ends"

@@ -33,9 +33,18 @@ how does it work:
 	-- it uses http request on http://ajax.googleapis.com/ajax/services/search/web
 	-- this downloads result site in json format, then it's parsed via "json"
 	(python module)
-notes: You can search on google easily through your command line with this
-application, it behaves like Shell. It's quite highly-developed. It uses
-other libraries for handling with data.
+notes: 
+	-- You can search on google easily through your command line with this
+	application, it behaves like Shell. It's quite highly-developed. It uses
+	other libraries for handling with data.
+	-- When you search for a word, you get cca 4 results (it depends on the
+	height of your screen). If you hit Enter, then you should get other
+	results. If you do this 4-10 times, you get this message: "Suspected Terms
+	of Service Abuse. Please see http://code.google.com/apis/errors" and
+	then the application falls.
+	-- I moved to another ip (onother computer in lab, from u-pl0 to u-pl30),
+	but the abuse message appeared again (and without any results). 
+	-- The abuse is controled by Google, not by the application.
 
 name: web_search
 demo: http://www.connellybarnes.com/code/web_search/web_search

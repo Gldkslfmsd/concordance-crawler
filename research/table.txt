@@ -17,9 +17,13 @@ few weeks ago and it ran, but now I don't commit it. Futhermore, I this
 library is not done yet.
 
 name: xgoogle
-demo: TODO
+demo: 
 url: http://www.catonmat.net/blog/python-library-for-google-search/ 
-notes: Looks good, but I haven't tried it yet.
+portability: just Python2
+notes: 
+	-- installing via pip doesn't work
+	-- it looks like working from quick view 
+	-- last update: 2009
 
 name: google-search-cli
 demo: 
@@ -70,20 +74,32 @@ requirements:
 	setuptools (12.0.5)
 	SQLAlchemy (1.0.3)
 portability: written in Python 3.4
-last commit: 23. 3. 2015
+last commit: 21. 5. 2015
 notes:
 	-- it supports Google, Bing, Yahoo, Yandex, Baidu and Duckduckgo search
 	engines
 	-- default output format is database, it allows also .json or .csv (which could
 	be broken if there's a comma in a snippet)
-	-- it has a support for scraping huge amount of data, it allows using
-	multiple ip addresses and multiple threads
-	-- it scrapes by controlling a real browser with the selenium framework,
-	so search engines have no easy way detecting it
-	-- looks very promising
+	-- it has a support for scraping huge amount of data
+	-- it has 3 modes:
+		-- http mode -- works fine (without proxy)
+		-- http-async -- some error
+		-- selenium -- it scrapes by controlling a real browser with the
+		selenium framework, so search engines have no easy way detecting it
+			-- in fact it's not easy to install "chromedriver" or something
+			similar, so it doesn't work
+	-- it allows using proxy, but it doesn't work
+		http://incolumitas.com/about/contact/#comment-611
+		-- if I fix this bug with TypeError, then there's another one:
+		sqlalchemy.exc.InvalidRequestError
 
+	conclusion:
+	-- although it looked very promising, it's buggy and practically useless
+	-- it can be used for parsing serp html pages
 
-
+name: googler
+url: https://github.com/commx/googler
+note: not finished yet, doesn't provide support for search
 
 
 

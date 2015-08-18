@@ -105,3 +105,49 @@ note: not finished yet, doesn't provide support for search
 
 http://testutils.org/multi-mechanize/
 https://github.com/jmcarp/robobrowser
+
+
+
+
+PROXY
+=====
+
+name: elite-proxy-finder
+url: https://github.com/DanMcInerney/elite-proxy-finder
+demo: demo_elite-proxy-finder.py (downloaded from GitHub)
+note: 
+	Too old, useless now, because it uses some old webservices that
+	are out of order. 
+	It attempts to gather some proxies from some webpages, but it fails, they
+	changed api. Proxychecking also doesn't work, all proxies are marked as
+	inactive.
+
+name: proxychecker
+url: https://github.com/NikolaiT/proxychecker
+demo: demo_proxychecker.py
+	demo2_proxychecker.py 
+	(downloaded here: https://github.com/NikolaiT/proxychecker/blob/master/proxychecker.py )
+install: pip install proxychecker (it must be pip2)
+portability: works under python2
+note: 
+	It's from the author of GoogleScraper. demo_proxychecker.py prints some
+	proxy, but doesn't end. I don't know, what does it mean, do the proxies
+	work or not?
+
+	It can be also used as a console application.
+
+	demo2, June 4 2015, 16:56:
+	python demo2_proxychecker.py -p "http 107.170.58.132:3128"
+		-- dies on socks.HTTPError: 503: Service Unavailable
+	python demo2_proxychecker.py -p "http 203.76.114.195:8080"
+		-- prints Proxy(proto='http', host='203.76.114.195', port='8080', username='',
+	password='') is  offline 
+	python demo2_proxychecker.py -p "http 61.5.192.203:8080"
+	Proxy(proto='http', host='61.5.192.203', port='8080', username='',
+	password='') is  online 
+
+	The proxies were downloaded from http://checkerproxy.net/ and filtered by
+	some proxychecker, which marked them active a few weeks ago. I tried to
+	check the third proxy manually by curl, but it didn't have expected effect.
+
+	So, this library looks promising.

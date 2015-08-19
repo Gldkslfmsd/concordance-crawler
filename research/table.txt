@@ -1,0 +1,153 @@
+name: google
+demo script: demo_google.py
+url: https://breakingcode.wordpress.com/2010/06/29/google-search-python/
+requirements: beautifulsoup4
+portability: Python3 OK, Python2 OK
+how it works: TODO
+notes: This is nice!
+
+name: Google-Search-API
+demo script: demo_Google-Search-API.py
+url: https://github.com/abenassi/Google-Search-API
+requirements: ?
+portability: Python2 maybe, Python3 ?
+notes: This is awkward. Installation and this script don't work, it tries to
+import "google", which might have not been on a correct place. I fixed it
+few weeks ago and it ran, but now I don't commit it. Futhermore, I this
+library is not done yet.
+
+name: xgoogle
+demo: 
+url: http://www.catonmat.net/blog/python-library-for-google-search/ 
+portability: just Python2
+notes: 
+	-- installing via pip doesn't work
+	-- it looks like working from quick view 
+	-- last update: 2009
+
+name: google-search-cli
+demo: 
+	-- pip install google-search-cli
+	-- then run "google-search" (for running)
+	-- one of main source codes: <your virtualenv dir>/lib/python3.3/site-packages/google_search_cli/__init__.py
+url: https://github.com/zweifisch/google-search-cli
+requirements: ? many
+portability: probably both, checked Python3
+how does it work: 
+	-- it uses http request on http://ajax.googleapis.com/ajax/services/search/web
+	-- this downloads result site in json format, then it's parsed via "json"
+	(python module)
+notes: 
+	-- You can search on google easily through your command line with this
+	application, it behaves like Shell. It's quite highly-developed. It uses
+	other libraries for handling with data.
+	-- When you search for a word, you get cca 4 results (it depends on the
+	height of your screen). If you hit Enter, then you should get other
+	results. If you do this 4-10 times, you get this message: "Suspected Terms
+	of Service Abuse. Please see http://code.google.com/apis/errors" and
+	then the application falls.
+	-- I moved to another ip (onother computer in lab, from u-pl0 to u-pl30),
+	but the abuse message appeared again (and without any results). 
+	-- The abuse is controled by Google, not by the application.
+
+name: web_search
+demo: http://www.connellybarnes.com/code/web_search/web_search
+url: http://www.connellybarnes.com/code/web_search/
+portability: "Compatible with Python 2.3 - 2.5."
+notes: Run with python2.4: fails by assertion error. This library is too old and
+unusable.
+
+name: GoogleScraper
+demo: 
+	-- pip install pip3_req_GoogleScraper.txt
+	-- launch GoogleScraper
+url: https://github.com/NikolaiT/GoogleScraper
+requirements: 
+	aiohttp (0.15.3)
+	chardet (2.3.0)
+	cssselect (0.9.1)
+	GoogleScraper (0.1.37)
+	lxml (3.4.4)
+	PyMySQL (0.6.6)
+	requests (2.6.2)
+	selenium (2.45.0)
+	setuptools (12.0.5)
+	SQLAlchemy (1.0.3)
+portability: written in Python 3.4
+last commit: 21. 5. 2015
+notes:
+	-- it supports Google, Bing, Yahoo, Yandex, Baidu and Duckduckgo search
+	engines
+	-- default output format is database, it allows also .json or .csv (which could
+	be broken if there's a comma in a snippet)
+	-- it has a support for scraping huge amount of data
+	-- it has 3 modes:
+		-- http mode -- works fine (without proxy)
+		-- http-async -- some error
+		-- selenium -- it scrapes by controlling a real browser with the
+		selenium framework, so search engines have no easy way detecting it
+			-- in fact it's not easy to install "chromedriver" or something
+			similar, so it doesn't work
+	-- it allows using proxy, but it doesn't work
+		http://incolumitas.com/about/contact/#comment-611
+		-- if I fix this bug with TypeError, then there's another one:
+		sqlalchemy.exc.InvalidRequestError
+
+	conclusion:
+	-- although it looked very promising, it's buggy and practically useless
+	-- it can be used for parsing serp html pages
+
+name: googler
+url: https://github.com/commx/googler
+note: not finished yet, doesn't provide support for search
+
+
+
+http://testutils.org/multi-mechanize/
+https://github.com/jmcarp/robobrowser
+
+
+
+
+PROXY
+=====
+
+name: elite-proxy-finder
+url: https://github.com/DanMcInerney/elite-proxy-finder
+demo: demo_elite-proxy-finder.py (downloaded from GitHub)
+note: 
+	Too old, useless now, because it uses some old webservices that
+	are out of order. 
+	It attempts to gather some proxies from some webpages, but it fails, they
+	changed api. Proxychecking also doesn't work, all proxies are marked as
+	inactive.
+
+name: proxychecker
+url: https://github.com/NikolaiT/proxychecker
+demo: demo_proxychecker.py
+	demo2_proxychecker.py 
+	(downloaded here: https://github.com/NikolaiT/proxychecker/blob/master/proxychecker.py )
+install: pip install proxychecker (it must be pip2)
+portability: works under python2
+note: 
+	It's from the author of GoogleScraper. demo_proxychecker.py prints some
+	proxy, but doesn't end. I don't know, what does it mean, do the proxies
+	work or not?
+
+	It can be also used as a console application.
+
+	demo2, June 4 2015, 16:56:
+	python demo2_proxychecker.py -p "http 107.170.58.132:3128"
+		-- dies on socks.HTTPError: 503: Service Unavailable
+	python demo2_proxychecker.py -p "http 203.76.114.195:8080"
+		-- prints Proxy(proto='http', host='203.76.114.195', port='8080', username='',
+	password='') is  offline 
+	python demo2_proxychecker.py -p "http 61.5.192.203:8080"
+	Proxy(proto='http', host='61.5.192.203', port='8080', username='',
+	password='') is  online 
+
+	The proxies were downloaded from http://checkerproxy.net/ and filtered by
+	some proxychecker, which marked them active a few weeks ago. I tried to
+	check the third proxy manually by curl, but it didn't have expected effect.
+
+	So, this library looks promising.

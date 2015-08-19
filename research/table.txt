@@ -1,10 +1,46 @@
+BING
+====
+
+Bing Search API
+https://datamarket.azure.com/dataset/bing/search
+Is paid. Just 5000 queries per month are free, and that's too few. 
+
+name: pyBingSearchAPI 
+demo: -
+url: https://github.com/xthepoet/pyBingSearchAPI
+notes: It's three years old and therefore untrustable. Registration to some
+Microsoft account is needed, and it's not easy. (They need personal data and
+verify that you're an adult, your credit card data etc.)
+
+name: bingsearch
+demo: -
+url: https://github.com/guitarparty/bingsearch
+notes: looks good, but also requests API key
+
+name: py-bing-search
+demo: -
+url: https://github.com/tristantao/py-bing-search
+
+name: bing_search_naive_bayes 
+demo: -
+url: https://github.com/katryo/bing_search_naive_bayes
+notes: It's not clear, what it is. Comments and specification are in
+Chinese.
+
+
+There isn't any Python library for scraping from Bing without its API.
+
+
+GOOGLE
+======
+
 name: google
 demo script: demo_google.py
 url: https://breakingcode.wordpress.com/2010/06/29/google-search-python/
 requirements: beautifulsoup4
 portability: Python3 OK, Python2 OK
 how it works: TODO
-notes: This is nice!
+notes: Downloads link just from Google.
 
 name: Google-Search-API
 demo script: demo_Google-Search-API.py

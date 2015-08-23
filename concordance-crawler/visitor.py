@@ -15,7 +15,7 @@ def get_visible_text(html):
 	def visible(element):
 			if element.parent.name in ['style', 'script', '[document]', 'head', 'title']:
 					return False
-			elif re.match('<!--.*-->', str(element)):
+			if re.match('<!--.*-->', str(element)):
 					return False
 			return True
 
@@ -103,4 +103,5 @@ if __name__ == "__main__":
 #			# to better see ends of lines
 #			print(">>>"+i+"<<<")
 
-	visit_links([{'link':'http://www.writeawriting.com/'}],"write")
+	print(get_visible_text(requests.get("https://en.wikipedia.org/wiki/Viceroy_of_Liangguang").text))
+	#visit_links([{'link':'http://www.writeawriting.com/'}],"write")

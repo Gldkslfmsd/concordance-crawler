@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# This will be a main file of Concordance Crawler. 
+'''Functions for crawling links from Bing Search.'''
 
 from multiprocessing import Pool
 import requests
@@ -9,42 +9,34 @@ import datetime
 from bazwords import *
 import parse
 
-
-# TODO: set bazword generators
-#		bazword_gen = None,
-#		bazwords = None
-def crawl(target_word, number = 100):
-	'''Crawls concordances.
+def crawl_links(target_word, number = 1, bazword_gen = None):
+	'''Crawls links from Bing Search. Uses bazword generator to get
+	more keywords and therefore more pages with the target_word.
 
 	Args:
 		target_word
-		number of pages with concordances
+		number of pages with concordances, if not given, 1 is default
+		bazword_gen -- bazword generator, if not given, RandomShortWords is used
 	
 	Returns:
-		list of links, where a link is a dictionary
+		list of links, where a link is a dictionary containing keys 
+			link, rank, snippet, title, visible_link, date, keyword
 	'''
-	bazgen = RandomShortWords()
+	bazgen = bazword_gen if bazword_gen else RandomShortWords()
 	links = []
 	for i in range(number):
 		keyword = bazgen.get_bazword() + " " + target_word
 		bingresult = crawlonekeyword(keyword)
-#			pageresult = visitpage(bingresult)
 		links.extend(bingresult)
 		
 	return links
 
-# TODO: make it same
-def crawl_concurrent(bazwords, word, processes=10):
-	"""Same as crawl, but does it concurrently and faster.
-	"""
-	pool = Pool(processes)
-	bazwords = map(lambda i: i + " " + word, bazwords)
-	result = pool.map(crawlonekeyword, bazwords)
-	return result
+# TODO: faster concurrent version
 
 def get_keyword_url(keyword):
+	'''Returns url of Bing Search where you can find links with keyword.'''
 	replacedspaces = keyword.replace(" ","+")
-	# 59 links on page is maximum, then it blocks (probably)
+	# 59 links on page is maximum, more is blocked (probably)
 	url = "http://www.bing.com/search?q={keyword}&first=1&count=59&FORM=PERE1".format(
 		keyword = replacedspaces
 	)
@@ -55,7 +47,7 @@ def crawlonekeyword(keyword):
 
 	Returns:
 		list of links, a link is a dictionary with keys:
-		TODO
+			link, rank, snippet, title, visible_link, date, keyword
 	'''
 	url = get_keyword_url(keyword)
 	rawhtml = requests.get(url).text
@@ -63,7 +55,6 @@ def crawlonekeyword(keyword):
 	date = _date()
 
 	if is_blocked(rawhtml):
-		# TODO really just return None?
 		return None
 
 	# adding scraping information to links
@@ -88,12 +79,6 @@ def is_blocked(rawhtml):
 	# I can see this in Czech Republic, in other countries it may differ!
 	return 'Omluvte přerušení' in rawhtml
 
-def visitpage(bingresult):
-	'''Visits page and tries to find a concordance'''
-	# TODO
-	return bingresult
-
-
 def _date():
 	'''Returns a string with current date.'''
 	return str(datetime.datetime.now())
@@ -101,10 +86,9 @@ def _date():
 
 
 
-
 	
 
 if __name__ == "__main__":
-	res = crawl("write",number = 1)
+	res = crawl_links("core",number = 10)
 	import pprint
 	print(pprint.pformat(res))

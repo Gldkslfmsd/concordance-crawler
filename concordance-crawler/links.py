@@ -9,6 +9,7 @@ import datetime
 from bazwords import *
 import parse
 
+
 def crawl_links(target_word, number = 1, bazword_gen = None):
 	'''Crawls links from Bing Search. Uses bazword generator to get
 	more keywords and therefore more pages with the target_word.
@@ -31,14 +32,15 @@ def crawl_links(target_word, number = 1, bazword_gen = None):
 		
 	return links
 
-# TODO: faster concurrent version
+# 59 links on page is maximum, more is blocked (probably)
+LINKS_PER_PAGE = 59
 
 def get_keyword_url(keyword):
 	'''Returns url of Bing Search where you can find links with keyword.'''
 	replacedspaces = keyword.replace(" ","+")
-	# 59 links on page is maximum, more is blocked (probably)
-	url = "http://www.bing.com/search?q={keyword}&first=1&count=59&FORM=PERE1".format(
-		keyword = replacedspaces
+	url = "http://www.bing.com/search?q={keyword}&first=1&count={number_of_links}&FORM=PERE1".format(
+		keyword = replacedspaces,
+		number_of_links = LINKS_PER_PAGE
 	)
 	return url
 	

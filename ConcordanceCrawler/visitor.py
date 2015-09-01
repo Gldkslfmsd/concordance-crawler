@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup
 import re
 import datetime
 
-
 def get_visible_text(html):
 	#Taken from here: http://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
 	soup = BeautifulSoup(html,"lxml")
@@ -37,7 +36,7 @@ def visit(url, target):
 	rawhtml = requests.get(url).text
 	text = get_visible_text(rawhtml)
 
-	# TODO: ... (three dots) get lost, but that would be too complicated
+	# NOTE: ... (three dots) get lost, but that would be too complicated
 
 	# cut text to list: [ sentence, delimiter, sentence, delimiter, ... ]
 	# e.g. [ "Hello", "!", " How are you", "?", "I'm fine", "." ]

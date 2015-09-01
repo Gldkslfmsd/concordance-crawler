@@ -6,8 +6,8 @@ from multiprocessing import Pool
 import requests
 import datetime
 
-from bazwords import *
-import parse
+from .bazwords import *
+from .parse import parseBing
 
 
 def crawl_links(target_word, number = 1, bazword_gen = None):
@@ -60,7 +60,7 @@ def crawlonekeyword(keyword):
 		return None
 
 	# adding scraping information to links
-	links = parse.parseBing(rawhtml)
+	links = parseBing(rawhtml)
 	for i in links:
 		i['date'] = date
 		i['keyword'] = keyword

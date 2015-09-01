@@ -3,9 +3,6 @@
 from GoogleScraper.parsing import *
 import requests
 
-import bazwords
-
-
 def parseBing(rawhtml):
 	"""Gets and parses Bing SERP.
 
@@ -28,16 +25,3 @@ def parseBing(rawhtml):
 	except: pass
 
 	return parsed_data
-
-if __name__ == "__main__":
-	from core import *
-	cc = ConcordanceCrawler()
-	x = cc.get_keyword_url("dominik")
-	import requests
-	raw = requests.get(x).text
-	open("dom.html","w").write(raw)
-
-	print()
-	import pprint
-	print(pprint.pformat(parseBing(raw)))
-	

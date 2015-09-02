@@ -5,6 +5,7 @@
 from multiprocessing import Pool
 import requests
 import datetime
+import logging
 
 from .bazwords import *
 from .parse import parseBing
@@ -52,6 +53,7 @@ def crawlonekeyword(keyword):
 			link, rank, snippet, title, visible_link, date, keyword
 	'''
 	url = get_keyword_url(keyword)
+	logging.debug("trying to download SERP {}".format(url))
 	rawhtml = requests.get(url).text
 
 	date = _date()

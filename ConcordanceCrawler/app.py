@@ -7,6 +7,8 @@ from sys import stdout
 from json import dumps
 from dict2xml import dict2xml
 import logging
+from traceback import format_exc
+
 
 from ConcordanceCrawler import *
 
@@ -20,7 +22,7 @@ def log_details(*a):
 
 
 def get_args():
-	'''Sets command line arguments
+	'''Setup command line arguments
 
 	Returns: a dict with arguments and their values
 	'''
@@ -87,25 +89,29 @@ def get_args():
 class OutputFormater():
 	def __init__(self, format, output_stream):
 		self.output = output_stream
+		self.format = format
 		if format=="json":
 			self.to_output = self._output_as_json
+			self.output.write("{\n")
 		else:
 			self.to_output = self._output_as_xml
+			self.output.write("<root>\n")
 
 	def _output_as_xml(self,concordance):
 		'''prints one concordance to output'''
-		result = dict2xml({'item':concordance},indent=" "*4,wrap="root") + "\n"
+		result = dict2xml({'item':concordance},indent=" "*4,wrap="") + "\n"
 		self.output.write(result)
 
 	def _output_as_json(self,concordance):
 		result = dumps(concordance,indent=4)+"\n"
 		self.output.write(result)
 
-	def __del__(self):
-		try:
-			self.output.close()
-		except ValueError: 
-			pass
+	def close(self):
+		if self.format=="json":
+			self.output.write("}\n")
+		else:
+			self.output.write("</root>\n")
+		self.output.close()
 
 class LoggingCrawler():	
 	'''Crawls concordances and logs statistics'''
@@ -151,11 +157,14 @@ class LoggingCrawler():
 			try:
 				links = crawl_links(self.word,1,self.bazgen)
 				self.num_serps += 1
-			except requests.exceptions.RequestException as e:
+			except (requests.exceptions.RequestException, ConnectionError) as e:
 				self.serp_errors += 1
 				logging.error("\'{}\' occured".format(e))
 				self.log_state()
 				continue
+			except Exception:
+				logging.error("!!! Undefined error occured, {}".format(format_exc()))
+				self.page_errors += 1
 			log_details("crawled SERP, parsed {} links".format(
 				len(links)))
 			for l in links:
@@ -163,6 +172,7 @@ class LoggingCrawler():
 
 	def yield_concordances_from_link(self,l):
 		#l['link']='https://www.diffchecker.com/'
+		#l['link']='http://en.bab.la/dictionary/english-hindi/riding'
 		#print("link:",l['link'])
 		try:
 			logging.debug("trying to download {}".format(l['link']))
@@ -170,9 +180,12 @@ class LoggingCrawler():
 			log_details("page {} visited, {} concordances found".format(
 				l['link'],len(concordances)))
 			self.num_pages += 1
-		except requests.exceptions.RequestException as e:
+		except (requests.exceptions.RequestException, ConnectionError) as e:
 			logging.error("\'{}\' occured during getting {}".format(
 				e,l['link']))
+			self.page_errors += 1
+		except Exception:
+			logging.error("!!! Undefined error occured, {}".format(format_exc()))
 			self.page_errors += 1
 		else:
 			for i,c in enumerate(concordances):
@@ -189,10 +202,11 @@ def main():
 	args = get_args()
 	word = args["word"]
 	number = args["n"]
-	output 	= OutputFormater(
+	of = OutputFormater(
 		format=args["format"],
 		output_stream=args["output"]
-		).to_output
+		)
+	output = of.to_output
 	baz = args["bazword_generator"]
 	max_per_page = args["p"]
 	page_limited = True if max_per_page else False
@@ -230,6 +244,8 @@ def main():
 	except KeyboardInterrupt:
 		logging.info("\n\nConcordanceCrawler aborted, you can try to find " +
 		"its output in " + args["output"].name)
+	finally:
+		of.close()
 
 if __name__=="__main__":
 	main()

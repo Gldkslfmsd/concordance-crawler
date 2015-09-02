@@ -11,6 +11,7 @@ import logging
 from ConcordanceCrawler import *
 
 
+
 DETAILS = logging.INFO-5
 STATUS = logging.INFO
 
@@ -155,8 +156,8 @@ class LoggingCrawler():
 				logging.error("\'{}\' occured".format(e))
 				self.log_state()
 				continue
-			log_details("crawled SERP {}, parsed {} links".format(
-				get_keyword_url(links[0]['keyword']), len(links)))
+			log_details("crawled SERP, parsed {} links".format(
+				len(links)))
 			for l in links:
 				yield l
 

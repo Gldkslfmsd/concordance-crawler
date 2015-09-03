@@ -3,12 +3,12 @@
 '''Functions for crawling links from Bing Search.'''
 
 from multiprocessing import Pool
-import requests
 import datetime
 import logging
 
 from .bazwords import *
 from .parse import parseBing
+import ConcordanceCrawler.urlrequest as urlrequest
 
 
 def crawl_links(target_word, number = 1, bazword_gen = None):
@@ -54,7 +54,7 @@ def crawlonekeyword(keyword):
 	'''
 	url = get_keyword_url(keyword)
 	logging.debug("trying to download SERP {}".format(url))
-	rawhtml = requests.get(url).text
+	rawhtml = urlrequest.get_raw_html(url)
 
 	date = _date()
 

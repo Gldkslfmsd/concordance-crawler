@@ -2,10 +2,11 @@
 
 '''Visit given url and find there a concordance.'''
 
-import requests
 from bs4 import BeautifulSoup
 import re
 import datetime
+
+import ConcordanceCrawler.urlrequest as urlrequest
 
 def get_visible_text(html):
 	#Taken from here: http://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
@@ -33,7 +34,7 @@ def visit(url, target):
 	Returns:
 		a list of sentences
 	'''
-	rawhtml = requests.get(url).text
+	rawhtml = urlrequest.get_raw_html(url)
 	text = get_visible_text(rawhtml)
 
 	# NOTE: ... (three dots) get lost, but that would be too complicated

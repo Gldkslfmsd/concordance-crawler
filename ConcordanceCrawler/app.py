@@ -4,13 +4,13 @@
 
 import argparse
 from sys import stdout
-from json import dumps
-from dict2xml import dict2xml
 import logging
 from traceback import format_exc
 
 
 from ConcordanceCrawler import *
+
+from formatter import *
 
 
 
@@ -86,32 +86,7 @@ def get_args():
 	return args
 
 
-class OutputFormater():
-	def __init__(self, format, output_stream):
-		self.output = output_stream
-		self.format = format
-		if format=="json":
-			self.to_output = self._output_as_json
-			self.output.write("{\n")
-		else:
-			self.to_output = self._output_as_xml
-			self.output.write("<root>\n")
 
-	def _output_as_xml(self,concordance):
-		'''prints one concordance to output'''
-		result = dict2xml({'item':concordance},indent=" "*4,wrap="") + "\n"
-		self.output.write(result)
-
-	def _output_as_json(self,concordance):
-		result = dumps(concordance,indent=4)+"\n"
-		self.output.write(result)
-
-	def close(self):
-		if self.format=="json":
-			self.output.write("}\n")
-		else:
-			self.output.write("</root>\n")
-		self.output.close()
 
 class LoggingCrawler():	
 	'''Crawls concordances and logs statistics'''
@@ -202,11 +177,10 @@ def main():
 	args = get_args()
 	word = args["word"]
 	number = args["n"]
-	of = OutputFormater(
+	of = OutputFormater.create_formatter(
 		format=args["format"],
 		output_stream=args["output"]
 		)
-	output = of.to_output
 	baz = args["bazword_generator"]
 	max_per_page = args["p"]
 	page_limited = True if max_per_page else False
@@ -240,7 +214,8 @@ def main():
 
 	try:
 		for c in concordances:
-			output(c)
+			print(of)
+			of.output(c)
 	except KeyboardInterrupt:
 		logging.info("\n\nConcordanceCrawler aborted, you can try to find " +
 		"its output in " + args["output"].name)

@@ -103,5 +103,7 @@ if __name__ == "__main__":
 #			# to better see ends of lines
 #			print(">>>"+i+"<<<")
 
-	print(get_visible_text(requests.get("https://en.wikipedia.org/wiki/Viceroy_of_Liangguang").text))
-	#visit_links([{'link':'http://www.writeawriting.com/'}],"write")
+	import requests
+#	print(get_visible_text(requests.get("https://en.wikipedia.org/wiki/Viceroy_of_Liangguang").text))
+	x = visit_links([{'link':'http://www.writeawriting.com/'}],"write")
+	print(x)

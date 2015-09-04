@@ -2,14 +2,19 @@
 
 '''Functions for crawling links from Bing Search.'''
 
-from multiprocessing import Pool
-import datetime
 import logging
+import datetime
 
-from .bazwords import *
-from .parse import parseBing
-import ConcordanceCrawler.urlrequest as urlrequest
-
+try:
+	from bazwords import *
+	from parse import parseBing
+	import urlrequest
+# this exception occurs when this script is called as a part of
+# ConcordanceCrawler, called on its own it needs this modules
+except ImportError:
+	import ConcordanceCrawler.urlrequest as urlrequest
+	from .parse import parseBing
+	from .bazwords import *
 
 def crawl_links(target_word, number = 1, bazword_gen = None):
 	'''Crawls links from Bing Search. Uses bazword generator to get

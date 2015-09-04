@@ -8,9 +8,7 @@ import logging
 from traceback import format_exc
 
 
-from ConcordanceCrawler import *
-
-# TODO: isn't this useless?
+# TODO: do this properly!!!
 try:
 	# if I run this script directly
 	from formatter import *
@@ -127,8 +125,10 @@ def main():
 
 	try:
 		for c in concordances:
+			print("tady")
 			of.output(c)
 	except KeyboardInterrupt:
+		lc.log_state()
 		logging.info("\n\nConcordanceCrawler aborted, you can try to find " +
 		"its output in " + args["output"].name)
 	finally:

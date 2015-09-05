@@ -62,7 +62,6 @@ class LoggingCrawler():
 	def yield_concordances(self,word):
 		'''Generator crawling concordances'''
 
-		print("tady")
 		for link in self._yield_links():
 			for con in self._yield_concordances_from_link(link):
 				self.log_state()

@@ -125,7 +125,6 @@ def main():
 
 	try:
 		for c in concordances:
-			print("tady")
 			of.output(c)
 	except KeyboardInterrupt:
 		lc.log_state()

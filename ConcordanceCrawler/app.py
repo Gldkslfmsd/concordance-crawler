@@ -119,8 +119,6 @@ def main():
 		for c in concordances:
 			of.output(c)
 	except KeyboardInterrupt:
-		urlrequest.pool.close()
-		urlrequest.pool.terminate()
 		lc.log_state()
 		logging.info("\n\nConcordanceCrawler aborted, you can try to find " +
 		"its output in " + args["output"].name)

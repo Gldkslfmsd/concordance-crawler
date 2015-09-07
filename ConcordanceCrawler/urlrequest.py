@@ -61,9 +61,6 @@ def get_raw_html(url):
 	req = app_res.get(5*60)
 	return req.text
 
-def function():
-	print("ahoj")
-
 # for debugging purposes:
 if __name__=="__main__":
 	print(get_raw_html("http://cd.cz/"))

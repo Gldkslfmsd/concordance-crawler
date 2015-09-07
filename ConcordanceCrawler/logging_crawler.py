@@ -1,6 +1,7 @@
 from traceback import format_exc
 import logging
 import requests
+from multiprocessing.context import TimeoutError as multiprocessing_TimeoutError
 
 from ConcordanceCrawler import *
 
@@ -75,14 +76,19 @@ class LoggingCrawler():
 			try:
 				links = crawl_links(self.word,1,self.bazgen)
 				self.num_serps += 1
+			except multiprocessing_TimeoutError:
+				logging.error("request {} cannot be handled for a long time".format(
+					l['link']))
+				self.page_errors += 1
+				self.log_state()
 			except (requests.exceptions.RequestException, ConnectionError) as e:
 				self.serp_errors += 1
 				logging.error("\'{}\' occured".format(e))
 				self.log_state()
-				continue
 			except Exception:
 				logging.error("!!! Undefined error occured, {}".format(format_exc()))
 				self.page_errors += 1
+				self.log_state()
 			else:
 				log_details("crawled SERP, parsed {} links".format(
 					len(links)))
@@ -109,6 +115,10 @@ class LoggingCrawler():
 				l['link'],len(concordances)))
 			# because of statistics (is not thread-safe)
 			self.num_pages += 1
+		except multiprocessing_TimeoutError:
+			logging.error("request {} cannot be handled for a long time".format(
+				l['link']))
+			self.page_errors += 1
 		except (requests.exceptions.RequestException, ConnectionError) as e:
 			logging.error("\'{}\' occured during getting {}".format(
 				e,l['link']))
@@ -121,7 +131,8 @@ class LoggingCrawler():
 				# maximum limit of concordances per page reached
 				if self.page_limited and i>self.max_per_page:
 					break
-				res = { "bing_link": l, "concordance": c }
+				# here is formed the output structure for concordance
+				res = c
 				self.num_concordances += 1
 				yield res
 

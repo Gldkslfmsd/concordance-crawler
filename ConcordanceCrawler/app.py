@@ -7,8 +7,6 @@ from sys import stdout
 import logging
 from traceback import format_exc
 
-
-# TODO: do this properly!!!
 try:
 	# if I run this script directly
 	from formatter import *
@@ -66,15 +64,16 @@ def get_args():
 		)
 
 	parser.add_argument("-v","--verbosity",
-		default="STATUS",
-		choices=["DEBUG","DETAILS","STATUS","ERROR"],
+		default=1,
+		choices=[0,1,2,3],
+		type=int,
 		help="""Verbosity level. Every level contains also messages from higher
 		levels. All this messages are printed to stderr.
-		DEBUG -- logs all visiting urls before visit.
-		DETAILS -- logs just number of found concordances and errors.
-		STATUS -- regurarly logs number of visited pages, crawled
+		0 (DEBUG) -- logs all visiting urls before visit.
+		1 (DETAILS) -- logs all crawled urls and number of found concordances.
+		2 (STATUS) -- regurarly logs total number of visited pages, crawled
 		concordances and errors.
-		ERROR -- logs errors (e.g. invalid urls and ssl certificates).
+		3 (ERROR) -- logs just errors and anything else.
 		"""
 		)
 
@@ -103,7 +102,7 @@ def main():
 	elif baz=="NUMBERS":
 		bazgen = IncreasingNumbers()
 
-	log_level = args['verbosity']
+	log_level = ["DEBUG","DETAILS","STATUS","ERROR"][args['verbosity']]
 
 	setup_logger(log_level)
 	logging.info("ConcordanceCrawler started, press Ctrl+C for interrupt")
@@ -113,6 +112,7 @@ def main():
 	lc.page_limited = page_limited
 	lc.total_concordances = number
 
+	# generator that crawls exact number of concordances
 	concordances = ( c for _,c in zip(range(number), lc.yield_concordances(word)) )
 
 	try:

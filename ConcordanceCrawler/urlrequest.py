@@ -11,8 +11,9 @@ def request_get(*args,**kwargs):
 	try:
 		y = requests.get(*args,**kwargs)
 		return y
+	# without this it would write stack trace when the application is aborted
 	except KeyboardInterrupt:
-		print("konec")
+		pass
 
 
 # we use just one pool for all calls, because it spares time, memory and

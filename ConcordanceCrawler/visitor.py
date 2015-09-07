@@ -83,10 +83,6 @@ def visit_links(links, target_word):
 
 	return concordances
 
-
-
-
-
 if __name__ == "__main__":
 #	pairs = [("http://leapfroggroup.org/","group"),
 #		("http://www.thinkbabynames.com/meaning/1/Dominik","Dominik"),

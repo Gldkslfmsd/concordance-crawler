@@ -9,6 +9,9 @@ import datetime
 import ConcordanceCrawler.urlrequest as urlrequest
 
 def get_visible_text(html):
+	'''Gets raw html, returns its plain text (without marks) that is visible by
+	humans.
+	'''
 	#Taken from here: http://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
 	soup = BeautifulSoup(html,"lxml")
 	text = soup.findAll(text=True)
@@ -77,9 +80,6 @@ def visit_links(links, target_word):
 				'keyword':target_word
 			}
 			concordances.append(c)
-
-#	import pprint
-#	print(pprint.pformat(concordances))
 
 	return concordances
 

@@ -18,14 +18,6 @@ except ImportError:
 	from .formatter import *
 	from .logging_crawler import *
 
-
-
-DETAILS = logging.INFO-5
-STATUS = logging.INFO
-
-def log_details(*a):
- logging.log(DETAILS, *a)
-
 def get_args():
 	'''Setup command line arguments
 
@@ -127,6 +119,8 @@ def main():
 		for c in concordances:
 			of.output(c)
 	except KeyboardInterrupt:
+		urlrequest.pool.close()
+		urlrequest.pool.terminate()
 		lc.log_state()
 		logging.info("\n\nConcordanceCrawler aborted, you can try to find " +
 		"its output in " + args["output"].name)

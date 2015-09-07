@@ -7,7 +7,7 @@ from ConcordanceCrawler import *
 '''This class is used just by demo commandline application.
 '''
 
-
+# logging levels
 DETAILS = logging.INFO-5
 STATUS = logging.INFO
 
@@ -15,8 +15,8 @@ def log_details(*a):
  logging.log(DETAILS, *a)
 
 def setup_logger(log_level):
-	# shut down the logger from requests module
-	logging.getLogger("requests").setLevel(logging.WARNING)
+	# "shut down" the logger from requests module
+	#logging.getLogger("requests").setLevel(logging.WARNING)
 	# setup this logger:
 	logging.addLevelName(DETAILS,"DETAILS")
 	logging.addLevelName(STATUS,"STATUS")

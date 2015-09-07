@@ -2,8 +2,18 @@ import requests
 from GoogleScraper.user_agents import random_user_agent
 import multiprocessing
 
-'''This is needed because... TODO
+'''A funcion that downloads content from url.
 '''
+
+import time
+
+def request_get(*args,**kwargs):
+	try:
+		y = requests.get(*args,**kwargs)
+		return y
+	except KeyboardInterrupt:
+		print("konec")
+
 
 # we use just one pool for all calls, because it spares time, memory and
 # processes
@@ -19,7 +29,7 @@ def get_raw_html(url):
 
 	Raises:
 		multiprocessing.context.TimeoutError -- if a process lasts too long
-		other errors like requests.RequestException or its descendants on errors
+		other errors like requests.RequestException or its descendants
 	'''
 
 # User-Agent is a field in http header, some servers vary documents
@@ -43,7 +53,7 @@ def get_raw_html(url):
 
 	# run it in a pool
 	app_res = pool.apply_async(
-		requests.get, # a function
+		request_get, # a function
 		(url,), # function arguments
 		{'timeout':10,'headers':headers} # keyword arguments
 		)
@@ -51,6 +61,9 @@ def get_raw_html(url):
 	req = app_res.get(5*60)
 	return req.text
 
+def function():
+	print("ahoj")
+
 # for debugging purposes:
 if __name__=="__main__":
-	print(get_raw_html("http://signaly.cz/"))
+	print(get_raw_html("http://cd.cz/"))

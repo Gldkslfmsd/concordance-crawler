@@ -18,7 +18,7 @@ class RandomShortWords():
 			baz += random.choice(self.letters)
 		return baz
 
-import requests
+import ConcordanceCrawler.urlrequest as urlrequest
 from bs4 import BeautifulSoup
 class WikipediaRandomArticleTitles():
 	'''Scrapes random article from wikipedia and yields words from its title.'''
@@ -28,7 +28,7 @@ class WikipediaRandomArticleTitles():
 
 	def _generate(self):
 		while True:
-			x = requests.get('https://en.wikipedia.org/wiki/Special:Random').text
+			x = urlrequest.get_raw_html('https://en.wikipedia.org/wiki/Special:Random')
 			pagetitle = BeautifulSoup(x,"lxml").html.head.title.string
 			# there is " - Wikipedia, the free encyclopedia" in the end of every
 			# page title, I'm removing it
@@ -48,10 +48,13 @@ class WikipediaRandomArticle():
 	def _generate(self):
 		while True:
 			url = "https://en.wikipedia.org/wiki/Special:Random"
-			html = requests.get(url).text
+			html = urlrequest.get_raw_html(url)
 			soup = BeautifulSoup(html,"lxml").html
+			divs = soup('div',{"id":"mw-content-text"})
+			if len(divs)==0: # article is probably empty
+				continue
 			# this is a text of article
-			article = soup('div',{"id":"mw-content-text"})[0].text
+			article = divs[0].text
 			words = article.split()
 			for i in words:
 				yield i
@@ -69,6 +72,6 @@ class IncreasingNumbers():
 		return baz
 		
 if __name__ == "__main__":
-	bg = IncreasingNumbers()
+	bg = WikipediaRandomArticleTitles()
 	for i in range(1000):
 		print(bg.get_bazword())

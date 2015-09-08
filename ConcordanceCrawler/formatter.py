@@ -10,7 +10,7 @@ control progress of a program. The second result is that otherwise they
 should be stored in memory, but it shouldn't be so big.
 '''
 
-class OutputFormater():
+class OutputFormatter():
 	'''Common ancestor of formatters with defined format. This is de facto
 	abstract class.'''
 
@@ -46,7 +46,7 @@ class OutputFormater():
 		else:
 			raise ValueError("format must be \'json\' or \'xml\'")
 
-class JsonFormatter(OutputFormater):
+class JsonFormatter(OutputFormatter):
 	'''Writes pretty-printed concordances in json.
 	'''
 	def __init__(self,output_stream):
@@ -83,7 +83,7 @@ class JsonFormatter(OutputFormater):
 		self.output_stream.write("\n]\n")
 		super().close()
 	
-class XmlFormatter(OutputFormater):
+class XmlFormatter(OutputFormatter):
 	'''Writes pretty-printed concordances in xml.
 	'''
 	def __init__(self,output_stream):

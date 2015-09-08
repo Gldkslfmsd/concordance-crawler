@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 
-"""ConcordanceCrawler command-line application"""
+"""ConcordanceCrawler command-line application.
+
+This is its main file, you can find here the main function (its entry
+point).
+"""
 
 import argparse
 from sys import stdout
@@ -83,10 +87,12 @@ def get_args():
 
 
 def main():
+	# setup command-line arguments and get them from user
 	args = get_args()
 	word = args["word"]
 	number = args["n"]
-	of = OutputFormater.create_formatter(
+	# here is output formatter
+	of = OutputFormatter.create_formatter(
 		format=args["format"],
 		output_stream=args["output"]
 		)
@@ -104,9 +110,11 @@ def main():
 
 	log_level = ["DEBUG","DETAILS","STATUS","ERROR"][args['verbosity']]
 
+	# setup logger and print welcome message
 	setup_logger(log_level)
 	logging.info("ConcordanceCrawler started, press Ctrl+C for interrupt")
 
+	# setup crawler
 	lc = LoggingCrawler(word,bazgen)
 	lc.max_per_page = max_per_page
 	lc.page_limited = page_limited
@@ -115,6 +123,7 @@ def main():
 	# generator that crawls exact number of concordances
 	concordances = ( c for _,c in zip(range(number), lc.yield_concordances(word)) )
 
+	# find concordances:
 	try:
 		for c in concordances:
 			of.output(c)
@@ -123,6 +132,7 @@ def main():
 		logging.info("\n\nConcordanceCrawler aborted, you can try to find " +
 		"its output in " + args["output"].name)
 	finally:
+		# close output stream
 		of.close()
 
 if __name__=="__main__":

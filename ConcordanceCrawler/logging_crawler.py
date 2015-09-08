@@ -77,9 +77,8 @@ class LoggingCrawler():
 				links = crawl_links(self.word,1,self.bazgen)
 				self.num_serps += 1
 			except multiprocessing_TimeoutError:
-				logging.error("request {} cannot be handled for a long time".format(
-					l['link']))
-				self.page_errors += 1
+				logging.error("SERP cannot be handled for a long time")
+				self.serp_errors += 1
 				self.log_state()
 			except (requests.exceptions.RequestException, ConnectionError) as e:
 				self.serp_errors += 1
@@ -87,7 +86,7 @@ class LoggingCrawler():
 				self.log_state()
 			except Exception:
 				logging.error("!!! Undefined error occured, {}".format(format_exc()))
-				self.page_errors += 1
+				self.serp_errors += 1
 				self.log_state()
 			else:
 				log_details("crawled SERP, parsed {} links".format(

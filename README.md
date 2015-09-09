@@ -127,10 +127,10 @@ There's a little problem, you can find on Bing.com at most first 1000 links
 for every keyword, and that's too few. Therefore ConcordanceCrawler lets
 finding keywords as for example "sdtn look", "naxe look", "jzmw look" and
 similar combinations of bazword and target word. By this approach it
-(should) get sufficient number of (ideally) different links to crawl
+gets sufficient number of different links to crawl
 concordances.
 
-You can find more informations on other place. (TODO)
+You can find more informations [here](https://github.com/Gldkslfmsd/concordance-crawler/tree/master/doc), but in Czech.
 
 ## Future plans with ConcordanceCrawler
 
@@ -140,7 +140,7 @@ sentences with more accuracy (this version detects words just in one form,
 e.g. -ing forms of verbs are ignored). At least it will also detect language
 of sentence and encoding of document.
 
-It will be published on cheeseshop under open-source license and there
+It will be published on [Cheeseshop](https://pypi.python.org/pypi) under open-source license and there
 will exist a web-page with demo application. This could be finished until June 2016.
 
 ## Contact me!
@@ -149,5 +149,5 @@ I'll be pleased if you contact me. You can send me anything (except a spam
 :), a review, a request or idea for other feature, you can report an issue, fix
 a bug, and of course ask me a question about anything.
 
-You can contact me via GitHub or email: gldkslfmsd-at-gmail.com.
+You can contact me via [GitHub](https://github.com/Gldkslfmsd) or email: gldkslfmsd-at-gmail.com.
 

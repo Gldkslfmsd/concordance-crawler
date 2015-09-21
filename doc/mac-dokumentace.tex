@@ -1,4 +1,5 @@
 \language\czech 
+\chyph
 \advance\hsize by -1.5cm
 \hoffset=5.25mm
 %\parindent=0pt
@@ -24,3 +25,9 @@
 \def\link#1 {{\tt #1}\ }%
 \newcount\cislopoznamky \cislopoznamky=0
 \def\pozn{\advance \cislopoznamky by 1\footnote{{$ ^\the\cislopoznamky$}}}%
+
+
+\input ucwmac.tex
+\input ucw-ofs.tex
+\input ucw-verb.tex
+\input ucw-link.tex

@@ -7,9 +7,20 @@
 \centerline{\nadB Závěrečná zpráva ročníkového projektu}
 \vskip 1cm
 
-Toto je závěrečná zpráva a dokumentace projektu ConcordanceCrawler. Jedná se o ročníkový
-projekt, který vypracoval Dominik Macháček v~letním semestru 2015 na MFF UK
-v~Praze. Vedoucím projektu byl Mgr. Vincent Kríž.
+%Toto je závěrečná zpráva a dokumentace projektu ConcordanceCrawler. Jedná se o ročníkový
+%projekt, který vypracoval Dominik Macháček v~letním semestru 2015 na MFF UK
+%v~Praze. Vedoucím projektu byl Mgr. Vincent Kríž.
+
+\halign{\hbox to .4\hsize{\hskip .7cm#\hfil}&#\hfil\cr
+Autor projektu:		&Dominik Macháček \cr
+Semestr:			&LS 2015 \cr
+Odevzdáno:		&21. 9. 2015 \cr
+Fakulta: 			&Matematicko-fyzikální fakulta Univerzity Karlovy \cr
+Studijní program a obor:	&Informatika, obecná informatika \cr
+Kód předmětu: 		&NPRG045 (bakalářské studium) \cr
+%\noalign{\medskip}
+Vedoucí projektu:			&Mgr. Vincent Kríž \cr
+}
 
 
 \n2{Zadání}
@@ -24,34 +35,40 @@ požadované množství konkordancí vyhledat a stáhnout.
 
 Úkolem řešitele bude především: 
 
-1) analyzovat a evaluovat vhodné Internetové zdroje pro získávání
+\numlist\nparen
+\: analyzovat a evaluovat vhodné Internetové zdroje pro získávání
 konkordancí;
 
-(2) analyzovat a evaluovat dostupné knihovny v Pythonu pro prohledávaní
+\: analyzovat a evaluovat dostupné knihovny v Pythonu pro prohledávaní
 webu;
 
-(3) analyzovat a evaluovat strategie pro automatickou segmentaci věty;
+\: analyzovat a evaluovat strategie pro automatickou segmentaci věty;
 
-(3) navrhnout a implementovat:
+\: navrhnout a implementovat:
 
-a) knihovnu pro vyhledávání a stahovaní relevantních dokumentů;
+\numlist\nalpha
 
-b) knihovnu pro extrakci věty z dokumentu;
+\: knihovnu pro vyhledávání a stahovaní relevantních dokumentů;
 
-c) knihovnu pro určení jazyka a kódování věty;
+\: knihovnu pro extrakci věty z dokumentu;
 
-d) konzolovou aplikaci pro Linux, která umožní uživatelům zadat cílové slovo
+\: knihovnu pro určení jazyka a kódování věty;
+
+\: konzolovou aplikaci pro Linux, která umožní uživatelům zadat cílové slovo
 a uložit extrahované věty;
 
-e) webové rozhraní, které umožní uživatelům zadat extrakční úkol a následně
+\: webové rozhraní, které umožní uživatelům zadat extrakční úkol a následně
 sledovat stav extrakce;
+\endlist
 
-(4) publikovat knihovnu a aplikace jako open-source balíček na
+\: publikovat knihovnu a aplikace jako open-source balíček na
 pypi.python.org.
+
+\endlist
 
 \bigskip
 
-Úkolem pro ročníkový projekt jsou body 1, 2, 3a, 3d. Navíc je zde úkol
+Úkolem pro ročníkový projekt jsou body 1, 2, 4a, 4d. Navíc je zde úkol
 zveřejnit knihovnu a aplikaci na portálu GitHub i s uživatelskou
 dokumentací. Ostatní úkoly zůstávají do bakalářské práce.
 
@@ -80,23 +97,25 @@ Tento přístup ale není možný z několika důvodů:
 
 \bigskip
 
-1) Google.com a další vyhledávače blokují automatický přístup. Pokud
+\numlist\nparen
+\: Google.com a další vyhledávače blokují automatický přístup. Pokud
 získají podezření, že vyhledávání provádí automatický program místo
 člověka, zobrazí stránku s chybovou hláškou a CAPTCHA. Vyřešit automaticky
 CAPTCHA je poměrně složité a je nad rámec tohoto projektu.
 
 Míra blokování a způsob detekce se u různých vyhledávačů mírně liší.
 
-2) Všechny vyhledávače na první stránce výsledků vyhledávání (tzv. SERP,
+\: Všechny vyhledávače na první stránce výsledků vyhledávání (tzv. SERP,
 Search Engine Result Page) poskytují informaci, že nalezly přibližně stovky
 milionů výsledků. V dolní části stránky je odkaz, kterým se dá dostat na
 další stránku výsledků. Problémem je, že tímto způsobem se dá dostat
 poměrně malé množství odkazů, u Bing.com pouze prvních 1000, ostatní
 vyhledávače poskytnou pouze několik stovek stránek. To je příliš málo.
 
-3) Ne ve všech snippetech se dají najít celé věty. Velikost snippetu je
+\: Ne ve všech snippetech se dají najít celé věty. Velikost snippetu je
 omezena, často bývá věta přerušena. Bylo by potřeba navštívit nalezený
 odkaz a hledat na stránce konkordance.
+\endlist
 
 \bigskip
 
@@ -114,7 +133,7 @@ a to by velmi zkomplikovalo používání programu.
 \n4{Dostupné knihovny pro prohledávání webu}
 
 Našel jsem, vyzkoušel a otestoval nejméně 6 knihoven v jazyce Python pro
-získávání odkazů z Google.com. Většina z nich pracovala tak, že vytvořila
+získávání odkazů z~Google.com. Většina z~nich pracovala tak, že vytvořila
 url stránky výsledků vyhledávače a jednoduše stáhla tu stránku jako html
 dokument. Poté ho naparsovala a vypsala odkazy.
 
@@ -159,7 +178,7 @@ pominout to naše cílové slovo.
 
 Navíc snippet potom bude velmi pravděpodobně složen z více vět, aby se
 v něm objevila všechna klíčová slova, a žádná věta tam pravděpodobně nebude
-celá. Takže bude potřeba ještě navštívit stránku a snippet nijak nevyužívat.
+celá. Proto tedy bude potřeba navštívit stránku a snippet nijak nevyužívat.
 
 Tímto způsobem tedy zvýšíme počet odkazů, které můžeme získat.
 
@@ -187,7 +206,11 @@ na terminál, dobře se s~ním tedy vytváří a ladí program.
 
 Celý repozitář se zdrojovým kódem je na GitHubu zde:
 
-\link{https://github.com/Gldkslfmsd/concordance-crawler}
+\bigskip
+\centerline{
+\hlink{https://github.com/Gldkslfmsd/concordance-crawler}{https://github.com/Gldkslfmsd/concordance-crawler}
+}
+\bigskip
 
 Zdrojový kód programu sídlí ve složce ConcordanceCrawler. V repozitáři
 v~souboru README.md je popis instalace a používání programu.
@@ -201,36 +224,35 @@ všechny funkce a třídy, které to podle mého názoru potřebují, mají
 docstringy. Sem zbývá dodat už jen pár komentářů:
 
 \bigskip
-\od
-\fce{app.py} je hlavní soubor konzolové aplikace, nachází se zde její
+\itemize{--}
+\: \fce{app.py} je hlavní soubor konzolové aplikace, nachází se zde její
 hlavní funkce.
 
-\od 
+\:
 \fce{links.py}, \fce{visitor.py}, \fce{bazword.py}, \fce{parse.py} a \fce{urlrequest.py}
 jsou soubory, které dělají tu hlavní práci ConcordanceCrawleru. Starají se
 o stažení odkazů a jejich navštívení. Jiný programátor je může použít ve
 svém vlastním projektu. Ostatní soubory programu jsou pouze kvůli konzolové
 aplikaci.
 
+
 \od
 \fce{urlrequest.py} -- zde se nachází funkce, která stáhne dokument
 nacházející se na url a vrátí ho. Na to mohl stačit
 příkaz \fce{requests.get(url).text}, ale bylo zde několik problémů:
 
-\bigskip
-\odod
+\itemize{--}
+\:
 	Chci tuto funkci volat na několika místech v různých souborech vždy s
 	některými parametry stejnými. Pak se samozřejmě vyplatí mít na to funkci,
 	která ji zavolá, a ta je umístěna ve zvláštním souboru a importována.
 
-\bigskip
-\odod
+\:
 	Takto samotný příkaz nemá žádný defaultní timeout, tedy nevyhodí žádnou
 	výjimku, když server dlouho neodpovídá, a čeká klidně až donekonečna. Dá se ale
 	nastavit.
 
-	\bigskip
-\odod
+\:
 	Během testování jsem objevil zvláštní chybu, kvůli které program zamrzl
 	a čekal donekonečna na nějakém pasivním čekání právě v příkazu
 	\fce{requests.get}, a to i když byl nastaven timeout.	Nepřišel jsem na příčinu
@@ -240,21 +262,17 @@ příkaz \fce{requests.get(url).text}, ale bylo zde několik problémů:
 	promptu zkusím stejnou funkci na stejném odkazu, proběhne ihned a bez
 	problémů, tudíž to nebude tím, že by vyhledávač blokoval můj počítač.
 
-\bigskip
-\itemitem{}
 	Problém jsem nevyřešil, ale obešel. Funkci volám ve zvláštním procesu,
 	v hlavním procesu program čeká maximálně 5 minut na výsledek. Pokud se
 	nedočká, přeruší vedlejší proces a vyhodí chybu. Používám
-	zde multiprocessing.Pool, díky němu program vytvoří pouze jeden
-	vedlejší proces pro všechna volání funkce, to šetří paměť i čas.
-	To má za následek, že občas, když je program předčasně zabíjen stiskem
-	Ctrl+C, vypíše stav zásobníku s výjimkou, která vznikla v nějakém
-	vedlejším procesu. A to i přesto, že jsem se snažil KeyboardInterrupt
-	v tomto procesu odchytit a umlčet. Do dalších verzí se pokusím o chybě
-	zjistit více a opravit ji.
+	zde {\it multiprocessing.Pool}, díky němu program vytvoří pouze jeden
+	vedlejší proces pro všechna volání funkce, to šetří paměť i čas.  To má za
+	následek, že občas, když je program předčasně zabíjen stiskem Ctrl+C,
+	vypíše stav zásobníku s výjimkou, která vznikla v~nějakém vedlejším
+	procesu. A to i přesto, že jsem se snažil {\it KeyboardInterrupt} v~tomto
+	procesu odchytit a umlčet. Do dalších verzí se pokusím o chybě zjistit
+	více a opravit ji.
 
-\bigskip
-\odod
 	Servery mohou měnit obsah dokumentu podle toho, zda k nim přistupuje
 	automatický crawler nebo člověk skrze webový prohlížeč. To pozná podle
 	položky {\it User-Agent} v~hlavičce http požadavku. Například pro
@@ -264,7 +282,8 @@ příkaz \fce{requests.get(url).text}, ale bylo zde několik problémů:
 	z~běžně používaných webových prohlížečů. Používám na to funkci
 	z~GoogleScraperu, tam je tato věc vyřešena.
 
-\od
+\endlist
+\:
 \fce{visitor.py} -- zde se nachází funkce, která navštíví stránku, vezme
 její viditelný text bez tagů a ten rozdělí na věty. Větná segmentace se
 prozatím provádí pouze jednoduše, za oddělovače věty se považuje tečka,
@@ -273,7 +292,7 @@ například špatně rozezná větu s řadovou číslovkou a tečkou, nerozezná
 apod. Dále se zde filtrují věty s~klíčovým slovem, prozatím musí stát
 samostatně ve větě a musí být přesně v~tom tvaru, jak ho zadal uživatel.
 	
-\od
+\:
 \fce{links.py} -- tady je mimo jiné funkce, která kontroluje, zda nás
 vyhledávač neblokuje. Pozná to podle řetězce \uv{Omluvte přerušení}, který
 se nachází na blokovaných stránkách, to ale bude fungovat jen v~České
@@ -281,15 +300,55 @@ republice. Po blokování nic neudělá, resp. vrací None místo odkazů. Do
 dalších verzí je třeba zvážit, zda je tato funkce potřeba a jak má
 vypadat, aby fungovala po celém světě.
 
-\od
+\:
 \fce{bazwords.py} -- zde v~generátorech bazword, které stahují náhodné
 články z~Wikipedie, se nekontroluje, že stahování dopadlo v~pořádku. Pokud
 ne, vyhodí se výjimka, ta se odchytí až dále a připočítá se chyba k~počtu chyb
 za stahování SERP.
 
+\endlist
 %\od
 %\fce{outputformatter.py} -- zde je třída OutputFormatter, která je de facto abstraktní, ve
 %skutečnosti ale není.
+
+\n2{Výsledky programu}
+
+Spustil jsem program na 4 počítačích v labu Rotunda s těmito přepínači: 
+
+ConcordanceCrawler go -n 1000000 -p 100 -b NUMBERS 
+
+Měl by tedy stáhnout 1 milion konkordancí obsahujících slovo {\it go},
+maximálně 100 z~jedné stránky, jako bazwords by měl brát čísla. Výstup
+i chybový výstup jsem přesměroval do souborů. Z nich mohu zjistit, jak
+rychle je program schopen stahovat.
+
+Programy jsem spustil 20. 9. 2015 mezi 16:46 a 16:51. Přibližně po
+6 hodinách byly všechny zabity, v~labu je totiž stanoven časový limit pro
+každý proces a ten již byl vyčerpán. Bohužel v~současné době nemám
+k~dispozici počítačovou síť, kde by se toto nedělo, proto měření není
+příliš přesné.
+
+Toto je tabulka shrnující výsledky stahování:
+\bigskip
+
+\halign{\hbox to 0.4\hsize{#\hfil}&#\hfil&#\hfil&#\hfil&#\hfil&#\hfil\cr
+stroj:			&u-pl0 & u-pl2 & u-pl10 & u-pl20 & průměr \cr
+doba běhu programu [hod:min]: & 5:27 & 6:06 & 6:05 & 5:55 & \cr
+počet SERP: & 238 (0 chyb) & 263 (0 chyb) & 266 (0 chyb) & 259 (0 chyb) & \cr 
+SERP/hodinu & 43.7 & 42.5 & 43.7 & 43.8 & 43.4 \cr
+navštíveno odkazů: & 11764 & 13019 & 13108 & 12812& \cr
+odkazů za hodinu: & 2159 & 2134 & 2155 & 2156 & 2151 \cr
+z toho unikátních: & 11092 & 12301 & 12392 & 12109& \cr
+chyb: & 138 & 146 & 147 & 155 & \cr
+staženo konkordancí: & 55987 & 62342 & 62387 & 61907& \cr
+konkordancí za hodinu: & 10273 & 10220 & 10255 & 10463 & 10303 \cr
+}
+
+\bigskip
+
+Můžeme tedy říci, že program dokáže stáhnout asi 43.4 SERP za hodinu, na
+každé stránce je průměrně asi 50 odkazů. Dále dokáže navštívit asi 2151 těchto
+odkazů za hodinu a z nich extrahovat asi 10303 konkordancí za hodinu.
 
 \n2{Úkoly do dalších verzí}
 
@@ -298,36 +357,38 @@ verzí programu.
 
 \bigskip
 
-\od
+\itemize{--}
+\:
 Zlepšit větnou segmentaci a filtrování konkordancí se všemi tvary klíčového
 slova. Na to se vytvoří různé samostatné třídy, podle přání uživatele je
 program bude volat.
 
-\od 
+\: 
 Porovnat způsoby generování bazwords a navrhnout nejlepší.
 
-\od
+\:
 \uv{Vyznačovat} cílové slovo ve výstupním souboru.
 
-\od
+\:
 Zrychlit stahování, současná verze je jednovláknová, dá se ale stahovat
 paralelně.
 
-\od
+\:
 Přidat podporu i pro Python2. Problém je snad jen v~jiném pojmenování
 importovaných knihoven, to se dá snadno vyřešit modulem six. To je potřeba
 udělat i pro GoogleScraper, ale i to by neměl být problém.
 
-\od
+\:
 GoogleScraper používá velmi mnoho velkých knihoven kvůli funkcionalitám,
-které můj program nevyužívá. Jedná se o knihovny pro práci s~databází.
-Uživatel ConcordanceCrawleru je ale musí nainstalovat i tak. To se dá
-změnit.
+které můj program nevyužívá. Jedná se o knihovny pro práci s~databází, např.
+{\it sqlalchemy} a {\it PyMySql}.  Uživatel ConcordanceCrawleru je ale musí
+nainstalovat i tak. To se dá změnit.
 
-\od
+\:
 Dále zbývá vypracovat ostatní úkoly ze specifikace, tedy přidat určování
 jazyka stahovaného dokumentu a kódování stránky, vyrobit webové rozhraní
 s~demo aplikací a publikovat knihovnu a aplikace na pypi.python.org.
+\endlist
 
 
 

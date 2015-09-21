@@ -19,6 +19,7 @@ except ImportError:
 	# if I run ConcordanceCrawler
 	from .formatter import *
 	from .logging_crawler import *
+	from .__init__ import __version__
 
 def get_args():
 	'''Setup command line arguments
@@ -112,7 +113,9 @@ def main():
 
 	# setup logger and print welcome message
 	setup_logger(log_level)
-	logging.info("ConcordanceCrawler started, press Ctrl+C for interrupt")
+	logging.info("ConcordanceCrawler version {} started, press Ctrl+C for \
+	interrupt".format(
+		__version__))
 
 	# setup crawler
 	lc = LoggingCrawler(word,bazgen)

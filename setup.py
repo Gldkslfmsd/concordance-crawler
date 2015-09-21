@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup
+import re
+
+# taken from GoogleScraper:
+version = re.search(
+	   "^__version__\s*=\s*'(.*)'",
+		 open('ConcordanceCrawler/__init__.py').read(),
+				    re.M).group(1)
 
 setup(name='ConcordanceCrawler',
-      version='0.0.0.0.1',
+      version=version,
       description='A module for automatic concordance extraction from the Internet',
       long_description='TODO',
       author='Dominik Macháček',
@@ -12,8 +19,5 @@ setup(name='ConcordanceCrawler',
       py_modules=['usage'],
       packages=['ConcordanceCrawler'],
       entry_points={'console_scripts': ['ConcordanceCrawler	= ConcordanceCrawler.app:main']},
-#      package_data={
-#          'ConcordanceCrawler': ['config.cfg'],
-#      },
       install_requires=['GoogleScraper','beautifulsoup4','dict2xml']
 )

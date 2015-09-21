@@ -87,7 +87,7 @@ ConcordanceCrawler apple -n 1
 2015-09-07 20:33:40,491 DETAILS: page http://www.yelp.com/biz/best-buy-libertyville visited, 4 concordances found
 2015-09-07 20:33:40,491 STATUS: Crawling status 
 	serp		1 (0 errors) 
-	pages visited	2 (0 errors)
+	pages visited	2	(2 unique pages, 0 errors)
 	concordances	1
 [
     {

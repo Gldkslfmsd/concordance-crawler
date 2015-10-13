@@ -18,7 +18,7 @@ class RandomShortWords():
 			baz += random.choice(self.letters)
 		return baz
 
-import ConcordanceCrawler.urlrequest as urlrequest
+import ConcordanceCrawler.core.urlrequest as urlrequest
 from bs4 import BeautifulSoup
 class WikipediaRandomArticleTitles():
 	'''Scrapes random article from wikipedia and yields words from its title.'''

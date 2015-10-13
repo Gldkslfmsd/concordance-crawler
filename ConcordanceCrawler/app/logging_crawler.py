@@ -3,7 +3,8 @@ import logging
 import requests
 from multiprocessing.context import TimeoutError as multiprocessing_TimeoutError
 
-from ConcordanceCrawler import *
+from ConcordanceCrawler.core.links import *
+from ConcordanceCrawler.core.visitor import *
 
 '''This class is used just by demo commandline application.
 '''

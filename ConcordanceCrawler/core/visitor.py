@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import re
 import datetime
 
-import ConcordanceCrawler.urlrequest as urlrequest
+import ConcordanceCrawler.core.urlrequest as urlrequest
 
 def get_visible_text(html):
 	'''Gets raw html, returns its plain text (without marks) that is visible by

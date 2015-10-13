@@ -11,15 +11,10 @@ from sys import stdout
 import logging
 from traceback import format_exc
 
-try:
-	# if I run this script directly
-	from formatter import *
-	from logging_crawler import *
-except ImportError:
-	# if I run ConcordanceCrawler
-	from .formatter import *
-	from .logging_crawler import *
-	from .__init__ import __version__
+from ConcordanceCrawler.core.bazwords import *
+from ConcordanceCrawler.app.formatter import *
+from ConcordanceCrawler.app.logging_crawler import *
+from ConcordanceCrawler.__init__ import __version__
 
 def get_args():
 	'''Setup command line arguments

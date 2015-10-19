@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# TODO!!!!
+# this doesn't work!!!
+
 from setuptools import setup
 import re
 
@@ -18,6 +21,6 @@ setup(name='ConcordanceCrawler',
       url='https://github.com/Gldkslfmsd',
       py_modules=['usage'],
       packages=['ConcordanceCrawler'],
-      entry_points={'console_scripts': ['ConcordanceCrawler	= ConcordanceCrawler.app:main']},
+      entry_points={'console_scripts': ['ConcordanceCrawler = ConcordanceCrawler.app.app:main']},
       install_requires=['GoogleScraper','beautifulsoup4','dict2xml']
 )

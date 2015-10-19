@@ -16,8 +16,6 @@ source p3/bin/activate
 pip install git+https://github.com/Gldkslfmsd/concordance-crawler.git
 ```
 
-(TODO: this will install current developmnent version, not release.)
-
 Now you can use simply ```ConcordanceCrawler -h``` to run it and see its options.
 
 ## Version

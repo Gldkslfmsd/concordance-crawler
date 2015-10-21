@@ -6,14 +6,25 @@ import re
 import datetime
 
 from ConcordanceCrawler.core.visible_text import *
-from ConcordanceCrawler.core.internet_user import InternetUser
-import ConcordanceCrawler.core.segmenter
+from ConcordanceCrawler.core.concordance_filter import concordance_filtering
+import ConcordanceCrawler.core.segmenter as segmenter
+import ConcordanceCrawler.core.language_analysis as language_analysis
+import ConcordanceCrawler.core.urlrequest as urlrequest
+import ConcordanceCrawler.core.encoding as encoding
 
-class Visitor(InternetUser):
-	get_visible_text = VisibleTextParser().get_visible_text
-	predict_format = FormatPredictor().predict_format
-	accept_format = FormatFilter().accept_format
-	sentence_segmentation = segmenter.sentence_segmentation
+
+class Visitor():
+
+	def __init__(self):
+		self.get_raw_html = urlrequest.get_raw_html
+		self.get_visible_text = VisibleTextParser().get_visible_text
+		self.predict_format = FormatPredictor().predict_format
+		self.accept_format = FormatFilter().accept_format
+		self.sentence_segmentation = segmenter.sentence_segmentation
+		self.predict_language = language_analysis.predict_language
+		self.accept_language = language_analysis.accept_language
+		self.norm_encoding = encoding.norm_encoding
+		self.concordance_filtering = concordance_filtering
 	
 	def visit(self, url, target):
 		'''Visits a page on given url and extracts all sentences containing
@@ -24,17 +35,22 @@ class Visitor(InternetUser):
 			target
 	
 		Returns:
-			a list of sentences
+			a list of sentences or None
 		'''
-		raw_data = self.get_raw_html(url)
-		data_format = self.predict_format(raw_data)
+		# TODO: rename it and add returning header
+		raw_data, header = self.get_raw_html(url), None
+		normed_data = self.norm_encoding(raw_data, header)
+		data_format = self.predict_format(normed_data)
 		if not self.accept_format(data_format):
 			return None
-		text = self.get_visible_text(raw_data)
+		text = self.get_visible_text(normed_data)
+		language = self.predict_language(text)
+		if not self.accept_language(language):
+			return None
 
 		sentences = self.sentence_segmentation(text)
 	
-		concordances = list(filter(ConcordanceFilter(target).process, sentences))
+		concordances = list(filter(lambda s: self.concordance_filtering(target,s), sentences))
 	
 		return concordances
 
@@ -53,6 +69,8 @@ class Visitor(InternetUser):
 		for i in links:
 			url = i['link']
 			concs = visit(url,target_word)
+			if concs is None:
+				continue
 			date = str(datetime.datetime.now())
 			for j in concs:
 				c = {

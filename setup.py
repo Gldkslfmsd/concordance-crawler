@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# TODO!!!!
-# this doesn't work!!!
-
 from setuptools import setup
 import re
 
@@ -30,7 +27,7 @@ setup(name='ConcordanceCrawler',
 			platforms='any',
       packages=['ConcordanceCrawler'],
       entry_points={'console_scripts': ['ConcordanceCrawler = ConcordanceCrawler.app.app:main']},
-      install_requires=['GoogleScraper','beautifulsoup4','dict2xml']
+      install_requires=['GoogleScraper','beautifulsoup4','dict2xml'],
 			test_suite='ConcordanceCrawler.tests',
 			classifiers = [
 				"Development Status :: 3 - Alpha",

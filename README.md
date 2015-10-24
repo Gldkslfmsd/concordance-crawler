@@ -1,5 +1,7 @@
 # ConcordanceCrawler
 
+[![Build Status](https://travis-ci.org/Gldkslfmsd/concordance-crawler.svg?branch=master)](https://travis-ci.org/Gldkslfmsd/concordance-crawler)
+
 ConcordanceCrawler is a tool for automatic concordance extraction from the
 Internet. A concordance is a sentence containing some given word. You can
 choose a word in any language, and ConcordanceCrawler is able to download you

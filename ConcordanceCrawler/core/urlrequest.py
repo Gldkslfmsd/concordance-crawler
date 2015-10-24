@@ -1,5 +1,5 @@
 import requests
-from GoogleScraper.user_agents import random_user_agent
+from ConcordanceCrawler.core.user_agents import random_user_agent
 import multiprocessing
 
 '''A funcion that downloads content from url.

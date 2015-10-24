@@ -1,2 +1,5 @@
 import ConcordanceCrawler.app.app
-ConcordanceCrawler.app.app.main()
+def main():
+	ConcordanceCrawler.app.app.main()
+if __name__ == '__main__':
+	main()

@@ -6,7 +6,7 @@ class ConcordanceFilter:
 		self.regex = re.compile(".*(\s|^)"+target+"(\s|$).*",flags=re.IGNORECASE)
 
 	def process(self, sentence):
-		return self.regex.match(sentence)
+		return True if self.regex.match(sentence) else False
 
 filters = {}
 def concordance_filtering(target, sentence):

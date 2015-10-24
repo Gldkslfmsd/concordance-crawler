@@ -46,5 +46,10 @@ class TestVisitor(unittest.TestCase):
 		with self.assertRaises(TypeError):
 			s.split(2)
 
+	def test_visit_links(self):
+		concs = self.visitor.visit_links([{"link":"https://cs.wikipedia.org/wiki/P%C5%99epaden%C3%AD_celnice_v_Habartic%C3%ADch"}],"akce")
+		self.assertTrue(len(concs)>0)
+
+
 if __name__=='__main__':
 	unittest.main()

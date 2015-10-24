@@ -69,9 +69,7 @@ class Visitor():
 		for i in links:
 			url = i['link']
 			concs = self.visit(url,target_word)
-			print(concs)
 			if concs is None:
-				print("je to none")
 				continue
 			date = str(datetime.datetime.now())
 			for j in concs:

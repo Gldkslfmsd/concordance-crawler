@@ -39,6 +39,7 @@ class LoggingCrawler():
 		self.bazgen = bazgen
 		# this is set of visited links, we want to count them because of logging
 		self.unique_links = set()
+		self.visitor = Visitor()
 
 	def log_state(self):
 		'''logs interesting numbers about progress'''
@@ -113,7 +114,7 @@ class LoggingCrawler():
 		try:
 			logging.debug("trying to download {}".format(l['link']))
 			# here is the link visited
-			concordances = visit_links([l],self.word)
+			concordances = self.visitor.visit_links([l],self.word)
 			# add url to set of unique links, because we want to count them
 			self.unique_links.add(l['link'])
 			log_details("page {} visited, {} concordances found".format(

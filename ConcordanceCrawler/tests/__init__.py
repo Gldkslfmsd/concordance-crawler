@@ -1,0 +1,2 @@
+from ConcordanceCrawler.tests.parsing_tests import TestParsing
+from ConcordanceCrawler.tests.visitor_tests import TestVisitor

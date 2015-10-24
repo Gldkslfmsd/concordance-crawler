@@ -2,8 +2,11 @@ language: python
 notifications:
   email: false
 python:
+	- "3.0"
+	- "3.2"
   - "3.4"
+	- "3.5"
 # command to install dependencies
 install: "python3 setup.py install"
 # command to run tests
-script: "python3 -m ConcordanceCrawler.tests.visitor_tests"
+script: "python3 -m unittest ConcordanceCrawler.tests"

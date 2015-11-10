@@ -1,3 +1,4 @@
+import six
 from bs4 import BeautifulSoup
 import re
 
@@ -8,10 +9,15 @@ class VisibleTextParser:
 	def __init__(self):
 		self.format_predictor = FormatPredictor()
 
+	@staticmethod
 	def _visible(element):
 		if element.parent.name in ['style', 'script', '[document]', 'head', 'title']:
 			return False
-		if re.match('<!--.*-->', str(element)):
+		if six.PY2:
+			text = element.encode('utf-8')
+		else:
+			text = str(element)
+		if re.match(u'<!--.*-->', text):
 			return False
 		return True
 

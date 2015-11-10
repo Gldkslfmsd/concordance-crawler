@@ -1,4 +1,4 @@
-from json import dumps
+from simplejson import dumps
 from dict2xml import dict2xml
 
 '''Output formatter classes.

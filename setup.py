@@ -27,7 +27,7 @@ setup(name='ConcordanceCrawler',
 			platforms='any',
       packages=['ConcordanceCrawler','ConcordanceCrawler.app','ConcordanceCrawler.core'],
       entry_points={'console_scripts': ['ConcordanceCrawler = ConcordanceCrawler.app.app:main']},
-      install_requires=['cssselect','lxml','requests','beautifulsoup4','dict2xml'],
+      install_requires=['cssselect','lxml','requests','beautifulsoup4','dict2xml','simplejson'],
 			test_suite='ConcordanceCrawler.tests',
 			classifiers = [
 				"Development Status :: 3 - Alpha",

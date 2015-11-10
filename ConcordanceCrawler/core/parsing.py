@@ -19,7 +19,7 @@ from lxml.html.clean import Cleaner
 import pprint
 import logging
 from cssselect import HTMLTranslator
-from urllib.parse import urlparse
+from six.moves.urllib.parse import urlparse
 
 
 logger = logging.getLogger(__name__)
@@ -86,7 +86,7 @@ class Link():
 
 
 
-class Parser():
+class Parser(object):
 	"""Parses SERP pages.
 
 	Each search engine results page (SERP) has a similar layout:
@@ -163,6 +163,7 @@ class Parser():
 
 		# short alias because we use it so extensively
 		self.css_to_xpath = HTMLTranslator().css_to_xpath
+
 
 		if self.html:
 			self.parse()
@@ -440,7 +441,7 @@ class BingParser(Parser):
 	}
 
 	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
+		super(BingParser, self).__init__(*args, **kwargs)
 
 	def after_parsing(self):
 		"""Clean the urls.
@@ -451,7 +452,7 @@ class BingParser(Parser):
 		surl:"http://berlin-germany.ca/",imgurl:"http://berlin-germany.ca/images/berlin250.jpg",
 		oh:"184",tft:"45",oi:"http://berlin-germany.ca/images/berlin250.jpg"}
 		"""
-		super().after_parsing()
+		super(BingParser,self).after_parsing()
 
 		if self.searchtype == 'normal':
 

@@ -6,13 +6,14 @@ This is its main file, you can find here the main function (its entry
 point).
 """
 
+import six
 import argparse
 from sys import stdout
 import logging
 from traceback import format_exc
 
 from ConcordanceCrawler.core.bazwords import *
-from ConcordanceCrawler.app.formatter import *
+from ConcordanceCrawler.app.output_formatter import *
 from ConcordanceCrawler.app.logging_crawler import *
 from ConcordanceCrawler.__init__ import __version__
 
@@ -40,9 +41,10 @@ def get_args():
 		help="maximum number of concordances per page (default: unlimited)"
 		)
 
+	filetype = argparse.FileType('w', encoding='UTF-8') if six.PY3 else argparse.FileType('w')
 	parser.add_argument("-o","--output",
 		default=stdout,
-		type=argparse.FileType('w', encoding='UTF-8'),
+		type=filetype,
 		help="output file (default stdout)"
 		)
 
@@ -88,7 +90,7 @@ def main():
 	word = args["word"]
 	number = args["n"]
 	# here is output formatter
-	of = OutputFormatter.create_formatter(
+	of = create_formatter(
 		format=args["format"],
 		output_stream=args["output"]
 		)

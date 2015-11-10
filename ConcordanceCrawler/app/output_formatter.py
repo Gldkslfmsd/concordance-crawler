@@ -10,7 +10,7 @@ control progress of a program. The second result is that otherwise they
 should be stored in memory, but it shouldn't be so big.
 '''
 
-class OutputFormatter():
+class OutputFormatter(object):
 	'''Common ancestor of formatters with defined format. This is de facto
 	abstract class.'''
 
@@ -25,32 +25,31 @@ class OutputFormatter():
 		# every formatter must close the file in the end
 		self.output_stream.close()
 
-	# this is static method
-	def create_formatter(format,output_stream):
-		'''creates output formatter for given format
+def create_formatter(format,output_stream):
+	'''creates output formatter for given format
 
-		Args:
-			format -- string "xml" or "json"
-			output_stream -- output file for formatter
+	Args:
+		format -- string "xml" or "json"
+		output_stream -- output file for formatter
 
-		Returns:
-			newly created formatter
+	Returns:
+		newly created formatter
 
-		Raises:
-			ValueError, if format is not "json" or "xml"
-		'''
-		if format=='json':
-			return JsonFormatter(output_stream)
-		elif format=='xml':
-			return XmlFormatter(output_stream)
-		else:
-			raise ValueError("format must be \'json\' or \'xml\'")
+	Raises:
+		ValueError, if format is not "json" or "xml"
+	'''
+	if format=='json':
+		return JsonFormatter(output_stream)
+	elif format=='xml':
+		return XmlFormatter(output_stream)
+	else:
+		raise ValueError("format must be \'json\' or \'xml\'")
 
 class JsonFormatter(OutputFormatter):
 	'''Writes pretty-printed concordances in json.
 	'''
 	def __init__(self,output_stream):
-		super().__init__(output_stream)
+		super(JsonFormatter, self).__init__(output_stream)
 		# writes [ to output as a begining symbol of list of concordances...
 		self.output_stream.write("[")
 		self.first = True
@@ -81,13 +80,13 @@ class JsonFormatter(OutputFormatter):
 	def close(self):
 		# ...and terminating ] of list
 		self.output_stream.write("\n]\n")
-		super().close()
+		super(JsonFormatter, self).close()
 	
 class XmlFormatter(OutputFormatter):
 	'''Writes pretty-printed concordances in xml.
 	'''
 	def __init__(self,output_stream):
-		super().__init__(output_stream)
+		super(XmlFormatter, self).__init__(output_stream)
 		self.output_stream.write("<root>\n")
 
 	def output(self,concordance):
@@ -101,4 +100,4 @@ class XmlFormatter(OutputFormatter):
 
 	def close(self):
 		self.output_stream.write("</root>\n")
-		super().close()
+		super(XmlFormatter, self).close()

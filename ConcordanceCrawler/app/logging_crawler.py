@@ -1,7 +1,13 @@
+import six
+
 from traceback import format_exc
 import logging
 import requests
-from multiprocessing.context import TimeoutError as multiprocessing_TimeoutError
+if six.PY3:
+	from multiprocessing.context import TimeoutError as multiprocessing_TimeoutError
+elif six.PY2:
+	from multiprocessing import TimeoutError as multiprocessing_TimeoutError
+	from requests.exceptions import ConnectionError
 
 from ConcordanceCrawler.core.links import *
 from ConcordanceCrawler.core.visitor import *

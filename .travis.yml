@@ -2,7 +2,6 @@ language: python
 notifications:
   email: false
 python:
-    - "2.5"
     - "2.6"
     - "2.7"
     - "3.2"
@@ -12,4 +11,8 @@ python:
 # command to install dependencies
 install: "python setup.py install"
 # command to run tests
-script: "python -m unittest ConcordanceCrawler.tests"
+script: 
+    - ConcordanceCrawler
+    - ConcordanceCrawler -h
+    - python -m unittest ConcordanceCrawler.tests
+    - ConcordanceCrawler a -v 0 -n 1

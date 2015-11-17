@@ -4,7 +4,11 @@ from traceback import format_exc
 import logging
 import requests
 if six.PY3:
-	from multiprocessing.context import TimeoutError as multiprocessing_TimeoutError
+	import sys
+	if sys.version_info.minor>=4:
+		from multiprocessing.context import TimeoutError as multiprocessing_TimeoutError
+	else:
+		from multiprocessing import TimeoutError as multiprocessing_TimeoutError
 elif six.PY2:
 	from multiprocessing import TimeoutError as multiprocessing_TimeoutError
 	from requests.exceptions import ConnectionError

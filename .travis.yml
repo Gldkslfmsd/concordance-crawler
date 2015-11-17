@@ -12,7 +12,6 @@ python:
 install: "python setup.py install"
 # command to run tests
 script: 
-    - ConcordanceCrawler
     - ConcordanceCrawler -h
     - python -m unittest ConcordanceCrawler.tests
     - ConcordanceCrawler a -v 0 -n 1

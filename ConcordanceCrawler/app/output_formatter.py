@@ -1,4 +1,8 @@
-from simplejson import dumps
+import six
+if six.PY2:
+	from simplejson import dumps
+else:
+	from json import dumps
 from dict2xml import dict2xml
 
 '''Output formatter classes.

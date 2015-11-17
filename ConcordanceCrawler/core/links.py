@@ -79,7 +79,7 @@ def is_blocked(rawhtml):
 	if len(rawhtml)<120:
 		return True 
 	# I can see this in Czech Republic, in other countries it may differ!
-	return u'Omluvte přerušení' in rawhtml
+	return 'Omluvte p' in rawhtml
 
 def _date():
 	'''Returns a string with current date.'''

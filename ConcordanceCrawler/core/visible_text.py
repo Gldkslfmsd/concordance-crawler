@@ -17,7 +17,7 @@ class VisibleTextParser:
 			text = element.encode('utf-8')
 		else:
 			text = str(element)
-		if re.match(u'<!--.*-->', text):
+		if re.match('<!--.*-->', text):
 			return False
 		return True
 

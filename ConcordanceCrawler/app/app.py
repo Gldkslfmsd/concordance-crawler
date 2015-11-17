@@ -6,6 +6,7 @@ This is its main file, you can find here the main function (its entry
 point).
 """
 
+import sys
 import six
 import argparse
 from sys import stdout
@@ -41,7 +42,12 @@ def get_args():
 		help="maximum number of concordances per page (default: unlimited)"
 		)
 
-	filetype = argparse.FileType('w', encoding='UTF-8') if six.PY3 else argparse.FileType('w')
+	# TODO -- does it work for all version without encoding=?
+	if six.PY3 and sys.version_info.minor>=4 and False:
+		filetype = argparse.FileType('w', encoding='UTF-8')
+
+	else:
+		filetype = argparse.FileType('w')
 	parser.add_argument("-o","--output",
 		default=stdout,
 		type=filetype,

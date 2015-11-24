@@ -250,7 +250,7 @@ class Parser(object):
 				)
 
 				to_extract = set(selectors.keys()) - set(['container','result_container'])
-				selectors_to_use = {key: selectors[key] for key in to_extract if key in selectors.keys()}
+				selectors_to_use = dict((key, selectors[key]) for key in to_extract if key in selectors.keys())
 
 				for index, result in enumerate(results):
 					# Let's add primitive support for CSS3 pseudo selectors

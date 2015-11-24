@@ -249,7 +249,7 @@ class Parser(object):
 					self.css_to_xpath(css)
 				)
 
-				to_extract = set(selectors.keys()) - {'container', 'result_container'}
+				to_extract = set(selectors.keys()) - set(['container','result_container'])
 				selectors_to_use = {key: selectors[key] for key in to_extract if key in selectors.keys()}
 
 				for index, result in enumerate(results):

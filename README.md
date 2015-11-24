@@ -53,7 +53,7 @@ usage: ConcordanceCrawler [-h] [-n N] [-p P] [-o OUTPUT]
 
 - `NUMBERS` -- bazwords will be 0, 1, 2, 3, ...
 
-`-f {json}` is an output format, default is json. Format xml will be operationl in later versions.
+`-f {json}` is an output format, default is json. Format xml will be operational in later versions.
 
 `-v {0,1,2,3}` is verbosity level, see rest of help message (`ConcordanceCrawler -h`) for more info.
 
@@ -99,7 +99,7 @@ ConcordanceCrawler apple -n 1
 ]
 ```
 
-Xml output looks like this:
+Xml output would look like this, but it's currently out of service.
 ```
 <root>
 <item>
@@ -114,9 +114,8 @@ Xml output looks like this:
 ### Use in your own code
 
 You can also use ConcordanceCrawler as a library in your own project. Then
-you would be interested in this submodules: links, parse, visitor, urlrequest and
-bazwords. Others are used just by the demo command-line application. All
-code should be self-explanatory, there isn't any other code documentation.
+you would be interested in a subpackage ```core```. There isn't any other
+code documentation yet, but might be available later.
 
 ## How does ConcordanceCrawler work?
 
@@ -140,8 +139,10 @@ sentences with more accuracy (this version detects words just in one form,
 e.g. -ing forms of verbs are ignored). At least it will also detect language
 of sentence and encoding of document.
 
-It will be published on [Cheeseshop](https://pypi.python.org/pypi) under open-source license and there
-will exist a web-page with demo application. This could be finished until June 2016.
+ConcordanceCrawler is also published on Cheeseshop
+[here](https://pypi.python.org/ConcordanceCrawler) under open-source license
+and in future there will exist a web-page with demo application. This could be
+finished until June 2016.
 
 ## Contact me!
 

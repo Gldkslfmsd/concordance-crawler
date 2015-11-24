@@ -9,9 +9,9 @@ version = re.search(
 		 open('ConcordanceCrawler/__init__.py').read(),
 				    re.M).group(1)
 
-f = open("README.md","r")
-description = f.read()
-f.close()
+#f = open("README.md","r")
+description = ""#"f.read()
+#f.close()
 
 setup(name='ConcordanceCrawler',
       version=version,

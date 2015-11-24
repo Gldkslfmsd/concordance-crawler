@@ -140,7 +140,7 @@ e.g. -ing forms of verbs are ignored). At least it will also detect language
 of sentence and encoding of document.
 
 ConcordanceCrawler is also published on Cheeseshop
-[here](https://pypi.python.org/ConcordanceCrawler) under open-source license
+[here](https://pypi.python.org/pypi/ConcordanceCrawler) under open-source license
 and in future there will exist a web-page with demo application. This could be
 finished until June 2016.
 

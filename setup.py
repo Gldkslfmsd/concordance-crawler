@@ -28,15 +28,16 @@ setup(name='ConcordanceCrawler',
       packages=['ConcordanceCrawler','ConcordanceCrawler.app','ConcordanceCrawler.core'],
       entry_points={'console_scripts': ['ConcordanceCrawler = ConcordanceCrawler.app.app:main']},
       install_requires=['cssselect','lxml','requests','beautifulsoup4','simplejson','six'],
-			# TODO: fix dicttoxml
 			test_suite='ConcordanceCrawler.tests',
 			classifiers = [
 				"Development Status :: 3 - Alpha",
 				"Environment :: Console",
 				"Intended Audience :: Science/Research",
 				"Operating System :: OS Independent",
-				# todo -- don't forget to fix it later
+				"Programming Language :: Python :: 2.7",
+				"Programming Language :: Python :: 3.2",
+				"Programming Language :: Python :: 3.3",
 				"Programming Language :: Python :: 3.4",
-				"Programming Language :: Python :: 3 :: Only",
+				"Programming Language :: Python :: 3.5",
 			],
 )

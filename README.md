@@ -22,7 +22,7 @@ Now you can use simply ```ConcordanceCrawler -h``` to run it and see its options
 
 ## Version
 
-This is version 0.1.2. It's intended just python >= 2.6 and >= 3.2.
+This is version 0.1.2. It's intended just python >= 2.7 and >= 3.2.
 
 Required libraries will be installed automaticaly.
 
@@ -34,7 +34,7 @@ a Python library. This is a part of ConcordanceCrawler's help message:
 ```
 usage: ConcordanceCrawler [-h] [-n N] [-p P] [-o OUTPUT]
                           [-b {RANDOM,WIKI_ARTICLES,WIKI_TITLES,NUMBERS}]
-                          [-f {json,xml}] [-v {0,1,2,3}]
+                          [-f {json}] [-v {0,1,2,3}]
                           word
 ```
 `-n N` is a number of concordances that you wish a program would crawl. By default it's 10.
@@ -53,7 +53,7 @@ usage: ConcordanceCrawler [-h] [-n N] [-p P] [-o OUTPUT]
 
 - `NUMBERS` -- bazwords will be 0, 1, 2, 3, ...
 
-`-f {json,xml}` is an output format, default is json
+`-f {json}` is an output format, default is json. Format xml will be operationl in later versions.
 
 `-v {0,1,2,3}` is verbosity level, see rest of help message (`ConcordanceCrawler -h`) for more info.
 

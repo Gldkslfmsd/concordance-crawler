@@ -22,7 +22,7 @@ Now you can use simply ```ConcordanceCrawler -h``` to run it and see its options
 
 ## Version
 
-This is version 0.1.2. It's intended just python >= 2.7 and >= 3.2.
+This is version 0.1.21. It's intended just python >= 2.7 and >= 3.2.
 
 Required libraries will be installed automaticaly.
 

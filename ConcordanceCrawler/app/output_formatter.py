@@ -3,7 +3,6 @@ if six.PY2:
 	from simplejson import dumps
 else:
 	from json import dumps
-from dict2xml import dict2xml
 
 '''Output formatter classes.
 
@@ -99,7 +98,9 @@ class XmlFormatter(OutputFormatter):
 		Args:
 			concordance: concordance as a dict
 		'''
-		result = dict2xml({'item':concordance},indent=" "*4,wrap="") + "\n"
+		xml = dicttoxml(concordance, root=False, custom_root="item")
+		pretty = parseString(xml).toprettyxml()
+		result = pretty
 		self.output_stream.write(result)
 
 	def close(self):

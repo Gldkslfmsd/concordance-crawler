@@ -116,7 +116,7 @@ def main():
 
 	# setup logger and print welcome message
 	setup_logger(log_level)
-	logging.info("ConcordanceCrawler version {} started, press Ctrl+C for \
+	logging.info("ConcordanceCrawler version {0} started, press Ctrl+C for \
 	interrupt".format(
 		__version__))
 

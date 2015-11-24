@@ -97,14 +97,14 @@ class LoggingCrawler():
 				self.log_state()
 			except (requests.exceptions.RequestException, ConnectionError) as e:
 				self.serp_errors += 1
-				logging.error("\'{}\' occured".format(e))
+				logging.error("\'{0}\' occured".format(e))
 				self.log_state()
 			except Exception:
-				logging.error("!!! Undefined error occured, {}".format(format_exc()))
+				logging.error("!!! Undefined error occured, {0}".format(format_exc()))
 				self.serp_errors += 1
 				self.log_state()
 			else:
-				log_details("crawled SERP, parsed {} links".format(
+				log_details("crawled SERP, parsed {0} links".format(
 					len(links)))
 				for l in links:
 					yield l
@@ -122,17 +122,17 @@ class LoggingCrawler():
 		#l['link']='http://en.bab.la/dictionary/english-hindi/riding'
 		#print("link:",l['link'])
 		try:
-			logging.debug("trying to download {}".format(l['link']))
+			logging.debug("trying to download {0}".format(l['link']))
 			# here is the link visited
 			concordances = self.visitor.visit_links([l],self.word)
 			# add url to set of unique links, because we want to count them
 			self.unique_links.add(l['link'])
-			log_details("page {} visited, {} concordances found".format(
+			log_details("page {0} visited, {1} concordances found".format(
 				l['link'],len(concordances)))
 			# because of statistics (is not thread-safe)
 			self.num_pages += 1
 		except multiprocessing_TimeoutError:
-			logging.error("request {} cannot be handled for a long time".format(
+			logging.error("request {0} cannot be handled for a long time".format(
 				l['link']))
 			self.page_errors += 1
 		except (requests.exceptions.RequestException, ConnectionError) as e:
@@ -140,7 +140,7 @@ class LoggingCrawler():
 				e,l['link']))
 			self.page_errors += 1
 		except Exception:
-			logging.error("!!! Undefined error occured, {}".format(format_exc()))
+			logging.error("!!! Undefined error occured, {0}".format(format_exc()))
 			self.page_errors += 1
 		else:
 			for i,c in enumerate(concordances):

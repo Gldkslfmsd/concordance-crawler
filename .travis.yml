@@ -10,7 +10,6 @@ python:
     - "3.5"
 # command to install dependencies
 install: 
-    - pip install git+https://github.com/Gldkslfmsd/python-dict2xml.git
     - python setup.py install
 # command to run tests
 script: 

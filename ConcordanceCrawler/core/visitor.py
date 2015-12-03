@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 '''Visit given url and find there a concordance.'''
@@ -15,6 +15,9 @@ import ConcordanceCrawler.core.encoding as encoding
 
 
 class Visitor():
+	attributes = ['get_raw_html', 'get_visible_text', 'predict_format',
+		'accept_format', 'sentence_segmentation', 'predict_language',
+		'accept_language', 'norm_encoding', 'concordance_filtering']
 
 	def __init__(self):
 		self.get_raw_html = urlrequest.get_raw_html

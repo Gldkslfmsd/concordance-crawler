@@ -79,7 +79,7 @@ def get_args():
 		levels. All this messages are printed to stderr.
 		0 (DEBUG) -- logs all visiting urls before visit.
 		1 (DETAILS) -- logs all crawled urls and number of found concordances.
-		2 (STATUS) -- regurarly logs total number of visited pages, crawled
+		2 (STATUS) -- regularly logs total number of visited pages, crawled
 		concordances and errors.
 		3 (ERROR) -- logs just errors and anything else.
 		"""

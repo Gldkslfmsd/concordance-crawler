@@ -1,3 +1,3 @@
-from ConcordanceCrawler.tests.parsing_tests import TestParsing
 from ConcordanceCrawler.tests.visitor_tests import TestVisitor
 from ConcordanceCrawler.tests.formatter_tests import TestFormatter
+from ConcordanceCrawler.tests.links_tests import TestLinks

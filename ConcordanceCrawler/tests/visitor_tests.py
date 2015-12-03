@@ -5,21 +5,29 @@ from ConcordanceCrawler.core.visitor import Visitor
 class TestVisitor(unittest.TestCase):
 	visitor = Visitor()
 
-	def test_get_html_visible_text(self):
+	def test_get_raw_html(self):
 		raw_html = self.visitor.get_raw_html("http://www.airliners.net/aviation-forums/general_aviation/read.main/306713/")
 		text = "do Lufthansa and United Airlines operate between their hubs please?"
 		self.assertTrue(text in raw_html)
+
+	def test_get_html_visible_text(self):
+		raw_html = self.visitor.get_raw_html("https://en.wikipedia.org/wiki/Special:Random")
 
 		visible = self.visitor.get_visible_text(raw_html)
 		self.assertTrue("<br>" not in visible)
 		self.assertTrue("<!--" not in visible)
 		self.assertTrue("<html>" not in visible)
+		self.assertTrue("Transclusion expansion time report" not in visible)
+		self.assertTrue("window.RLQ.push" not in visible)
 
-	def test_language(self):
-		lan = self.visitor.predict_language("hello world")
-		self.assertEqual(lan, "eng")
+	# TODO
+	def test_predict_format(self):
+		pass
 
-	def test_segmentation(self):
+	def test_accept_format(self):
+		pass
+
+	def test_sentence_segmentation(self):
 		text = """Hello,
 
 		What do Lufthansa and United Airlines operate between their hubs please.
@@ -34,7 +42,20 @@ class TestVisitor(unittest.TestCase):
 		for a,b in zip(sentences,result):
 			self.assertEqual(a,b)
 
-	def test_concordances_filter(self):
+	# TODO
+	def test_predict_language(self):
+		lan = self.visitor.predict_language("hello world")
+		self.assertEqual(lan, "eng")
+
+	# TODO
+	def test_accept_language(self):
+		pass
+
+	# TODO
+	def test_norm_encoding(self):
+		pass
+
+	def test_concordances_filtering(self):
 		# todo
 		#self.assertTrue(self.visitor.concordance_filtering("večer","Dobrý večer, ..."))
 		self.assertTrue(self.visitor.concordance_filtering("večer","Dobrý večer ..."))

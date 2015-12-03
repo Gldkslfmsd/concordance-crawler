@@ -40,9 +40,8 @@ class TestLinks(unittest.TestCase):
 			IncreasingNumbers() ]
 
 		for g in gens:
-			for i in range(20):
+			for i in range(10):
 				baz = g.get_bazword()
-				self.assertTrue(type(baz) is str)
 				self.assertTrue(baz != "")
 				self.assertTrue(" " not in baz)
 

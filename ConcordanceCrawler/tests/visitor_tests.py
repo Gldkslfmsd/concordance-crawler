@@ -32,15 +32,56 @@ class TestVisitor(unittest.TestCase):
 
 		What do Lufthansa and United Airlines operate between their hubs please.
 		What did they operate before applying code-share agreement? Bye! Ratatatata!
-		au...
+		au... 
+
+		Call him etc. and do do Lufthansa and Dr. Gregory House M.D. operate between their hubs please.
 		"""
+
 		sentences = self.visitor.sentence_segmentation(text)
-		result = ['Hello,\n', '\n', 
-		'\t\tWhat do Lufthansa and United Airlines operate between their hubs please.', 
-		'\n', '\t\tWhat did they operate before applying code-share agreement?', 
-		' Bye!', ' Ratatatata!', '\n','\t\tau.', '.', '.', '\n']
-		for a,b in zip(sentences,result):
+
+		right = ['Hello,', 'What do Lufthansa and United Airlines operate between their '
+		'hubs please.', 'What did they operate before applying code-share '
+		'agreement?', 'Bye!', 'Ratatatata!', 'au...', 'Call him etc. and do do '
+		'Lufthansa and Dr. Gregory House M.D. operate between their hubs '
+		'please.', '']
+
+		for a,b in zip(sentences,right):
 			self.assertEqual(a,b)
+
+	def test_czech_sentence_segmentation(self):
+		'''this will test czech sentence segmentation, which is currently not
+		finished yet
+		'''
+
+		# text to segment
+		text = """
+		Are you really JUDr. PhDr. MUDr. RNDr. Mgr. et Mgr., Bc. Henryk Lahola,
+		Th.D., DrSc., multi dr.h.c. or not? Tyto zkratky to neumí, to je blbý
+		s.r.o. Že? 
+		
+		Jedu z Praha hl.n. do U.S. vlakem 16.07.2015.
+		Jedu z Praha hl. n. do U. S. přes Čes. Bud. stopem 16.7. 2015.
+		Jedu z Praha hl. n. Českými drahami a.s. do U.S. stopem 16. 7. 2015.
+
+		"""
+		# right answers
+		right = ['''Are you really JUDr. PhDr. MUDr. RNDr. Mgr. et Mgr., Bc. Henryk Lahola,
+		Th.D., DrSc., multi dr.h.c. or not?''',
+		'''Tyto zkratky to neumí, to je blbý
+		s.r.o.''',
+		'''Že? 
+		''',
+
+		'Jedu z Praha hl.n. do U.S. vlakem 16.07.2015.',
+		'Jedu z Praha hl. n. do U. S. přes Čes. Bud. stopem 16.7. 2015.',
+		'Jedu z Praha hl. n. Českými drahami a.s. do U.S. stopem 16. 7. 2015.',
+		]
+		sentences = self.visitor.sentence_segmentation(text)
+		for a,b in zip(sentences,right):
+			# TODO
+			#self.assertEqual(a,b)
+			pass
+
 
 	# TODO
 	def test_predict_language(self):

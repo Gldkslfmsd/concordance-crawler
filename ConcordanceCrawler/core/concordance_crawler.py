@@ -26,7 +26,6 @@ class Loggable(object):
 
 	def log_state(self):
 		'logs interesting numbers about progress'''
-		print("loguju")
 		self.Logger.info("""Crawling status 
 serp\t\t{num_serps} ({serp_errors} errors) 
 pages visited\t{num_pages} ({unique_pages} unique pages, {page_errors} errors)

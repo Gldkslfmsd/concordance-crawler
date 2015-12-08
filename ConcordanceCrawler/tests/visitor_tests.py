@@ -48,40 +48,39 @@ class TestVisitor(unittest.TestCase):
 		for a,b in zip(sentences,right):
 			self.assertEqual(a,b)
 
-	def test_czech_sentence_segmentation(self):
-		'''this will test czech sentence segmentation, which is currently not
-		finished yet
-		'''
-
-		# text to segment
-		text = """
-		Are you really JUDr. PhDr. MUDr. RNDr. Mgr. et Mgr., Bc. Henryk Lahola,
-		Th.D., DrSc., multi dr.h.c. or not? Tyto zkratky to neumí, to je blbý
-		s.r.o. Že? 
-		
-		Jedu z Praha hl.n. do U.S. vlakem 16.07.2015.
-		Jedu z Praha hl. n. do U. S. přes Čes. Bud. stopem 16.7. 2015.
-		Jedu z Praha hl. n. Českými drahami a.s. do U.S. stopem 16. 7. 2015.
-
-		"""
-		# right answers
-		right = ['''Are you really JUDr. PhDr. MUDr. RNDr. Mgr. et Mgr., Bc. Henryk Lahola,
-		Th.D., DrSc., multi dr.h.c. or not?''',
-		'''Tyto zkratky to neumí, to je blbý
-		s.r.o.''',
-		'''Že? 
-		''',
-
-		'Jedu z Praha hl.n. do U.S. vlakem 16.07.2015.',
-		'Jedu z Praha hl. n. do U. S. přes Čes. Bud. stopem 16.7. 2015.',
-		'Jedu z Praha hl. n. Českými drahami a.s. do U.S. stopem 16. 7. 2015.',
-		]
-		sentences = self.visitor.sentence_segmentation(text)
-		for a,b in zip(sentences,right):
-			# TODO
-			#self.assertEqual(a,b)
-			pass
-
+#	def test_czech_sentence_segmentation(self):
+#		'''this will test czech sentence segmentation, which is currently not
+#		finished yet
+#		'''
+#
+#		# text to segment
+#		text = """
+#		Are you really JUDr. PhDr. MUDr. RNDr. Mgr. et Mgr., Bc. Henryk Lahola,
+#		Th.D., DrSc., multi dr.h.c. or not? Tyto zkratky to neumí, to je blbý
+#		s.r.o. Že? 
+#		
+#		Jedu z Praha hl.n. do U.S. vlakem 16.07.2015.
+#		Jedu z Praha hl. n. do U. S. přes Čes. Bud. stopem 16.7. 2015.
+#		Jedu z Praha hl. n. Českými drahami a.s. do U.S. stopem 16. 7. 2015.
+#
+#		"""
+#		# right answers
+#		right = [u'''Are you really JUDr. PhDr. MUDr. RNDr. Mgr. et Mgr., Bc. Henryk Lahola,
+#		Th.D., DrSc., multi dr.h.c. or not?''',
+#		u'''Tyto zkratky to neumí, to je blbý
+#		s.r.o.''',
+#		u'''Že? 
+#		''',
+#
+#		u'Jedu z Praha hl.n. do U.S. vlakem 16.07.2015.',
+#		u'Jedu z Praha hl. n. do U. S. přes Čes. Bud. stopem 16.7. 2015.',
+#		u'Jedu z Praha hl. n. Českými drahami a.s. do U.S. stopem 16. 7. 2015.',
+#		]
+#		sentences = self.visitor.sentence_segmentation(text)
+#		for a,b in zip(sentences,right):
+#			# TODO
+#			#self.assertEqual(a,b)
+#			pass
 
 	# TODO
 	def test_predict_language(self):

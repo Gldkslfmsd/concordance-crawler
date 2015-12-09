@@ -92,6 +92,9 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 		self._handle_exception = dict()
 		self._ignored_exceptions = set()
 
+		# if False, yield links ends
+		self.crawling_allowed = True
+
 	def yield_concordances(self,word):
 		'''Generator crawling concordances'''
 
@@ -104,7 +107,7 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 		'''Generator yielding links from search engine result page. It scrapes
 		one serp, parses links and then yields them. Then again.
 		'''
-		while True:
+		while self.crawling_allowed:
 			try:
 				try:
 					links = crawl_links(self.word,1,self.bazgen)

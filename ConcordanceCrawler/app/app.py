@@ -125,6 +125,7 @@ def main():
 	lc.max_per_page = max_per_page
 	lc.page_limited = page_limited
 	lc.total_concordances = number
+	lc.Logger.setLevel(log_level)
 
 	# generator that crawls exact number of concordances
 	concordances = ( c for _,c in zip(range(number), lc.yield_concordances(word)) )

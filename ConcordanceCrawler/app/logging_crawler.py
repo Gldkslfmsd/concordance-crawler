@@ -26,7 +26,6 @@ class LoggingCrawler(ConcordanceCrawler):
 		super(LoggingCrawler, self).__init__(word,bazgen)
 
 
-
 class SimpleLoggingCrawler(LoggingCrawler):
 	def __init__(self, word, bazgen):
 		super(SimpleLoggingCrawler, self).__init__(word,bazgen)

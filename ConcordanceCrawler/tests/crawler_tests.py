@@ -1,6 +1,7 @@
 import unittest
 
 from ConcordanceCrawler.core.concordance_crawler import *
+from ConcordanceCrawler.core.bazwords import IncreasingNumbers
 
 class OKException(Exception):
 	pass
@@ -60,6 +61,31 @@ class TestCrawler(unittest.TestCase):
 			list(c)
 		except:
 			assert False, 'test_ignoring_exceptions failed'
+
+	def test_abort_crawling(self):
+		crawler = ConcordanceCrawler("a")
+		crawler.bazgen = IncreasingNumbers()
+		# crawling can continue after abortion
+		c = zip(crawler.yield_concordances("a"), range(1))
+		self.assertNotEqual(list(c),[])
+		c = zip(crawler.yield_concordances("a"), range(2))
+		self.assertNotEqual(list(c),[])
+
+		# when crawling_allowed = False, it crawls nothing
+		crawler.crawling_allowed = False
+		c = list(zip(crawler.yield_concordances("a"), range(2)))
+		self.assertEqual(c,[])
+
+		# but it can continue
+		crawler.crawling_allowed = True
+		c = list(zip(crawler.yield_concordances("a"), range(1)))
+		self.assertNotEqual(c,[])
+
+
+
+
+
+		
 
 
 

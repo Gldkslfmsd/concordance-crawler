@@ -77,14 +77,20 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 	page_errors = 0 # number of errors during visiting pages
 	num_concordances = 0 # number of found concordances
 
-	def __init__(self, word, bazgen):
+	def __init__(self, word, bazgen=None):
 		self.word = word
-		self.bazgen = bazgen
+		if bazgen:
+			self.bazgen = bazgen
+		else:
+			self.bazgen = RandomShortWords()
 		# this is set of visited links, we want to count them because of logging
 		self.unique_links = set()
 		self.Logger = logging.getLogger().getChild('ConcordanceCrawlerLogger')
+		self.Logger.setLevel(50) # mutes all warnings and logs
 		self.visitor = Visitor() # it will work even without setup
 		self.page_limited = False
+		self._handle_exception = dict()
+		self._ignored_exceptions = set()
 
 	def yield_concordances(self,word):
 		'''Generator crawling concordances'''
@@ -100,25 +106,46 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 		'''
 		while True:
 			try:
-				links = crawl_links(self.word,1,self.bazgen)
-				self.num_serps += 1
-			except multiprocessing_TimeoutError:
-				self.Logger.error("SERP cannot be handled for a long time")
-				self.serp_errors += 1
-				self.log_state()
-			except (requests.exceptions.RequestException, ConnectionError) as e:
-				self.serp_errors += 1
-				logging.error("\'{0}\' occured".format(e))
-				self.log_state()
-			except Exception:
-				logging.error("!!! Undefined error occured, {0}".format(format_exc()))
-				self.serp_errors += 1
-				self.log_state()
-			else:
-				self.log_details("crawled SERP, parsed {0} links".format(
-					len(links)))
-				for l in links:
-					yield l
+				try:
+					links = crawl_links(self.word,1,self.bazgen)
+					self.num_serps += 1
+				except multiprocessing_TimeoutError:
+					self.Logger.error("SERP cannot be handled for a long time")
+					self.serp_errors += 1
+					self.log_state()
+					raise
+				except (requests.exceptions.RequestException, ConnectionError) as e:
+					self.serp_errors += 1
+					logging.error("\'{0}\' occured".format(e))
+					self.log_state()
+					raise
+				except:
+					self.Logger.error("!!! Undefined error occured, {0}".format(format_exc()))
+					self.serp_errors += 1
+					self.log_state()
+					raise
+				else:
+					self.log_details("crawled SERP, parsed {0} links".format(
+						len(links)))
+					for l in links:
+						yield l
+			except Exception as e:
+				if type(e) in self._handle_exception.keys():
+					self._handle_exception[type(e)](e)
+				elif type(e) not in self._ignored_exceptions:
+					raise
+
+	def set_exception_handler(self, exc_class, handler):
+		if exc_class in self._ignored_exceptions:
+			raise Exception("cannot set exception handler on '{0}', it's already among "
+				"ignored exceptions".format(exc_class))
+		self._handle_exception[exc_class] = handler
+
+	def ignore_exception(self,exc_class):
+		if exc_class in self._handle_exception.keys():
+			raise Exception("cannot ignore exception '{0}', it's already among "
+				"handled exceptions".format(exc_class))
+		self._ignored_exceptions.add(exc_class)
 
 	def _yield_concordances_from_link(self,l):
 		'''This generator gets link as an argument, downloads the page, parses
@@ -133,35 +160,46 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 		#l['link']='http://en.bab.la/dictionary/english-hindi/riding'
 		#print("link:",l['link'])
 		try:
-			self.Logger.debug("trying to download {0}".format(l['link']))
-			# here is the link visited
-			concordances = self.visitor.visit_links([l],self.word)
-			# add url to set of unique links, because we want to count them
-			self.unique_links.add(l['link'])
-			self.log_details("page {0} visited, {1} concordances found".format(
-				l['link'],len(concordances)))
-			# because of statistics (is not thread-safe)
-			self.num_pages += 1
-		except multiprocessing_TimeoutError:
-			logging.error("request {0} cannot be handled for a long time".format(
-				l['link']))
-			self.page_errors += 1
-		except (requests.exceptions.RequestException, ConnectionError) as e:
-			logging.error("\'{}\' occured during getting {}".format(
-				e,l['link']))
-			self.page_errors += 1
-		except Exception:
-			self.Logger.error("!!! Undefined error occured, {0}".format(format_exc()))
-			self.page_errors += 1
-		else:
-			for i,c in enumerate(concordances):
-				# maximum limit of concordances per page reached
-				if self.page_limited and i>self.max_per_page:
-					break
-				# here is formed the output structure for concordance
-				res = c
-				self.num_concordances += 1
-				yield res
+			try:
+				self.Logger.debug("trying to download {0}".format(l['link']))
+				# here is the link visited
+				concordances = self.visitor.visit_links([l],self.word)
+				# add url to set of unique links, because we want to count them
+				self.unique_links.add(l['link'])
+				self.log_details("page {0} visited, {1} concordances found".format(
+					l['link'],len(concordances)))
+				# because of statistics (is not thread-safe)
+				self.num_pages += 1
+			except multiprocessing_TimeoutError:
+				logging.error("request {0} cannot be handled for a long time".format(
+					l['link']))
+				self.page_errors += 1
+				raise
+			except (requests.exceptions.RequestException, ConnectionError) as e:
+				logging.error("\'{}\' occured during getting {}".format(
+					e,l['link']))
+				self.page_errors += 1
+				raise
+			except Exception:
+				self.Logger.error("!!! Undefined error occured, {0}".format(format_exc()))
+				self.page_errors += 1
+				raise
+			else:
+				for i,c in enumerate(concordances):
+					# maximum limit of concordances per page reached
+					if self.page_limited and i>self.max_per_page:
+						break
+					# here is formed the output structure for concordance
+					res = c
+					self.num_concordances += 1
+					yield res
+		except Exception as e:
+			if type(e) in self._handle_exception.keys():
+				self._handle_exception[type(e)](e)
+			elif type(e) not in self._ignored_exceptions:
+				raise
+
+		
 
 
 

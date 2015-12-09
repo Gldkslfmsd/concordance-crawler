@@ -13,11 +13,18 @@ def setup_logger(log_level):
 		format="%(asctime)-15s %(levelname)s: %(message)s")
 	logging.getLogger("requests").setLevel(logging.WARNING)
 
+class WiseExceptionHandlingCrawler(ConcordanceCrawler):
+	
+	def __init__(self, word, bazgen):
+		super(WiseExceptionHandlingCrawler, self).__init__(word, bazgen)
+	
+
 class LoggingCrawler(ConcordanceCrawler):	
 	'''Crawls concordances and logs statistics'''
 
 	def __init__(self, word, bazgen):
 		super(LoggingCrawler, self).__init__(word,bazgen)
+
 
 
 class SimpleLoggingCrawler(LoggingCrawler):

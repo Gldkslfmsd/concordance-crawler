@@ -3,10 +3,10 @@ import unittest
 from ConcordanceCrawler.core.concordance_crawler import *
 from ConcordanceCrawler.core.bazwords import IncreasingNumbers
 
-class OKException(Exception):
+class A(Exception):
 	pass
 
-class EverythingIsOK(OKException):
+class B(A):
 	pass
 
 x = 0
@@ -14,7 +14,7 @@ def raise_error(_):
 	global x
 	x += 1
 	if x<2:	
-		raise EverythingIsOK()
+		raise B()
 	return "scrape scrape scrape"
 
 h = 0
@@ -26,36 +26,47 @@ class TestCrawler(unittest.TestCase):
 
 	def test_setting_handler_fails(self):
 		crawler = ConcordanceCrawler("scrape")
-
 		# test that you cannot set handler on ignored exception
-		crawler.ignore_exception(OKException)
-		self.assertRaises(Exception, crawler.set_exception_handler, OKException, None)
+		crawler.ignore_exception(A)
+		self.assertRaises(Exception, crawler.set_exception_handler, A, None)
 
 	def test_ignoring_exception_fails(self):
 		crawler = ConcordanceCrawler("scrape")
-
 		# you cannot ignore exception that already has handler
-		crawler.set_exception_handler(EverythingIsOK, handler)
-		self.assertRaises(Exception, crawler.ignore_exception, EverythingIsOK)
+		crawler.set_exception_handler(B, handler)
+		self.assertRaises(Exception, crawler.ignore_exception, B)
 
 	def test_exception_handler_works(self):
-		# test that handler for exception is really called
-		global h,x
-		x = 0
-		crawler = ConcordanceCrawler("scrape")
-		crawler.setup(get_raw_html=raise_error )
-		crawler.set_exception_handler(EverythingIsOK, handler)
-		c = zip(crawler.yield_concordances("scrape"), range(3))
-		c = list(c)
-		self.assertEqual(h,1)
-		x = 0
-		h = 0
+		for exp in (B, A):
+			# test that handler for exception is really called
+			global h,x
+			x = 0
+			crawler = ConcordanceCrawler("scrape")
+			crawler.setup(get_raw_html=raise_error )
+			crawler.set_exception_handler(exp, handler)
+			c = zip(crawler.yield_concordances("scrape"), range(3))
+			c = list(c) # raises B and calls handler
+			self.assertEqual(h,1)
+			x = 0
+			h = 0
 
 
 	def test_ignoring_exceptions(self):
 		crawler = ConcordanceCrawler("scrape")
 		crawler.setup(get_raw_html=raise_error )
-		crawler.ignore_exception(EverythingIsOK)
+		crawler.ignore_exception(B)
+		c =  zip(crawler.yield_concordances("scrape"), range(3))
+		# it shouldn't raise any exception, but self.assertNotRaises doesn't exist
+		try:
+			list(c)
+		except:
+			assert False, 'test_ignoring_exceptions failed'
+
+	def test_ignoring_derived_exceptions(self):
+		'''A is ignored, but its subclass, B, is raised'''
+		crawler = ConcordanceCrawler("scrape")
+		crawler.setup(get_raw_html=raise_error )
+		crawler.ignore_exception(A)
 		c =  zip(crawler.yield_concordances("scrape"), range(3))
 		try:
 			list(c)

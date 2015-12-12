@@ -89,7 +89,7 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 		self.Logger.setLevel(50) # mutes all warnings and logs
 		self.visitor = Visitor() # it will work even without setup
 		self.page_limited = False
-		self._handle_exception = dict()
+		self._exceptions_handlers = dict()
 		self._ignored_exceptions = set()
 
 		# if False, yield links ends
@@ -99,6 +99,7 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 		'''Generator crawling concordances'''
 
 		for link in self._yield_links():
+#			link['link'] = 'http://gimli.ms.mff.cuni.cz/////'
 			for con in self._yield_concordances_from_link(link):
 				self.log_state()
 				yield con
@@ -133,22 +134,31 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 					for l in links:
 						yield l
 			except Exception as e:
-				if type(e) in self._handle_exception.keys():
-					self._handle_exception[type(e)](e)
-				elif type(e) not in self._ignored_exceptions:
+				if any((issubclass(type(e),t) for t in self._exceptions_handlers.keys())):
+					self._handle_exception(e)
+				elif all(not issubclass(type(e),t) for t in self._ignored_exceptions):
 					raise
 
 	def set_exception_handler(self, exc_class, handler):
 		if exc_class in self._ignored_exceptions:
 			raise Exception("cannot set exception handler on '{0}', it's already among "
 				"ignored exceptions".format(exc_class))
-		self._handle_exception[exc_class] = handler
+		self._exceptions_handlers[exc_class] = handler
 
 	def ignore_exception(self,exc_class):
-		if exc_class in self._handle_exception.keys():
+		if exc_class in self._exceptions_handlers.keys():
 			raise Exception("cannot ignore exception '{0}', it's already among "
 				"handled exceptions".format(exc_class))
 		self._ignored_exceptions.add(exc_class)
+
+	def _handle_exception(self,exc):
+		'''finds the most suitable exception handler and calls it'''
+		mro = type(exc).mro()
+		for c in mro:
+			if c in self._exceptions_handlers.keys():
+				self._exceptions_handlers[c](exc)
+				return
+		print("handler is not found")
 
 	def _yield_concordances_from_link(self,l):
 		'''This generator gets link as an argument, downloads the page, parses
@@ -197,9 +207,9 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 					self.num_concordances += 1
 					yield res
 		except Exception as e:
-			if type(e) in self._handle_exception.keys():
-				self._handle_exception[type(e)](e)
-			elif type(e) not in self._ignored_exceptions:
+			if any((issubclass(type(e),t) for t in self._exceptions_handlers.keys())):
+				self._handle_exception(e)
+			elif all(not issubclass(type(e),t) for t in self._ignored_exceptions):
 				raise
 
 		

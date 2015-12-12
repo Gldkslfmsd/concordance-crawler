@@ -15,6 +15,7 @@ elif six.PY2:
 from ConcordanceCrawler.core.links import *
 from ConcordanceCrawler.core.visitor import *
 from ConcordanceCrawler.core.bazwords import *
+from ConcordanceCrawler.core.visible_text import filter_link
 
 # logging levels
 DETAILS = logging.INFO-5
@@ -69,7 +70,7 @@ class CrawlerConfigurator(object):
 
 
 class ConcordanceCrawler(Loggable, CrawlerConfigurator):	
-	attributes = ["bazgen", "Logger"]
+	attributes = ["bazgen", "Logger","filter_link"]
 
 	num_serps = 0 # number of serp (search engine result pages) downloaded
 	serp_errors = 0
@@ -84,6 +85,7 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 		else:
 			self.bazgen = RandomShortWords()
 		# this is set of visited links, we want to count them because of logging
+		self.filter_link = filter_link
 		self.unique_links = set()
 		self.Logger = logging.getLogger().getChild('ConcordanceCrawlerLogger')
 		self.Logger.setLevel(50) # mutes all warnings and logs
@@ -134,7 +136,11 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 					self.log_details("crawled SERP, parsed {0} links".format(
 						len(links)))
 					for l in links:
-						yield l
+						# todo: maybe move this to links crawling
+						if self.filter_link(l["link"]):
+							yield l
+						else:
+							self.Logger.info('link {0} rejected'.format(l['link']))
 			except Exception as e:
 				if any((issubclass(type(e),t) for t in self._exceptions_handlers.keys())):
 					self._handle_exception(e)

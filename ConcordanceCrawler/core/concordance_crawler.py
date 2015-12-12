@@ -10,7 +10,6 @@ if six.PY3:
 		from multiprocessing import TimeoutError as multiprocessing_TimeoutError
 elif six.PY2:
 	from multiprocessing import TimeoutError as multiprocessing_TimeoutError
-	from requests.exceptions import ConnectionError
 
 from ConcordanceCrawler.core.links import *
 from ConcordanceCrawler.core.visitor import *
@@ -122,7 +121,7 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 					self.serp_errors += 1
 					self.log_state()
 					raise
-				except (requests.exceptions.RequestException, ConnectionError) as e:
+				except requests.exceptions.RequestException as e:
 					self.serp_errors += 1
 					logging.error("\'{0}\' occured".format(e))
 					self.log_state()
@@ -196,7 +195,7 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 					l['link']))
 				self.page_errors += 1
 				raise
-			except (requests.exceptions.RequestException, ConnectionError) as e:
+			except requests.exceptions.RequestException as e:
 				logging.error("\'{}\' occured during getting {}".format(
 					e,l['link']))
 				self.page_errors += 1

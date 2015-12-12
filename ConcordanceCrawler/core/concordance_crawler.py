@@ -100,6 +100,8 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 
 		for link in self._yield_links():
 #			link['link'] = 'http://gimli.ms.mff.cuni.cz/////'
+			if not self.crawling_allowed:
+				break
 			for con in self._yield_concordances_from_link(link):
 				self.log_state()
 				yield con

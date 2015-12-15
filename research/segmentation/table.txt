@@ -1,0 +1,43 @@
+
+some simple regex
+=================
+source:
+http://stackoverflow.com/questions/25735644/python-regex-for-splitting-text-into-sentences-sentence-tokenizing
+
+(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s
+
+pros:
+	-- simple
+	-- should be fast
+	-- should be portable everywhere
+	-- handles ..., two characters abreviations like e.g. and numbers
+	-- language independent
+
+cons:
+	-- doesn't handle Mrs. and so on
+	-> inaccurate
+
+
+segtok
+======
+source: https://github.com/fnl/segtok
+more info: http://fnl.es/segtok-a-segmentation-and-tokenization-library.html
+
+-- for English, Spanish and German
+	-- I could help to transfer it to Czech
+-- rule based
+
+pros:
+	-- slim
+		--> according to author it's faster than nltk
+	-- handles all Unicode dashes "the right way"
+	-- handles some of the more common cases of heavy abbreviation use
+	-- handles sentences starting with lowercase letters
+
+cons:
+	-- it's not easy to install on every computer via pip and virtualenv
+		-- uses "regex" library which must be compliled
+	-- according to author it's just for Python 2.7, 3.3 and 3.4
+		-- but maybe could be helpful to fix it
+
+

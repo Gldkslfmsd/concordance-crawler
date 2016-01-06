@@ -105,4 +105,15 @@ I have sworn an oath that I will have my bond.
 Thou call'dst me dog before thou hadst a cause;
 But, since I am a dog, beware my fangs:""",
 
+# Czech from 14th and 15th century
+u"""křesťanku sě jmá . Tehda otec počě o niej krásiti 	a 	ju k službě bohóm
+nutiti a řka : Milá dci
+boha prositi , bylo - li by to viděnie pravé 	, 	aby sě jemu druhé i třetie
+zjěvilo . Tehda potom 
+, ne často požívati vařenie , kýchanie rané čistí uši 	a 	mytie teplým
+lúhem . Sen libý , vyčištěnie hlavy , 
+jest s učenie domóv , diel chtě jmieti v sboží 	. 	Jehožto vévoda Vratislav
+bratr jeho když uzřěl , přijal jest 
+""",
+
 ]

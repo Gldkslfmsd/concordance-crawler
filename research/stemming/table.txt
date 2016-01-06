@@ -1,0 +1,36 @@
+stemming
+========
+
+https://pypi.python.org/pypi/stemming/1.0
+
+- just for Python 2
+	- but I tried it and works also on Py3
+- last version 2010
+- Python implementations of the Porter, Porter2, Paice-Husk, and Lovins
+stemming algorithms for English
+- Public Domain licence
+
+PyStemmer
+=========
+
+https://github.com/snowballstem/pystemmer
+
+- Py 2 and 3 compatible
+- latest commit 2015
+- snowball stemmer
+- is wrapper for libstemmer_c, a stemming library in C
+	- therefore should be fast
+- uses cache to avoid repeated stemming of the same words
+- MIT licence
+
+nltk.stem
+=========
+
+http://www.nltk.org/api/nltk.stem.html
+
+- many English stemmers:
+nltk.stem.lancaster
+nltk.stem.porter
+nltk.stem.regexp
+nltk.stem.snowball.EnglishStemmer
+nltk.stem.wordnet

@@ -11,7 +11,7 @@ probably not in English)
 
 from multiprocessing import Pool, cpu_count
 from sys import argv
-from re import split
+from re import split, sub, compile
 
 #alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
@@ -24,14 +24,24 @@ def is_letter(l):
 	return a <= ord(l) <= z or A <= ord(l) <= Z
 def gram(t,n):
 		return zip(*(t[k:] for k in range(n)))
+
+reg = compile(r"^.*[^a-zA-Z].*$|^\s*$")
+splitreg = compile("[\s-]")
 N = 4 # it will count 1, 2 and 3-grams
+
+spaces = " "*(N-2)
 
 def process_files(files):
 	freq = {}
 	for f in map(open, files):
 		counts = [0 for n in range(N)]	
 		for line in f:
-			for word in (w for w in split("\W",line) if all(map(is_letter, w))):
+			for word in splitreg.split(line):
+				if reg.match(word):
+#					print("filtruju!",word,"!",sep="")
+					continue
+				word = spaces+word+spaces
+#				print("!",word,"!",sep="")
 				for n in range(N):
 					for g in gram(word, n):
 						if not g in freq:
@@ -58,5 +68,7 @@ def join_freqs(freqs):
 
 freq = join_freqs(freqs)
 
+print("vector = {")
 for i in freq:
-	print("".join(i), freq[i])
+	print('"'+"".join(i)+'": ', freq[i],",",sep="")
+print("}")

@@ -28,7 +28,6 @@ class EngDetector:
 			vector[g] = vector[g] / counts[len(g)-1] 
 		return vector
 
-
 	def get_vector(self, text):
 		freq = self.extractor.extract(text)
 		return self.transform_to_ratio(freq)
@@ -53,19 +52,19 @@ def test():
 	eng = []
 	for s in english_samples.samples:
 		eng.append(det.detect(s))
-	print("průměr:",sum(eng)/len(eng))
+	print("mean:",sum(eng)/len(eng))
 
 	print()
 	import nonenglish_samples
 	neng = []
 	for s in nonenglish_samples.samples:
+#		print(s[:20])
 		neng.append(det.detect(s))
-	print("průměr:",sum(neng)/len(neng))
+	print("mean:",sum(neng)/len(neng))
 
 
 if __name__ == '__main__':
 	det = EngDetector()
-#	det.detect("ahoj štěňátko")#, 3-gramy a česko-německý slovník")
 
 	test()
 

@@ -32,6 +32,7 @@ Mondadori. Levicově orientovaný Eco podle italského tisku odmítal představu
 		AFP.
 """,
 
+# KSP
 """
  Začínající programátoři se velmi často potýkají s tím, jak by měli do svého
  programu dostat vstup a jak ho zpracovat. V tomto článku a v sesterském
@@ -318,6 +319,31 @@ Steenbergse Vliet. Het gebied bestaat vooral uit moerassen. Doordat het
 gebied vaak onderloopt, kunnen er ook bijzondere planten groeien.
 """,
 
+# Dutch
+"""Als schrijver brak Eco in 1980 internationaal door met zijn roman Il Nome
+della Rosa (De naam van de roos), een spannende detectiveroman die zich in
+1327 afspeelt in het kader van de strijd tussen het centrale gezag van de
+Rooms-katholieke Kerk en verschillende stromingen daarin die met geweld
+werden onderdrukt. De historische achtergrond wordt uitgebreid geschetst.
+Het boek ademt het ritme van het kloosterleven en de hoofdstukken zijn
+ingedeeld naar de gebedstijden binnen de kloostermuren.
+
+Een tweede roman, De slinger van Foucault, speelt zich af in het heden, maar
+gaat vooral over de erfenis van de tempeliers en de rozenkruisers,
+laat-middeleeuwse mystieke bewegingen.
+
+Daarnaast zijn van Eco nog een aantal bundels met essays verschenen en drie
+romans: Het eiland van de vorige dag (1995), Baudolino (2001) en De
+mysterieuze vlam van koningin Loana (2005). In 2001 schreef hij samen met de
+gepensioneerde aartsbisschop van Milaan, Carlo Maria Martini het boek
+Geloven of niet geloven: een confrontatie.
+
+Eco stond tevens te boek als een autoriteit op het gebied van James Bond.[2]
+Hij kreeg in 1998 de exclusieve Duitse onderscheiding "Pour le Mérite". Eco
+is tevens schrijver van kinderboeken.
+
+In 2012 ontving hij de Vrede van Nijmegen Penning.""",
+
 # Finnish
 """he Beatles on popmusiikin keskeisimpiä yhtyeitä. Yhtyeessä ilmeni
 ensimmäistä kertaa rock- ja popyhtyeiden merkittävimmät osatekijät
@@ -507,5 +533,96 @@ Navy. Il est envoyé dans l'Arctique avec l'HMS Assistance dans l'une des
 nombreuses opérations de recherche de l'expédition perdue de John Franklin.
 Plus tard, Markham sert en tant que géographe au bureau de l'Inde et est
 responsable de l""",
+
+# Turkish
+"""Türkiye Türkçesi, dünya dilleri sınıflandırmasında Ural-Altay Dil
+Ailesi’nin Altay dilleri kolunda bulunur. Ural-Altay dil birliği temelinde
+yapılan derinlemesine araştırmalar, bu iki grubu aynı dil ailesi içinde
+birleştirme bakımından gittikçe zayıflayan sonuçlar vermiştir.[16] Bu
+sebeple Türkçe, bazı sınıflandırmalarda Altay dillerinden biri olarak
+belirtilmekle yetinilir; sınıflama buradan başlatılır.
+
+Ünlü Türkolog Reşit Rahmeti Arat’ın “Türk Şivelerinin Tasnifi” makalesinde
+ayrıntılıca anlatıldığı gibi Türkiye Türkçesinin de yer aldığı Türk yazı
+dillerinin sınıflandırması konusunda geçmişten bugüne kadar çeşitli bilimsel
+görüşler ortaya atılmıştır. Bütün sınıflandırma çalışmalarından da hareketle
+Arat’ın yaptığı sınıflandırmaya göre Türkiye Türkçesi, “Türk şive
+grupları”nın “VI. daġlı grubu (Cenup)” içinde yer alır.[17] Türk dil ailesi,
+Doğu Avrupa, Orta Asya ve Sibirya’da konuşulan 30 kadar yaşayan dili
+kapsar.[18] Türk dili konuşurlarının %40 civarında bir kesimi Türkiye
+Türkçesi konuşmaktadır.[19] British Council tarafından yapılan bir
+araştırmada Türkçe, geleceğin 10 dili arasında dokuzuncu sırada yer
+almıştır.[20]""",
+
+# languages using latin alphabet without diacritics or special letters:
+# http://linguistics.stackexchange.com/questions/6173/is-english-the-only-language-except-classical-latin-cyrillic-symbol-languages
+
+# Malay/Indonesian
+
+"""dapat diertikan berbeza-beza menurut biologi, rohani, dan istilah
+kebudayaan, atau secara campuran. Secara biologi, manusia dikelaskan sebagai
+Homo sapiens (Bahasa Latin untuk manusia bijak), sebuah spesies primat dari
+golongan mamalia yang dilengkapi otak berkemampuan tinggi. Dalam hal
+kerohanian, mereka dijelaskan menggunakan konsep jiwa yang bervariasi di
+mana, dalam agama, dikaikan dalam hubungannya dengan kekuatan ketuhanan atau
+makhluk hidup; dalam mitos, mereka juga seringkali dibandingkan dengan
+bangsa lain. Dalam antropologi kebudayaan, mereka dijelaskan berdasarkan
+penggunaan bahasanya, organisasi mereka dalam masyarakat majemuk serta
+perkembangan teknologinya, dan terutama berdasarkan kemampuannya untuk
+membentuk kelompok dan lembaga untuk dokongan satu sama lain serta
+pertolongan.
+Manusia dari segi psikologinya merupakan haiwan yang bersosial. Cara
+bersosial berbagai-bagai, walaupun tidak disedari oleh kebanyakan manusia,
+kaedah sosial manusia sangat kompleks dan lebih maju dari pelbagai aspek
+dari haiwan yang paling terdekat kebijakannya dari manusia.
+Sosial sangat perlu dan merupakan cara paling efektif untuk mendapatkan
+manfaat secara bersama di antara individu. Oleh yang demikian, manusia yang
+terkecuali daripada aktivit sosial amat sedikit ataupun mereka
+diklasifikasikan sebagai manusia abnormal ataupun manusia gila.
+""",
+
+# Tagalog
+"""pagpapaunlad ng mga pinapatakbo ng gatong(fuel) na mga teknolohiya at
+napabuting kalusugan na nagsanhi sa populasyon ng tao na tumaas ng
+eksponensiyal. Sa pagkalat sa bawat kontinente maliban sa Antarctica, ang
+mga tao ay isang kosmopolitanng espesye at sa 2012, ang populasyon ng
+daigdig ay tinatayang mga 7 bilyon.[14][15] Ang mga tao ay inilalarawan sa
+pagkakaroon ng malaking utak na relatibo sa sukat ng katawan nito na may
+isang partikular na mahusay na neokorteks, preprontal na korteks at lobong
+temporal na gumagawa sa mga ito na may kakayahan sa pangangatwirang
+abstrakto, wika, instrospeksiyon, paglutas ng problema at kultura sa
+pamamagitan ng pagkatutong panlipunan. Ang kakayahang pang-isip na ito na
+sinamahan ng pag-aangkop sa lokomosyong bipedal na nagpapalaya sa mga kanya
+sa pagmamanipula ng mga bagay ay pumayag sa mga to na gumawa ng mas higit na
+paggamit ng kasangkapan kesa sa anumang mga ibang nabubuhay na espesye ng
+daigdig. Ang mga tao ang mga tanging nabubuhay na espesye ng hayop na alam
+na makagagawa ng apoy at pagluluto gayundin ang tanging mga espesyeng
+makapagdadamit sa kanilang at lumikha at gumamit ng maraming ibang mga
+teknolohiya at mga sining. Ang pag-aaral ng mga tao ang disiplinang
+pang-agham na antropolohiya. Ang mga tao ay walang katulad na labis na may
+kasanayan sa paggamit ng mga sistema ng komunikasyong simboliko gaya ng wika
+para sa paghahayag ng sarli, ang pagpapalit ng mga ideya at organisasyon.
+Ang mga tao ay lumilikha ng mga komplikadong mga istrakturang panlipunan na
+binubuo ng maraming mga nakikipagtulungan at nakikipagtunggaling mga pangkat
+mula sa pamilya at ugnayang kamag-anak hanggang sa mga estado. Ang mga
+interaksiyong panlipunan sa pagitan ng mga tao ay naglatag ng isang
+sukdulang maluwag na uri ng mga halaga, mga asal panlipunan, at mga ritwal
+na ang magkakasamang ang bumubuo ng basehan ng lipunang pantao. Ang mga tao
+ay kilala sa pagnananis ng mga ito na maunawaan at maimpluwensiyahan ang
+kapaligiran nito na naghahangad na ipaliwag at imanipula ang phenomena sa
+pamamagitan ng agham, pilosopiya, mitolohiya at relihiyon."""
+
+# Hmong
+
+"""Ib tug Hmoob Asmeskas yog ib tug neeg nyob hauv lub teb chaws As Mes Lis
+Kas uas yog haiv neeg Hmoob qhovntsej thiaj tsis mob. Hmoob Asmeskas yog ib
+pawg neeg Esxias Asmeskas. Ntau Nplog Hmoob tawg rog rog tsiv mus rau U.S.
+tom qab tau hauj cov kooj tsham lwm cov teb chaws Nplog xyoo 1975. Thaum pib
+nyob rau nqeg ntawm xyoo ntawd, cov thawj Hmoob tawg rog txog nyob rau
+tebchaws Meskas, kev ntawm refugee camps hauv Thaib teb; Txawm li ntawd los,
+cov 3,466 xwb tau kev tso cai ncuab lub sij hawm no nyob rau hauv qhov
+Refugee Assistance Act ntawm xyoo 1975. (saib cov lus tshaj...)""",
+
+# 
 
 ]

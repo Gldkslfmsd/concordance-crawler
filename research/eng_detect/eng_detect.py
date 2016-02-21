@@ -1,16 +1,8 @@
 #!/usr/bin/python
 
 from re import split
-
-a = ord('a')
-z = ord('z')
-A = ord('A')
-Z = ord('Z') 
-
-def is_letter(l):
-	return a <= ord(l) <= z or A <= ord(l) <= Z
-def gram(t,n):
-		return zip(*(t[k:] for k in range(n)))
+from freq import vector as english_vector
+from ngrams_extractor import NGramsExtractor
 
 class EngDetector:
 	'''English Detector'''
@@ -18,18 +10,17 @@ class EngDetector:
 	N = 4  # will use vector of 1,2,3-grams
 
 	def __init__(self):
-		f = open("freq","r")
-
-		self.english_vector = {}
-		for line in f:
-			g, c = line.split()
-			c = int(c)
-#			if c<10: continue
-			self.english_vector[g] = c
-		f.close()
+		self.extractor = NGramsExtractor(self.N)
+		self.english_vector = english_vector.copy()
+		for k in list(self.english_vector.keys()):
+			if self.english_vector[k] < 3:
+				del self.english_vector[k]
 		self.english_vector = self.transform_to_ratio(self.english_vector)
 
 	def transform_to_ratio(self, vector):
+		for k in list(vector.keys()):
+			if len(k)!=3:
+				del vector[k]
 		counts = [0 for _ in range(self.N)]
 		for g in vector:
 			counts[len(g)-1] += vector[g]
@@ -39,15 +30,7 @@ class EngDetector:
 
 
 	def get_vector(self, text):
-		freq = {}
-		for word in split("[\W\d]",text):
-			for n in range(self.N):
-				for g in gram(word, n):
-					s = "".join(g)
-					if not s in freq:
-						freq[s] = 1
-					else:
-						freq[s] += 1
+		freq = self.extractor.extract(text)
 		return self.transform_to_ratio(freq)
 
 	def magnitude(self, vector):
@@ -63,7 +46,6 @@ class EngDetector:
 		csim = self.cosine_similarity(vec, self.english_vector)
 		print(csim)
 		return csim
-#		print(self.vector)
 
 def test():
 	det = EngDetector()
@@ -79,8 +61,6 @@ def test():
 	for s in nonenglish_samples.samples:
 		neng.append(det.detect(s))
 	print("průměr:",sum(neng)/len(neng))
-
-
 
 
 if __name__ == '__main__':

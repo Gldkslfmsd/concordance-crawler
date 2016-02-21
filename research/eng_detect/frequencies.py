@@ -11,43 +11,16 @@ probably not in English)
 
 from multiprocessing import Pool, cpu_count
 from sys import argv
-from re import split, sub, compile
+from ngrams_extractor import NGramsExtractor
 
-#alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-a = ord('a')
-z = ord('z')
-A = ord('A')
-Z = ord('Z') 
-
-def is_letter(l):
-	return a <= ord(l) <= z or A <= ord(l) <= Z
-def gram(t,n):
-		return zip(*(t[k:] for k in range(n)))
-
-reg = compile(r"^.*[^a-zA-Z].*$|^\s*$")
-splitreg = compile("[\s-]")
-N = 4 # it will count 1, 2 and 3-grams
-
-spaces = " "*(N-2)
+N = 4
 
 def process_files(files):
 	freq = {}
+	extractor = NGramsExtractor(N)
 	for f in map(open, files):
-		counts = [0 for n in range(N)]	
 		for line in f:
-			for word in splitreg.split(line):
-				if reg.match(word):
-#					print("filtruju!",word,"!",sep="")
-					continue
-				word = spaces+word+spaces
-#				print("!",word,"!",sep="")
-				for n in range(N):
-					for g in gram(word, n):
-						if not g in freq:
-							freq[g] = 1
-						else:
-							freq[g] += 1
+			extractor.extract(line, freq)
 		f.close()
 	return freq
 

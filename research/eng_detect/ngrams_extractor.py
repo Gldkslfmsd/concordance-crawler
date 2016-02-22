@@ -9,7 +9,9 @@ Z = ord('Z')
 def is_letter(l):
 	return a <= ord(l) <= z or A <= ord(l) <= Z
 def gram(t,n):
-		return zip(*(t[k:] for k in range(n)))
+	"""t: word, n: lenght of gram (1 for 1-gram etc)
+	"""
+	return zip(*(t[k:] for k in range(n)))
 
 
 
@@ -36,19 +38,19 @@ class NGramsExtractor(object):
 			if self.reg.match(word) or self.filter(word):
 #				print("zahazuju",word)
 				continue
-			word = self.spaces+word.lower()+self.spaces
+			word = word.lower()
 			for n in range(self.N):
-				for g in gram(word, n):
+				for g in gram(" "*n+word+" "*n, n+1):
 					s = "".join(g)
-					if not s in freq:
-						freq[n-1][s] = 1
+					assert len(s)==n+1
+					if not s in freq[n]:
+						freq[n][s] = 1
 					else:
-						freq[n-1][s] += 1
+						freq[n][s] += 1
 		return freq
 
 class EnglishNGramsExtractor(NGramsExtractor):
 	reg = regex.compile(r".*[^a-zA-Z].*")
-
 	def __init__(self, N=None):
 		super(EnglishNGramsExtractor, self).__init__(N)
 

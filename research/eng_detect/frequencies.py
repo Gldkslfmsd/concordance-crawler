@@ -13,7 +13,7 @@ from multiprocessing import Pool, cpu_count
 from sys import argv
 from ngrams_extractor import EnglishNGramsExtractor
 
-N = 4
+N = 3
 
 def process_files(files):
 	extractor = EnglishNGramsExtractor(N)

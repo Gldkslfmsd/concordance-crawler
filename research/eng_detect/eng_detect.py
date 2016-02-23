@@ -12,7 +12,16 @@ class EngDetector:
 	def __init__(self):
 		self.extractor = NGramsExtractor(self.N)
 		self.ngrams = ngrams[:self.N]
+		list(map(self.frequency_filter, self.ngrams))
 		list(map(self.transform_to_ratio, self.ngrams))
+	
+	def frequency_filter(self, vector, threshold=10**7):
+		'''vector: dict, e.g. { "ahb":10, "bžf":1 }
+		removes keys and values, if value < threshold (so 'bžf' will be deleted)
+		'''
+		for k in list(vector.keys()):
+			if vector[k] < threshold:
+				del vector[k]
 
 	def transform_to_ratio(self, vector):
 		counts = [0 for _ in range(self.N)]
@@ -40,29 +49,75 @@ class EngDetector:
 		for v,ng in zip(vec, self.ngrams):
 			csim = self.cosine_similarity(v, ng)
 			sim.append(csim)
-			print(csim)
-		print("mean from 1,2,3-grams:",sum(sim)/len(sim))
-		return sum(sim)/len(sim)
+	#		print(csim)
 
+		weighted_mean = sum(s*(i+1) for s,i in zip(sim,range(3)))/6
+		mean = sum(sim)/len(sim)
+		two_grams = sim[2]
+
+	#	print("mean from 1,2,3-grams:",sum(sim)/len(sim))
+	#	print("wmean: ",res)
+		return mean
+
+import nonenglish_samples
+import english_samples
+debug = False
 def test():
 	det = EngDetector()
-	import english_samples
 	eng = []
 	for s in english_samples.samples:
 		eng.append(det.detect(s))
-	print("mean:",sum(eng)/len(eng))
-
-	print()
-	import nonenglish_samples
+	if debug: 
+		print("mean:",sum(eng)/len(eng))
+		print()
 	neng = []
 	for s in nonenglish_samples.samples:
-		print(s[:20])
+		#print(s[:20])
 		neng.append(det.detect(s))
 	print("mean:",sum(neng)/len(neng))
 
+def prepare_samples(slen):
+	nengall = " ".join(nonenglish_samples.samples)
+	engall = " ".join(english_samples.samples)
+	sam = {
+		"neng": [ nengall[i:i+slen] for i in range(0,len(nengall),slen) ],
+		"eng": [ nengall[i:i+slen] for i in range(0,len(engall),slen) ]
+	}
+	return sam
+
+def try_plot(sims):
+	f = open("similarities.py","w")
+	f.write("similarities = ")
+	f.write(str(sims))
+	f.close()
+	
+def big_test(samplelen):
+	det = EngDetector()
+	samples = prepare_samples(samplelen)
+	similarities = {
+		"neng": [],
+		"eng": [],
+	}
+	for p in ("neng", "eng"):
+		for s in samples[p]:
+			similarities[p].append(
+				det.detect(s)
+			)
+	s = similarities
+	print("neng mean",sum(s["neng"])/len(s["neng"]))
+	print("eng mean",sum(s["eng"])/len(s["eng"]))
+	try_plot(similarities)
+
+
+def kotatko():
+	d = EngDetector()
+	v = d.detect("ubohé malé koťátko...")
+	for k in v:
+		print("' '".join(k.keys()))
+
+
 
 if __name__ == '__main__':
-	test()
-
+	big_test(1000)
 
 

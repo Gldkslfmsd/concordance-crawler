@@ -16,8 +16,10 @@ def gram(t,n):
 
 
 class NGramsExtractor(object):
-	reg = regex.compile(r"^\s*$")
-	splitreg = compile("[\s-]")
+	reg = compile(r"^\s*$")
+# TODO
+	splitreg = regex.compile(r"[\s-\p{P}\p{S}]")
+#	splitreg = compile(r"[-\s -/:-@]")
 	N = 3 # it will count 1, 2 and 3-grams
 	spaces = " "*(N-2)
 
@@ -50,7 +52,7 @@ class NGramsExtractor(object):
 		return freq
 
 class EnglishNGramsExtractor(NGramsExtractor):
-	reg = regex.compile(r".*[^a-zA-Z].*")
+	reg = compile(r".*[^a-zA-Z].*")
 	def __init__(self, N=None):
 		super(EnglishNGramsExtractor, self).__init__(N)
 

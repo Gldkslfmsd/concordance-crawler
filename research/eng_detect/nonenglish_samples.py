@@ -345,7 +345,7 @@ is tevens schrijver van kinderboeken.
 In 2012 ontving hij de Vrede van Nijmegen Penning.""",
 
 # Finnish
-"""he Beatles on popmusiikin keskeisimpiä yhtyeitä. Yhtyeessä ilmeni
+"""The Beatles on popmusiikin keskeisimpiä yhtyeitä. Yhtyeessä ilmeni
 ensimmäistä kertaa rock- ja popyhtyeiden merkittävimmät osatekijät
 samanaikaisesti. Yhtyeen jäsenet sävelsivät musiikkia itse ja myös esittivät
 sekä studiossa että lavalla. Beatles vakiinnutti The Shadowsin ohella

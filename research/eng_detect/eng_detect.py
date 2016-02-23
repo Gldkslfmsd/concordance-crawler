@@ -15,7 +15,7 @@ class EngDetector:
 		list(map(self.frequency_filter, self.ngrams))
 		list(map(self.transform_to_ratio, self.ngrams))
 	
-	def frequency_filter(self, vector, threshold=10**7):
+	def frequency_filter(self, vector, threshold=100):
 		'''vector: dict, e.g. { "ahb":10, "bžf":1 }
 		removes keys and values, if value < threshold (so 'bžf' will be deleted)
 		'''
@@ -81,7 +81,7 @@ def prepare_samples(slen):
 	engall = " ".join(english_samples.samples)
 	sam = {
 		"neng": [ nengall[i:i+slen] for i in range(0,len(nengall),slen) ],
-		"eng": [ nengall[i:i+slen] for i in range(0,len(engall),slen) ]
+		"eng": [ engall[i:i+slen] for i in range(0,len(engall),slen) ]
 	}
 	return sam
 
@@ -118,6 +118,6 @@ def kotatko():
 
 
 if __name__ == '__main__':
-	big_test(1000)
+	big_test(100)
 
 

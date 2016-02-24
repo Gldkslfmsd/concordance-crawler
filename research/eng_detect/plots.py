@@ -2,10 +2,13 @@ import matplotlib.pyplot as plt
 from similarities import similarities as sims
 
 def plot(sims):
-	plt.boxplot([sims["eng"],sims["neng"]])
+	keys = sorted(list(sims.keys()))
+	print(keys)
+	plt.boxplot([sims[k] for k in keys])
 	plt.show()
 
 def roc(sims):
+	'''doesn't work for all languages'''
 	neng = sorted(sims["neng"])
 	eng = sorted(sims["eng"])
 
@@ -32,4 +35,15 @@ def roc(sims):
 
 	
 plot(sims)
-roc(sims)
+try:
+	roc(sims)
+except:
+	keys = list(sims.keys())
+	x = []
+	for k in keys:
+		if k == "eng":
+			continue
+		x.extend(sims[k])
+		del sims[k]
+	sims["neng"] = x
+	roc(sims)

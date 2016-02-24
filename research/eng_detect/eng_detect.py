@@ -11,7 +11,7 @@ class EngDetector:
 
 	def __init__(self):
 		self.extractor = NGramsExtractor(self.N)
-		self.ngrams = ngrams[:self.N]
+		self.ngrams = [g.copy() for g in ngrams[:self.N]]
 		list(map(self.frequency_filter, self.ngrams))
 		list(map(self.transform_to_ratio, self.ngrams))
 	
@@ -39,6 +39,12 @@ class EngDetector:
 		return sum(vector[k]**2 for k in vector.keys()) ** (1/2)
 
 	def cosine_similarity(self, A, B):
+		if not A and not B:
+			return 1
+		if not A:
+			return 0
+		if not B:
+			return 0
 		keys = set(A.keys()).intersection(B.keys())
 		sim = sum(A[k]*B[k] for k in keys)
 		return sim / (self.magnitude(A)*self.magnitude(B))
@@ -48,15 +54,10 @@ class EngDetector:
 		sim = []
 		for v,ng in zip(vec, self.ngrams):
 			csim = self.cosine_similarity(v, ng)
+	#		if csim==0: 
+	#			print((text,))
 			sim.append(csim)
-	#		print(csim)
-
-		weighted_mean = sum(s*(i+1) for s,i in zip(sim,range(3)))/6
 		mean = sum(sim)/len(sim)
-		two_grams = sim[2]
-
-	#	print("mean from 1,2,3-grams:",sum(sim)/len(sim))
-	#	print("wmean: ",res)
 		return mean
 
 import nonenglish_samples
@@ -76,8 +77,8 @@ def test():
 		neng.append(det.detect(s))
 	print("mean:",sum(neng)/len(neng))
 
-def prepare_samples(slen):
-	nengall = " ".join(nonenglish_samples.samples)
+def prepare_samples(slen,neng=nonenglish_samples.samples):
+	nengall = " ".join(neng)
 	engall = " ".join(english_samples.samples)
 	sam = {
 		"neng": [ nengall[i:i+slen] for i in range(0,len(nengall),slen) ],
@@ -85,15 +86,14 @@ def prepare_samples(slen):
 	}
 	return sam
 
-def try_plot(sims):
+def similarities_to_file(sims):
 	f = open("similarities.py","w")
 	f.write("similarities = ")
 	f.write(str(sims))
 	f.close()
 	
-def big_test(samplelen):
+def big_test(samples):
 	det = EngDetector()
-	samples = prepare_samples(samplelen)
 	similarities = {
 		"neng": [],
 		"eng": [],
@@ -106,18 +106,29 @@ def big_test(samplelen):
 	s = similarities
 	print("neng mean",sum(s["neng"])/len(s["neng"]))
 	print("eng mean",sum(s["eng"])/len(s["eng"]))
-	try_plot(similarities)
+	return s
 
+def do_big_test(samplelen):
+	samples = prepare_samples(samplelen)
+	sim = big_test(samples)
+	similarities_to_file(sim)
 
-def kotatko():
-	d = EngDetector()
-	v = d.detect("ubohé malé koťátko...")
-	for k in v:
-		print("' '".join(k.keys()))
+def test_languages(samplelen):
+	from samples import lang_samples
+	res = {}
+	for language, texts in lang_samples:
+		sam = prepare_samples(samplelen, texts)
+		print(language)
+		sim = big_test(sam)
+		res["eng"] = sim["eng"]
+		res[language] = sim["neng"]
+
+	similarities_to_file(res)
+	
 
 
 
 if __name__ == '__main__':
-	big_test(100)
+	test_languages(50)
 
 

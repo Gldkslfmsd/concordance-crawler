@@ -13,8 +13,6 @@ def gram(t,n):
 	"""
 	return zip(*(t[k:] for k in range(n)))
 
-
-
 class NGramsExtractor(object):
 	reg = compile(r"^\s*$")
 	splitreg = regex.compile(r"[\s-\p{P}\p{S}]")

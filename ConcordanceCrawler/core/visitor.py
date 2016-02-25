@@ -12,7 +12,7 @@ import ConcordanceCrawler.core.segmenter as segmenter
 import ConcordanceCrawler.core.urlrequest as urlrequest
 import ConcordanceCrawler.core.encoding as encoding
 
-from ConcordanceCrawler.core.eng_detector.eng_detector import EngDetector
+from ConcordanceCrawler.core.eng_detect.eng_detect import EngDetector
 
 class Visitor():
 	attributes = ['get_raw_html', 'get_visible_text', 'predict_format',
@@ -47,8 +47,7 @@ class Visitor():
 		if not self.accept_format(data_format):
 			return None
 		text = self.get_visible_text(normed_data)
-		language = self.predict_language(text)
-		if not self.accept_language(language):
+		if not self.language_filter(text):
 			return None
 
 		sentences = self.sentence_segmentation(text)

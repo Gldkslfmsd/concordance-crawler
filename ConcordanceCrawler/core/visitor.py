@@ -9,15 +9,15 @@ import datetime
 from ConcordanceCrawler.core.visible_text import *
 from ConcordanceCrawler.core.concordance_filter import concordance_filtering
 import ConcordanceCrawler.core.segmenter as segmenter
-import ConcordanceCrawler.core.language_analysis as language_analysis
 import ConcordanceCrawler.core.urlrequest as urlrequest
 import ConcordanceCrawler.core.encoding as encoding
 
+from ConcordanceCrawler.core.eng_detector.eng_detector import EngDetector
 
 class Visitor():
 	attributes = ['get_raw_html', 'get_visible_text', 'predict_format',
-		'accept_format', 'sentence_segmentation', 'predict_language',
-		'accept_language', 'norm_encoding', 'concordance_filtering']
+		'accept_format', 'sentence_segmentation',
+		'language_filter', 'norm_encoding', 'concordance_filtering']
 
 	def __init__(self):
 		self.get_raw_html = urlrequest.get_raw_html
@@ -25,8 +25,7 @@ class Visitor():
 		self.predict_format = FormatPredictor().predict_format
 		self.accept_format = FormatFilter().accept_format
 		self.sentence_segmentation = segmenter.sentence_segmentation
-		self.predict_language = language_analysis.predict_language
-		self.accept_language = language_analysis.accept_language
+		self.language_filter = EngDetector().is_english
 		self.norm_encoding = encoding.norm_encoding
 		self.concordance_filtering = concordance_filtering
 	

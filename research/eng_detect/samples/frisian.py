@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 samples = [
 
 """Slidehokky is in foarm fan iishokky, mar dan op in prikslide. Dizze sport

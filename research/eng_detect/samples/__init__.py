@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .finnish import samples as f
 from .spanish import samples as s
 from .dutch import samples as d

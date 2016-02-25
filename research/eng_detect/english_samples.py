@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 samples = [
 
 "my hovercraft is full of eels",

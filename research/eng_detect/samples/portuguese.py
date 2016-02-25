@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 samples = [
 
 """A sociologia é a parte das ciências humanas que estuda o comportamento

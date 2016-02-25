@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 samples = [
 """Chili word in die weste deur die Stille Oseaan, in die noorde deur Peru,
 in die noordooste deur Bolivië, in die ooste deur Argentinië en in die suide

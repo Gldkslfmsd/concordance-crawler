@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 samples = [
 """RS 1 «Colin Archer» var den første redningsskøyta som vart bygd etter
 Colin Archer sine redningsskøyte-teikningar. Ho vart sjøsett i 1893. Denne

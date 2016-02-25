@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 samples = [
 """Le français est une langue indo-européenne de la famille des langues
 romanes. Le français s'est formé en France (variété de la « langue d’oïl »,

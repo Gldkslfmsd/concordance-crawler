@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 samples = [
 """Peter Julius Coyet, född 1618, död 1667, var en svensk diplomat, sonson
 till Gillis Coyet, bror till Fredrik Coyet och far till Wilhelm Julius

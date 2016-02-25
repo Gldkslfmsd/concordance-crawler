@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 samples = [
 
 """Il latino acquistò grande importanza con l'espansione dello stato romano

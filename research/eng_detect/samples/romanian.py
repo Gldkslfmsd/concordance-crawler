@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 samples = [
 
 """Umberto Eco (n. 5 ianuarie 1932, Alessandria, Piemont – d. 19 februarie

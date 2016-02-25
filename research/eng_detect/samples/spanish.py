@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 samples = [
 """Reino Unido tiene catorce territorios de ultramar, todos ellos vestigios
 de lo que fue el Imperio británico, que en su territorio internacional llegó

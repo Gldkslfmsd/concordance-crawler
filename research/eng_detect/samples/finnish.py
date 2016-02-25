@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 samples = [
 """Vaikka Kekkosen Pielavedellä sijaitseva syntymäkoti tunnetaan Lepikon
 torppana, Kekkosella ei ole torpparitaustaa. Talo oli hankittu perheen

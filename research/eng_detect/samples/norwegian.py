@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # there are two forms of written standard for Norwegian language,
 # "Neo-Norwagian" and "Bokmål". This sample is in Bokmål, because according
 # to wikipedia, 90% of Norwegian population use it.

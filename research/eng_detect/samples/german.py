@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 samples = [
 
 """Das 18. Jahrhundert begann am 1. Januar 1701 und endete am 31. Dezember

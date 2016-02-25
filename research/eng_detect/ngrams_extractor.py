@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from re import split, sub, compile
 import regex
 
@@ -14,6 +15,21 @@ def gram(t,n):
 	return zip(*(t[k:] for k in range(n)))
 
 class NGramsExtractor(object):
+	"""Extracts a vector (or histogram) of 1, 2,... and N-grams from given texts.
+	Words are separated by spaces or other symbols than letters, then
+	wrapped by spaces, converted to lowercase and cuted to n-ples (single,
+	double, triple, ... ) of chars.
+
+	For example, word "hello" is splited to 1-grams this way:
+	['h', 'e', 'l', 'l', 'o'],
+
+	2-grams:
+	[' h', 'he', 'el', 'll', 'lo', 'o ']
+	
+	3-grams:
+	['  h', ' he', 'hel', 'ell', 'llo', 'lo ', 'o  ']
+	"""
+	
 	reg = compile(r"^\s*$")
 	splitreg = regex.compile(r"[\s-\p{P}\p{S}]")
 #	splitreg = compile(r"[-\s -/:-@]")
@@ -21,21 +37,47 @@ class NGramsExtractor(object):
 	spaces = " "*(N-2)
 
 	def __init__(self, N=None):
+		'''N: it will extract 1,2,3... and N-grams. Default value for N is 3.'''
 		if N is not None:
 			self.N = N
 
 	def filter(self,word):
+		'''If it returns True, word will be filtered. Can be overriden in
+		descendant class.'''
 		return False
 
 	def empty_freq(self):
+		'''Returns empty vector of frequencies of 1,2,3...N-grams.
+		
+		It is a list of dicts, on i-th index is a histogram of
+		(i-1)-grams. Histogram is a dict with grams as keys and number of
+		occurences as values.
+		'''
 		return [{} for _ in range(self.N)]
 
 	def extract(self, line, freq=None):
+		'''
+		line: input text
+		freq: if None, create a new vector, otherwise the n-grams will be added
+		to freq. That can be used to reduce time complexity, if you call this
+		method multiple-times and then want to merge its results to one vector. 
+
+		freq is a list of dicts, on i-th index is a histogram of
+		(i-1)-grams. Histogram is a dict with grams as keys and number of
+		occurences as values.
+
+		returns: histogram of frequencies of 1,2,3...N-grams in line.
+
+		Example: 
+		>>> NGramsExtractor().extract("Hello.")
+		[{'h': 1, 'e': 1, 'l': 2, 'o': 1}, {'el': 1, 'lo': 1, ' h': 1, 'o ': 1,
+		'll': 1, 'he': 1}, {'lo ': 1, 'o  ': 1, 'ell': 1, '  h': 1, 'llo': 1,
+		'hel': 1, ' he': 1}]
+		'''
 		if freq is None:
 			freq = self.empty_freq()
 		for word in self.splitreg.split(line):
 			if self.reg.match(word) or self.filter(word):
-#				print("zahazuju",word)
 				continue
 			word = word.lower()
 			for n in range(self.N):
@@ -49,6 +91,10 @@ class NGramsExtractor(object):
 		return freq
 
 class EnglishNGramsExtractor(NGramsExtractor):
+	"""EnglishNGramsExtractor is the same as NGramsExtractor, but filters
+	words containing any Non-English letter or letter with diacritics (e.g.
+	'Holešovice', 'résumé'), because they will be probably a loanwords or
+	a words from some other language.""" 
 	reg = compile(r".*[^a-zA-Z].*")
 	def __init__(self, N=None):
 		super(EnglishNGramsExtractor, self).__init__(N)
@@ -57,4 +103,10 @@ class EnglishNGramsExtractor(NGramsExtractor):
 		return self.reg.match(word)
 
 if __name__=="__main__":
-	EnglishNGramsExtractor(10)
+	def example():
+		ext = NGramsExtractor()
+		print(ext.extract("Hello."))
+
+	print(EnglishNGramsExtractor(10).extract("čau"))
+	print(EnglishNGramsExtractor(5).extract("č-au"))
+	#example()

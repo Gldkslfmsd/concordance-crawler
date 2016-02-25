@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 '''EngDetector gets a text and is able to detect, whether the text is in
 English or not. It creates a vector of 1,2,3-gram frequencies and then
@@ -45,7 +46,7 @@ class EngDetector:
 		for g in vector:
 			counts += vector[g]
 		for g in vector:
-			vector[g] = vector[g] / counts
+			vector[g] = vector[g] / (1.0*counts)
 		return vector
 
 	def get_vectors(self, text):
@@ -55,7 +56,7 @@ class EngDetector:
 		return list(map(self.transform_to_ratio, freq))
 
 	def magnitude(self, vector):
-		return sum(vector[k]**2 for k in vector.keys()) ** (1/2)
+		return sum(vector[k]**2 for k in vector.keys()) ** (0.5)
 
 	def cosine_similarity(self, A, B):
 		if not A and not B:
@@ -66,7 +67,7 @@ class EngDetector:
 			return 0
 		keys = set(A.keys()).intersection(B.keys())
 		sim = sum(A[k]*B[k] for k in keys)
-		return sim / (self.magnitude(A)*self.magnitude(B))
+		return sim / (1.0*self.magnitude(A)*self.magnitude(B))
 
 	def get_threshold(self, text_len):
 		'''finds the threshold of englishness for given length of text'''
@@ -86,7 +87,7 @@ class EngDetector:
 		for v,ng in zip(vec, self.ngrams):
 			csim = self.cosine_similarity(v, ng)
 			sim.append(csim)
-		mean = sum(sim)/len(sim)
+		mean = sum(sim)/(1.0*len(sim))
 		return mean
 
 	def is_english(self, text):
@@ -110,13 +111,13 @@ def test():
 	for s in english_samples.samples:
 		eng.append(det.englishness(s))
 	if debug: 
-		print("mean:",sum(eng)/len(eng))
+		print("mean:",sum(eng)/(1.0*len(eng)))
 		print()
 	neng = []
 	for s in nonenglish_samples.samples:
 		#print(s[:20])
 		neng.append(det.englishness(s))
-	print("mean:",sum(neng)/len(neng))
+	print("mean:",sum(neng)/(1.0*len(neng)))
 
 def prepare_samples(slen,neng=nonenglish_samples.samples):
 	nengall = " ".join(neng)
@@ -148,8 +149,8 @@ def big_test(samples):
 				det.englishness(s)
 			)
 	s = similarities
-	print("neng mean",sum(s["neng"])/len(s["neng"]))
-	print("eng mean",sum(s["eng"])/len(s["eng"]))
+	print("neng mean",sum(s["neng"])/(1.0*len(s["neng"])))
+	print("eng mean",sum(s["eng"])/(1.0*len(s["eng"])))
 	return s
 
 def do_big_test(samplelen):
@@ -183,21 +184,29 @@ English and Non-English samples with given length.
 '''\n\n\n""")
 
 	f.write("thresholds = {\n")
-	for l in lens:
-		sam = prepare_samples(l, neng=foreign_texts)
-		print("length of samples:",l)
-		f.write(str(l)+": ")
-		sim = big_test(sam)
-		nengmean = sum(sim["neng"])/len(sim["neng"])
-		engmean = sum(sim["eng"])/len(sim["eng"])
-		# threshold will be set as a center of interval between nengmean and
-		# engmean, but you can change it manually in thresholds.py
-		center = (nengmean+engmean)/2
-		f.write(str(center) + ", # ")
-		f.write("nengmean: "+str(nengmean)+" ")
-		f.write("engmean: "+str(engmean)+" \n")
-	f.write("}\n")
-	f.close()
+	end = False
+	try:
+		for l in lens:
+			sam = prepare_samples(l, neng=foreign_texts)
+			print("length of samples:",l)
+			sim = big_test(sam)
+			nengmean = sum(sim["neng"])/(1.0*len(sim["neng"]))
+			engmean = sum(sim["eng"])/(1.0*len(sim["eng"]))
+			# threshold will be set as a center of interval between nengmean and
+			# engmean, but you can change it manually in thresholds.py
+			center = (nengmean+engmean)/2.0
+			f.write(str(l)+": ")
+			f.write(str(center) + ", # ")
+			f.write("nengmean: "+str(nengmean)+" ")
+			f.write("engmean: "+str(engmean)+" \n")
+		end = True
+	finally:
+		f.write("}\n")
+		if end:
+			f.write("# Thresholds were generated correctly.\n")
+		else:
+			f.write("# Threshold generation was interrupted, the values can be incorrect!!!")
+		f.close()
 	
 
 def test_languages(samplelen):
@@ -229,7 +238,8 @@ def test_detector():
 
 
 if __name__ == '__main__':
-#	gen_thresholds()
-	test_detector()
+	gen_thresholds()
+#	test_languages(100)
+#	test_detector()
 
 

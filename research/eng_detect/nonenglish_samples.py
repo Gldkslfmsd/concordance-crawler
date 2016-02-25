@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 samples = [
 
 """Na počátku bylo Slovo, to Slovo bylo u Boha, to Slovo bylo Bůh.

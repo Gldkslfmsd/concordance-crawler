@@ -30,3 +30,15 @@ lang_samples = [
 	('Danish', da),
 	('Norwegian', no),
 ]
+
+germanic_samples = [
+	('Dutch', d),
+	('German', ge),
+	('Afrikaans', af),
+	('Frisian', fri),
+	('Swedish', sw),
+	('Danish', da),
+	('Norwegian', no),
+]
+
+

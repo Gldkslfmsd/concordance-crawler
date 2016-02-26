@@ -9,9 +9,9 @@ I call this cosine similarity `englishness`.
 Method is_english(text) returns True/False, it should have TODO accuracy.'''
 
 from re import split
-from freq import ngrams
-from thresholds import thresholds
-from ngrams_extractor import NGramsExtractor
+from .freq import ngrams
+from .thresholds import thresholds
+from .ngrams_extractor import NGramsExtractor
 
 class EngDetector:
 	'''English Detector'''
@@ -96,7 +96,6 @@ class EngDetector:
 		(the most relative and most similar languages to English)'''
 		sim = self.englishness(text)
 		threshold = self.get_threshold(len(text))
-		print(sim, threshold)
 		if sim < threshold:
 			return False
 		else:

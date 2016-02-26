@@ -28,7 +28,7 @@ setup(name='ConcordanceCrawler',
       packages=['ConcordanceCrawler','ConcordanceCrawler.app','ConcordanceCrawler.core',
 				'ConcordanceCrawler.core.eng_detect'],
       entry_points={'console_scripts': ['ConcordanceCrawler = ConcordanceCrawler.app.app:main']},
-      install_requires=['cssselect','lxml','requests','beautifulsoup4','simplejson','six','segtok'],
+      install_requires=['cssselect','lxml','requests','beautifulsoup4','simplejson','six','segtok','regex'],
 			test_suite='ConcordanceCrawler.tests',
 			classifiers = [
 				"Development Status :: 3 - Alpha",

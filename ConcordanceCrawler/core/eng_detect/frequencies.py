@@ -1,12 +1,13 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""usage: ./frequencies.py files to process as args [...]
+"""usage: python frequencies.py files to process as args [...] > freq.py
 
 -- counts frequencies of {1,2,3}-grams in textfiles given as cmd args
 -- ignores words that contain non-English letters (because they are
-probably not in English)
+probably not in English, but loanwords or citation of other language)
 -- processes files concurrently, it uses multiprocessing.Pool
+-- writes vector of frequencies used by EngDetect on stdout
 
 """
 

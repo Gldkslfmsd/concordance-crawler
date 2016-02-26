@@ -1,3 +1,6 @@
+'''Displays boxplots of englishnesses from similarities.py and ROC curve.
+'''
+
 import matplotlib.pyplot as plt
 from similarities import similarities as sims
 

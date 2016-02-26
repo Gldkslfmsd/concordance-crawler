@@ -30,9 +30,13 @@ class NGramsExtractor(object):
 	['  h', ' he', 'hel', 'ell', 'llo', 'lo ', 'o  ']
 	"""
 	
-	reg = compile(r"^\s*$")
+	# should match words composed from spaces or containing any non letter
+	# symbol (e.g. "PRG1", "Y2K", "O2" ), because they are probably not words,
+	# but some random codes
+	excludereg = regex.compile(r"^\s*$|^.*[^\p{L}].*$")
+
+	# we will split words by punctuation and spaces
 	splitreg = regex.compile(r"[\s-\p{P}\p{S}]")
-#	splitreg = compile(r"[-\s -/:-@]")
 	N = 3 # it will count 1, 2 and 3-grams
 	spaces = " "*(N-2)
 
@@ -77,7 +81,7 @@ class NGramsExtractor(object):
 		if freq is None:
 			freq = self.empty_freq()
 		for word in self.splitreg.split(line):
-			if self.reg.match(word) or self.filter(word):
+			if self.excludereg.match(word) or self.filter(word):
 				continue
 			word = word.lower()
 			for n in range(self.N):

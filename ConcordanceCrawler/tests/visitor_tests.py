@@ -82,12 +82,29 @@ class TestVisitor(unittest.TestCase):
 #			#self.assertEqual(a,b)
 #			pass
 
-	# TODO -- better examples
 	def test_language_filter(self):
 		x = self.visitor.language_filter("""hello world, how are you? who's
 		there? Is this text in English?""")
-		print(x)
 		self.assertTrue(x)
+
+		eng = ["https://en.wikipedia.org/wiki/Russian_language",
+		"https://en.wikipedia.org/wiki/Main_Page", "https://www.usa.gov/", ]
+		for url in eng:
+			t = self.visitor.get_visible_text(self.visitor.get_raw_html(url))
+			self.assertTrue(self.visitor.language_filter(t))
+
+		neng = [
+			"https://cs.wikipedia.org/wiki/Speci%C3%A1ln%C3%AD:N%C3%A1hodn%C3%A1_str%C3%A1nka",
+			"https://pl.wikipedia.org/wiki/Specjalna:Losowa_strona",
+			"https://it.wikipedia.org/wiki/Speciale:PaginaCasuale",
+			"https://es.wikipedia.org/wiki/Especial:Aleatoria",
+			]
+		for url in neng:
+			t = self.visitor.get_visible_text(self.visitor.get_raw_html(url))
+			self.assertFalse(self.visitor.language_filter(t))
+
+
+
 
 	# TODO
 	def test_norm_encoding(self):

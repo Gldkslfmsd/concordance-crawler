@@ -73,6 +73,7 @@ class TestEngDetector(unittest.TestCase):
 			( "12th street", [{'r': 1, 's': 1, 'e': 2, 't': 2}, {'tr': 1, 'ee': 1, 'et': 1, ' s':
 			1, 't ': 1, 're': 1, 'st': 1}, {'eet': 1, '  s': 1, 'tre': 1, 'et ':
 			1, 'str': 1, 't  ': 1, ' st': 1, 'ree': 1}]),
+			("", [{},{},{}]),
 		]
 		
 		ext = self.det.extractor
@@ -80,3 +81,21 @@ class TestEngDetector(unittest.TestCase):
 			ext_grams = ext.extract(text)
 			self.test_ngrams(ext_grams)
 			self.assertTrue(all(map(dict_equals, ext_grams, test_grams)))
+
+	def test_is_english(self):
+		texts = ["""A true SSLContext object is not available. This prevents
+		urllib3 from configuring SSL appropriately and may cause certain SSL
+		connections to fail. For more information, see""",
+		"""Gravitational waves: Tests begin for future space observatory""",
+		"""this should be an english text""", 
+		]
+
+		for t in texts:
+			self.assertTrue(self.det.is_english(t))
+
+		texts = ["र्वी स्लाभिक भाषाय् दक", """географически и по числу носителей языка как
+		родног""", """وه. دغه ژبه د مذهبی""", """ti. D1 blokují kamiony, D8 je
+		uzavřena""", "ha"*10000]
+		for t in texts:
+			self.assertFalse(self.det.is_english(t))
+

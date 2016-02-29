@@ -82,14 +82,12 @@ class TestVisitor(unittest.TestCase):
 #			#self.assertEqual(a,b)
 #			pass
 
-	# TODO
-	def test_predict_language(self):
-		lan = self.visitor.predict_language("hello world")
-		self.assertEqual(lan, "eng")
-
-	# TODO
-	def test_accept_language(self):
-		pass
+	# TODO -- better examples
+	def test_language_filter(self):
+		x = self.visitor.language_filter("""hello world, how are you? who's
+		there? Is this text in English?""")
+		print(x)
+		self.assertTrue(x)
 
 	# TODO
 	def test_norm_encoding(self):
@@ -109,7 +107,7 @@ class TestVisitor(unittest.TestCase):
 			s.split(2)
 
 	def test_visit_links(self):
-		concs = self.visitor.visit_links([{"link":"https://cs.wikipedia.org/wiki/P%C5%99epaden%C3%AD_celnice_v_Habartic%C3%ADch"}],"akce")
+		concs = self.visitor.visit_links([{"link":"https://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation"}],"would")
 		self.assertTrue(len(concs)>0)
 
 

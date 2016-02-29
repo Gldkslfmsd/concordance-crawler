@@ -10,14 +10,14 @@ class B(A):
 	pass
 
 x = 0
+h = 0
 def raise_error(_):
 	global x
 	x += 1
 	if x<2:	
 		raise B()
-	return "scrape scrape scrape"
+	return "scrape "*10
 
-h = 0
 def handler(_):
 	global h
 	h = 1
@@ -42,7 +42,7 @@ class TestCrawler(unittest.TestCase):
 			global h,x
 			x = 0
 			crawler = ConcordanceCrawler("scrape")
-			crawler.setup(get_raw_html=raise_error )
+			crawler.setup(get_raw_html=raise_error, language_filter=lambda _: True)
 			crawler.set_exception_handler(exp, handler)
 			c = zip(crawler.yield_concordances("scrape"), range(3))
 			c = list(c) # raises B and calls handler
@@ -53,7 +53,8 @@ class TestCrawler(unittest.TestCase):
 
 	def test_ignoring_exceptions(self):
 		crawler = ConcordanceCrawler("scrape")
-		crawler.setup(get_raw_html=raise_error )
+		crawler.setup(get_raw_html=raise_error, language_filter=lambda _: True)
+
 		crawler.ignore_exception(B)
 		c =  zip(crawler.yield_concordances("scrape"), range(3))
 		# it shouldn't raise any exception, but self.assertNotRaises doesn't exist
@@ -65,7 +66,8 @@ class TestCrawler(unittest.TestCase):
 	def test_ignoring_derived_exceptions(self):
 		'''A is ignored, but its subclass, B, is raised'''
 		crawler = ConcordanceCrawler("scrape")
-		crawler.setup(get_raw_html=raise_error )
+		crawler.setup(get_raw_html=raise_error, language_filter=lambda _: True)
+
 		crawler.ignore_exception(A)
 		c =  zip(crawler.yield_concordances("scrape"), range(3))
 		try:

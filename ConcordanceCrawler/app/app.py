@@ -42,6 +42,13 @@ def get_args():
 		help="maximum number of concordances per page (default: unlimited)"
 		)
 
+	parser.add_argument("--disable-english-filter",
+		default=None,
+		const=True,
+		action='store_const',
+		help="disable filtering Non-English sentences from concordances",
+		)
+
 	# TODO -- does it work for all version without encoding=?
 	if six.PY3 and sys.version_info.minor>=4 and False:
 		filetype = argparse.FileType('w', encoding='UTF-8')
@@ -126,6 +133,9 @@ def main():
 	lc.page_limited = page_limited
 	lc.total_concordances = number
 	lc.Logger.setLevel(log_level)
+
+	if args['disable_english_filter']:
+		lc.setup(language_filter=lambda _: True)
 
 	# generator that crawls exact number of concordances
 	concordances = ( c for _,c in zip(range(number), lc.yield_concordances(word)) )

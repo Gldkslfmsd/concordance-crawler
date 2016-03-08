@@ -1,17 +1,7 @@
-import six
 from traceback import format_exc
 import logging
 import requests
-if six.PY3:
-	import sys
-	if sys.version_info.minor>=4:
-		from multiprocessing.context import TimeoutError as multiprocessing_TimeoutError
-	else:
-		from multiprocessing import TimeoutError as multiprocessing_TimeoutError
-elif six.PY2:
-	from multiprocessing import TimeoutError as multiprocessing_TimeoutError
-
-from ConcordanceCrawler.core.links import *
+import ConcordanceCrawler.core.links as links
 from ConcordanceCrawler.core.visitor import *
 from ConcordanceCrawler.core.bazwords import *
 from ConcordanceCrawler.core.visible_text import filter_link
@@ -96,6 +86,8 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 		# if False, yield links ends
 		self.crawling_allowed = True
 
+
+
 	def yield_concordances(self,word):
 		'''Generator crawling concordances'''
 
@@ -107,40 +99,22 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 				self.log_state()
 				yield con
 
+	def crawl_links(self):
+		return links.crawl_links(self.word,1, bazword_gen=self.bazgen)
+
 	def _yield_links(self):
 		'''Generator yielding links from search engine result page. It scrapes
 		one serp, parses links and then yields them. Then again.
 		'''
 		while self.crawling_allowed:
 			try:
-				try:
-					links = crawl_links(self.word,1,self.bazgen)
-					self.num_serps += 1
-				except multiprocessing_TimeoutError:
-					self.Logger.error("SERP cannot be handled for a long time")
-					self.serp_errors += 1
-					self.log_state()
-					raise
-				except requests.exceptions.RequestException as e:
-					self.serp_errors += 1
-					logging.error("\'{0}\' occured".format(e))
-					self.log_state()
-					raise
-				except:
-					self.Logger.error("!!! Undefined error occured, {0}".format(format_exc()))
-					self.serp_errors += 1
-					self.log_state()
-					raise
-				else:
-					self.log_details("crawled SERP, parsed {0} links".format(
-						len(links)))
-					for l in links:
-						# todo: maybe move this to links crawling
-						if self.filter_link(l["link"]):
-							yield l
-						else:
-							self.Logger.info('link {0} rejected'.format(l['link']))
+				links = self.crawl_links()
+				self.num_serps += 1
+				for l in links:
+					if self.filter_link(l["link"]):
+						yield l
 			except Exception as e:
+				print(type(e))
 				if any((issubclass(type(e),t) for t in self._exceptions_handlers.keys())):
 					self._handle_exception(e)
 				elif all(not issubclass(type(e),t) for t in self._ignored_exceptions):
@@ -167,6 +141,9 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 				return
 		print("handler is not found")
 
+	def visit_link(self, link):
+		return self.visitor.visit_links([link],self.word)
+
 	def _yield_concordances_from_link(self,l):
 		'''This generator gets link as an argument, downloads the page, parses
 		concordances and yields them. Besides that it logs progress.
@@ -180,39 +157,19 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 		#l['link']='http://en.bab.la/dictionary/english-hindi/riding'
 		#print("link:",l['link'])
 		try:
-			try:
-				self.Logger.debug("trying to download {0}".format(l['link']))
-				# here is the link visited
-				concordances = self.visitor.visit_links([l],self.word)
-				# add url to set of unique links, because we want to count them
-				self.unique_links.add(l['link'])
-				self.log_details("page {0} visited, {1} concordances found".format(
-					l['link'],len(concordances)))
-				# because of statistics (is not thread-safe)
-				self.num_pages += 1
-			except multiprocessing_TimeoutError:
-				logging.error("request {0} cannot be handled for a long time".format(
-					l['link']))
-				self.page_errors += 1
-				raise
-			except requests.exceptions.RequestException as e:
-				logging.error("\'{}\' occured during getting {}".format(
-					e,l['link']))
-				self.page_errors += 1
-				raise
-			except Exception:
-				self.Logger.error("!!! Undefined error occured, {0}".format(format_exc()))
-				self.page_errors += 1
-				raise
-			else:
-				for i,c in enumerate(concordances):
-					# maximum limit of concordances per page reached
-					if self.page_limited and i>self.max_per_page:
-						break
-					# here is formed the output structure for concordance
-					res = c
-					self.num_concordances += 1
-					yield res
+			# here is the link visited
+			concordances = self.visit_link(l)
+			if not concordances:
+				return
+			# add url to set of unique links, because we want to count them
+			self.unique_links.add(l['link'])
+			for i,c in enumerate(concordances):
+				# maximum limit of concordances per page reached
+				if self.page_limited and i>self.max_per_page:
+					break
+				# here is formed the output structure for concordance
+				res = c
+				yield res
 		except Exception as e:
 			if any((issubclass(type(e),t) for t in self._exceptions_handlers.keys())):
 				self._handle_exception(e)

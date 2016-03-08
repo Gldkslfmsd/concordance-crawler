@@ -4,10 +4,16 @@
 
 import logging
 import datetime
+import requests
 
 from ConcordanceCrawler.core.bazwords import *
 from ConcordanceCrawler.core.parsing import parse
 import ConcordanceCrawler.core.urlrequest as urlrequest
+
+
+class SERPError(Exception):
+	def __init__(self, e=None):
+		self.e = e
 
 def crawl_links(target_word, number = 1, bazword_gen = None):
 	'''Crawls links from Bing Search. Uses bazword generator to get
@@ -52,7 +58,10 @@ def crawlonekeyword(keyword):
 	'''
 	url = get_keyword_url(keyword)
 	logging.debug("trying to download SERP {}".format(url))
-	rawhtml = urlrequest.get_raw_html(url)
+	try:
+		rawhtml = urlrequest.get_raw_html(url)
+	except requests.exceptions.RequestException as e:
+		raise SERPError(e)
 
 	date = _date()
 

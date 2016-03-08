@@ -15,3 +15,5 @@ def concordance_filtering(target, sentence):
 		filters[target] = ConcordanceFilter(target)
 	return filters[target].process(sentence)
 	
+
+# TODO: use gensim here

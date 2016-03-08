@@ -124,7 +124,7 @@ class TestVisitor(unittest.TestCase):
 			s.split(2)
 
 	def test_visit_links(self):
-		concs = self.visitor.visit_links([{"link":"https://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation"}],"would")
+		concs = self.visitor.visit_links([{"link":"https://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation"}],"string")
 		self.assertTrue(len(concs)>0)
 
 

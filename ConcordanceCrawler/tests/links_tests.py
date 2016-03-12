@@ -22,7 +22,6 @@ class TestLinks(unittest.TestCase):
 
 	def test_crawl_links(self):
 		links = crawl_links("ahoj")
-		print(links)
 		self.assertTrue(links != [])
 
 		for l in links:

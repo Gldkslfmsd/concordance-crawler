@@ -46,7 +46,7 @@ class FormatFilter():
 	def accept_format(self,format):
 		return True
 
-def filter_link(link):
+def filter_link_by_format(link):
 	'''returns True/False
 	if True, link is accepted and can be visited
 	otherwise rejected

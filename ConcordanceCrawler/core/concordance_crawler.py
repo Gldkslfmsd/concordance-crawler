@@ -4,43 +4,8 @@ import requests
 import ConcordanceCrawler.core.links as links
 from ConcordanceCrawler.core.visitor import *
 from ConcordanceCrawler.core.bazwords import *
-from ConcordanceCrawler.core.visible_text import filter_link
+from ConcordanceCrawler.core.visible_text import filter_link_by_format
 
-# logging levels
-DETAILS = logging.INFO-5
-STATUS = logging.INFO
-
-class Loggable(object):
-	def log_details(self,*a):
- 		self.Logger.log(DETAILS, *a)
-
-	def log_state(self):
-		'logs interesting numbers about progress'''
-		self.Logger.info("""Crawling status 
-serp\t\t{num_serps} ({serp_errors} errors) 
-pages visited\t{num_pages} ({unique_pages} unique pages, {page_errors} errors)
-concordances\t{num_concordances}""".format(
-			num_serps=self.num_serps,
-			serp_errors=self.serp_errors,
-			num_pages=self.num_pages,
-			unique_pages=len(self.unique_links),
-			page_errors=self.page_errors,
-			num_concordances=self.num_concordances
-		)
-	)
-
-	# briefer version of log_state (could be sometimes useful)
-	# self.brief_log_state()
-
-	#	def brief_log_state(self):
-	#		logging.info(
-	#			("Successfully crawled {num_concordances} concordances from {total_concordances} "+
-	#			"({percent}%)").format(
-	#			num_concordances=self.num_concordances,
-	#			total_concordances = self.total_concordances,
-	#			percent = self.num_concordances/self.total_concordances*100))
-	
-	
 class CrawlerConfigurator(object):
 	'''configurable attributes of ConcordanceCrawler can be set via
 	this method'''
@@ -56,28 +21,20 @@ class CrawlerConfigurator(object):
 				raise AttributeError("Attribute '{0}' is not known and cannot be set.".format(atr))
 		self.visitor = visitor
 	
+class ConcordanceCrawler(CrawlerConfigurator):	
+	attributes = ["bazgen", "filter_link"]
 
-
-class ConcordanceCrawler(Loggable, CrawlerConfigurator):	
-	attributes = ["bazgen", "Logger","filter_link"]
-
-	num_serps = 0 # number of serp (search engine result pages) downloaded
-	serp_errors = 0
-	num_pages = 0 # number of visited pages
-	page_errors = 0 # number of errors during visiting pages
-	num_concordances = 0 # number of found concordances
-
+	
 	def __init__(self, word, bazgen=None):
 		self.word = word
 		if bazgen:
 			self.bazgen = bazgen
 		else:
 			self.bazgen = RandomShortWords()
-		# this is set of visited links, we want to count them because of logging
-		self.filter_link = filter_link
-		self.unique_links = set()
-		self.Logger = logging.getLogger().getChild('ConcordanceCrawlerLogger')
-		self.Logger.setLevel(50) # mutes all warnings and logs
+		self.filter_link = filter_link_by_format
+#		self.unique_links = set() # TODO
+#		self.Logger = logging.getLogger().getChild('ConcordanceCrawlerLogger')
+#		self.Logger.setLevel(50) # mutes all warnings and logs
 		self.visitor = Visitor() # it will work even without setup
 		self.page_limited = False
 		self._exceptions_handlers = dict()
@@ -96,7 +53,6 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 			if not self.crawling_allowed:
 				break
 			for con in self._yield_concordances_from_link(link):
-				self.log_state()
 				yield con
 
 	def crawl_links(self):
@@ -109,7 +65,7 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 		while self.crawling_allowed:
 			try:
 				links = self.crawl_links()
-				self.num_serps += 1
+#				self.num_serps += 1
 				for l in links:
 					if self.filter_link(l["link"]):
 						yield l
@@ -162,7 +118,7 @@ class ConcordanceCrawler(Loggable, CrawlerConfigurator):
 			if not concordances:
 				return
 			# add url to set of unique links, because we want to count them
-			self.unique_links.add(l['link'])
+#			self.unique_links.add(l['link']) # TODO
 			for i,c in enumerate(concordances):
 				# maximum limit of concordances per page reached
 				if self.page_limited and i>self.max_per_page:

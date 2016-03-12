@@ -67,6 +67,7 @@ class Logging(object):
 		self.page_errors = 0 # number of errors during visiting pages
 		self.num_concordances = 0 # number of found concordances
 		self.links_filtered = 0
+		self.repeated_concordances = 0
 
 
 	def log_details(self,*a):
@@ -77,13 +78,14 @@ class Logging(object):
 		self.Logger.info("""Crawling status 
 serp\t\t{num_serps} ({serp_errors} errors) 
 pages visited\t{num_pages} ({links_filtered} links filtered, {page_errors} errors)
-concordances\t{num_concordances}""".format(
+concordances\t{num_concordances} ({more_times} crawled repeatedly)""".format(
 			num_serps=self.num_serps,
 			serp_errors=self.serp_errors,
 			num_pages=self.num_pages,
 			links_filtered=self.links_filtered,
 			page_errors=self.page_errors,
-			num_concordances=self.num_concordances
+			num_concordances=self.num_concordances,
+			more_times=self.repeated_concordances,
 		)
 	)
 
@@ -112,6 +114,7 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 		self.Logger.setLevel(50) # mutes all warnings and logs
 
 		self.visited_pages = LimitedBuffer()
+		self.crawled_concordances = LimitedBuffer()
 
 
 	def filter_link_logwrapper(self,link):
@@ -130,16 +133,23 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 
 	def crawl_links(self):
 		links = super(LoggingCrawler, self).crawl_links()
+		self.num_serps += 1
 		self.log_details("crawled SERP, parsed {0} links".format(
 			len(links)))
 		return links
 
 	def _yield_concordances_from_link(self, link):
 		self.Logger.debug("trying to download {0}".format(link['link']))
-		for l in super(LoggingCrawler, self)._yield_concordances_from_link(link):
-			self.num_concordances += 1
-			self.log_state()
-			yield l
+		for c in super(LoggingCrawler, self)._yield_concordances_from_link(link):
+			if not self.crawled_concordances.contains(c["concordance"]):
+				self.crawled_concordances.insert(c["concordance"])
+				self.num_concordances += 1
+				self.log_state()
+				yield c
+			else:
+				self.log_details("following concordance crawled repeatedly {0}".format(c))
+				self.repeated_concordances += 1
+				self.log_state()
 
 
 	def visit_link(self, link):

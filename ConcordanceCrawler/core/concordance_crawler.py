@@ -32,9 +32,6 @@ class ConcordanceCrawler(CrawlerConfigurator):
 		else:
 			self.bazgen = RandomShortWords()
 		self.filter_link = filter_link_by_format
-#		self.unique_links = set() # TODO
-#		self.Logger = logging.getLogger().getChild('ConcordanceCrawlerLogger')
-#		self.Logger.setLevel(50) # mutes all warnings and logs
 		self.visitor = Visitor() # it will work even without setup
 		self.page_limited = False
 		self._exceptions_handlers = dict()
@@ -65,12 +62,10 @@ class ConcordanceCrawler(CrawlerConfigurator):
 		while self.crawling_allowed:
 			try:
 				links = self.crawl_links()
-#				self.num_serps += 1
 				for l in links:
 					if self.filter_link(l["link"]):
 						yield l
 			except Exception as e:
-				print(type(e))
 				if any((issubclass(type(e),t) for t in self._exceptions_handlers.keys())):
 					self._handle_exception(e)
 				elif all(not issubclass(type(e),t) for t in self._ignored_exceptions):
@@ -102,7 +97,7 @@ class ConcordanceCrawler(CrawlerConfigurator):
 
 	def _yield_concordances_from_link(self,l):
 		'''This generator gets link as an argument, downloads the page, parses
-		concordances and yields them. Besides that it logs progress.
+		concordances and yields them.
 
 		Args:
 			l -- link, a dictionary structure coming from module visitor of

@@ -141,6 +141,7 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 	def _yield_concordances_from_link(self, link):
 		self.Logger.debug("trying to download {0}".format(link['link']))
 		for c in super(LoggingCrawler, self)._yield_concordances_from_link(link):
+			# repeatedly crawled concordances are filtered here
 			if not self.crawled_concordances.contains(c["concordance"]):
 				self.crawled_concordances.insert(c["concordance"])
 				self.num_concordances += 1

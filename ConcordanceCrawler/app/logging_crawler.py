@@ -176,6 +176,10 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 				e,link['link']))
 			self.page_errors += 1
 			raise
+		except TypeError:
+			logging.error("parsing error during processing \'{}\'".format(
+				link['link']))
+			self.page_errors += 1
 		except Exception:
 			self.Logger.error("!!! Undefined error occured, {0}".format(format_exc()))
 			self.page_errors += 1

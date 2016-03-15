@@ -40,8 +40,6 @@ class Visitor():
 		Returns:
 			a list of sentences or None
 		'''
-		print("tady")
-		url = "http://www.sec.gov/Archives/edgar/data/1044942/000095014404011938/0000950144-04-011938.txt"
 		# TODO: rename it and add returning header
 		raw_data, header = self.get_raw_html(url), None
 		normed_data = self.norm_encoding(raw_data, header)

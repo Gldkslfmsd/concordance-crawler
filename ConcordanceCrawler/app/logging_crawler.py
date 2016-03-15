@@ -32,6 +32,7 @@ def setup_logger(log_level):
 
 class WiseExceptionHandlingCrawler(ConcordanceCrawler):
 	'''Crash when there is too much of RequestExceptions'''
+
 	def __init__(self, word, bazgen):
 		super(WiseExceptionHandlingCrawler, self).__init__(word, bazgen)
 		exc_handler = [
@@ -111,11 +112,20 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 		self._raw_filter_link = self.filter_link
 		self.filter_link = self.filter_link_logwrapper
 		self.Logger = logging.getLogger().getChild('ConcordanceCrawlerLogger')
-		self.Logger.setLevel(50) # mutes all warnings and logs
+		self.Logger.setLevel(50) # mutes all warnings and logs # TODO: why?
 
 		self.visited_pages = LimitedBuffer()
 		self.crawled_concordances = LimitedBuffer()
 
+	def modify_concordance(self, con):
+		'''adds id to every concordance'''
+		con['id'] = self.num_concordances
+		return con
+
+	def yield_concordances(self, word):
+		for con in super(LoggingCrawler, self).yield_concordances(word):
+			con = self.modify_concordance(con)
+			yield con
 
 	def filter_link_logwrapper(self,link):
 		res = self._raw_filter_link(link)

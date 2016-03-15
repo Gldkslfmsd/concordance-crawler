@@ -41,7 +41,6 @@ class ConcordanceCrawler(CrawlerConfigurator):
 		self.crawling_allowed = True
 
 
-
 	def yield_concordances(self,word):
 		'''Generator crawling concordances'''
 
@@ -90,6 +89,7 @@ class ConcordanceCrawler(CrawlerConfigurator):
 			if c in self._exceptions_handlers.keys():
 				self._exceptions_handlers[c](exc)
 				return
+		# TODO -- remove?
 		print("handler is not found")
 
 	def visit_link(self, link):
@@ -112,8 +112,6 @@ class ConcordanceCrawler(CrawlerConfigurator):
 			concordances = self.visit_link(l)
 			if not concordances:
 				return
-			# add url to set of unique links, because we want to count them
-#			self.unique_links.add(l['link']) # TODO
 			for i,c in enumerate(concordances):
 				# maximum limit of concordances per page reached
 				if self.page_limited and i>self.max_per_page:

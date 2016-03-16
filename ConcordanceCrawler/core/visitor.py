@@ -49,14 +49,12 @@ class Visitor():
 		text = self.get_visible_text(normed_data)
 
 # filter whole document here
-#		if not self.language_filter(text):
-#			return None
+		if not self.language_filter(text):
+			return None
 
 		sentences = self.sentence_segmentation(text)
 
-		english_sentences = list(filter(self.language_filter, sentences))
-	
-		concordances = list(filter(lambda s: self.concordance_filtering(target,s), english_sentences))
+		concordances = list(filter(lambda s: self.concordance_filtering(target,s), sentences))
 	
 		return concordances
 

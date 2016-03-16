@@ -69,6 +69,7 @@ class Logging(object):
 		self.num_concordances = 0 # number of found concordances
 		self.links_filtered = 0
 		self.repeated_concordances = 0
+		self.page_lan_filtered = 0
 
 
 	def log_details(self,*a):
@@ -78,12 +79,13 @@ class Logging(object):
 		'logs interesting numbers about progress'''
 		self.Logger.info("""Crawling status 
 serp\t\t{num_serps} ({serp_errors} errors) 
-pages visited\t{num_pages} ({links_filtered} links filtered, {page_errors} errors)
+pages visited\t{num_pages} ({links_filtered} links filtered, {lan_filter} filtered by language filter, {page_errors} errors)
 concordances\t{num_concordances} ({more_times} crawled repeatedly)""".format(
 			num_serps=self.num_serps,
 			serp_errors=self.serp_errors,
 			num_pages=self.num_pages,
 			links_filtered=self.links_filtered,
+			lan_filter=self.page_lan_filtered,
 			page_errors=self.page_errors,
 			num_concordances=self.num_concordances,
 			more_times=self.repeated_concordances,
@@ -114,8 +116,26 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 		self.Logger = logging.getLogger().getChild('ConcordanceCrawlerLogger')
 		self.Logger.setLevel(50) # mutes all warnings and logs # TODO: why?
 
+		self._raw_language_filter = self.visitor.language_filter
+		self.visitor.language_filter = self.language_filter_log_wrapper
+
 		self.visited_pages = LimitedBuffer()
 		self.crawled_concordances = LimitedBuffer()
+
+	def language_filter_log_wrapper(self, text):
+		res = self._raw_language_filter(text)
+#		for manual testing of accuracy of language filter
+#		import re
+#		text = re.sub(r"\n+",r"\n",text,flags=re.M)
+#		import random
+#		f = open(("yes" if res else "no") + "/text"+str(random.random()),"w")
+#		f.write(text)
+#		f.close()
+		if res:
+			return True
+		self.log_details("page rejected by language filter")
+		self.page_lan_filtered += 1
+		return False
 
 	def modify_concordance(self, con):
 		'''adds id to every concordance'''

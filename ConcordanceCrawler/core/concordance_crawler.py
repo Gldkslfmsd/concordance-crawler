@@ -24,7 +24,6 @@ class CrawlerConfigurator(object):
 class ConcordanceCrawler(CrawlerConfigurator):	
 	attributes = ["bazgen", "filter_link"]
 
-	
 	def __init__(self, word, bazgen=None):
 		self.word = word
 		if bazgen:

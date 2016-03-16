@@ -27,16 +27,17 @@ def get_args():
 
 	parser.add_argument("word",
 		type=str,
+		nargs="+",
 		help="a target word"
 		)
 
-	parser.add_argument("-n",
+	parser.add_argument("-n", "--number-of-concordances",
 		default=10,
 		type=int,
 		help="number of concordances to be crawled (default %(default)s)"
 		)
 
-	parser.add_argument("-p",
+	parser.add_argument("-m", "--max-per-page",
 		default=None,
 		type=int,
 		help="maximum number of concordances per page (default: unlimited)"
@@ -92,6 +93,17 @@ def get_args():
 		"""
 		)
 
+	parser.add_argument("-p", "--part-of-speech",
+		default="x",
+		type=str,
+		choices=["v","a","n","x"],
+		nargs="+",
+		help="""Target word's part of speech. Concordances with any forms of
+		target word by this POS will be crawled. Any or more options can be
+		specified. Options are v: verb, a: adjective, n: noun, x: default, any
+		other indeclinable part of speech."""
+		)
+
 
 	args = vars(parser.parse_args())
 	return args
@@ -100,15 +112,15 @@ def get_args():
 def main():
 	# setup command-line arguments and get them from user
 	args = get_args()
-	word = args["word"]
-	number = args["n"]
+	words = args["word"]
+	number = args["number_of_concordances"]
 	# here is output formatter
 	of = create_formatter(
 		format=args["format"],
 		output_stream=args["output"]
 		)
 	baz = args["bazword_generator"]
-	max_per_page = args["p"]
+	max_per_page = args["max_per_page"]
 	page_limited = True if max_per_page else False
 	if baz=="RANDOM":
 		bazgen = RandomShortWords()
@@ -128,7 +140,7 @@ def main():
 		__version__))
 
 	# setup crawler
-	lc = LoggingCrawler(word,bazgen)
+	lc = LoggingCrawler(words,bazgen)
 	lc.max_per_page = max_per_page
 	lc.page_limited = page_limited
 	lc.total_concordances = number
@@ -138,7 +150,7 @@ def main():
 		lc.setup(language_filter=lambda _: True)
 
 	# generator that crawls exact number of concordances
-	concordances = ( c for _,c in zip(range(number), lc.yield_concordances(word)) )
+	concordances = ( c for _,c in zip(range(number), lc.yield_concordances(words)) )
 
 	# find concordances:
 	try:

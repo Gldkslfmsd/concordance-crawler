@@ -24,8 +24,13 @@ class CrawlerConfigurator(object):
 class ConcordanceCrawler(CrawlerConfigurator):	
 	attributes = ["bazgen", "filter_link"]
 
-	def __init__(self, word, bazgen=None):
-		self.word = word
+	def __init__(self, words, bazgen=None):
+		'''words: a list of strings, words, whose concordances should be
+		crawled. It should a single word, or a single word and its other forms.
+		The first one is considered as a basic form, links will be find only
+		with this form.'''
+		self.basic_word = words[0]
+		self.all_words = words
 		if bazgen:
 			self.bazgen = bazgen
 		else:
@@ -40,7 +45,7 @@ class ConcordanceCrawler(CrawlerConfigurator):
 		self.crawling_allowed = True
 
 
-	def yield_concordances(self,word):
+	def yield_concordances(self,words):
 		'''Generator crawling concordances'''
 
 		for link in self._yield_links():
@@ -51,7 +56,7 @@ class ConcordanceCrawler(CrawlerConfigurator):
 				yield con
 
 	def crawl_links(self):
-		return links.crawl_links(self.word,1, bazword_gen=self.bazgen)
+		return links.crawl_links(self.basic_word,1, bazword_gen=self.bazgen)
 
 	def _yield_links(self):
 		'''Generator yielding links from search engine result page. It scrapes
@@ -91,8 +96,8 @@ class ConcordanceCrawler(CrawlerConfigurator):
 		# TODO -- remove?
 		print("handler is not found")
 
-	def visit_link(self, link):
-		return self.visitor.visit_links([link],self.word)
+	def concordances_from_link(self, link):
+		return self.visitor.concordances_from_link(link,self.all_words)
 
 	def _yield_concordances_from_link(self,l):
 		'''This generator gets link as an argument, downloads the page, parses
@@ -108,7 +113,7 @@ class ConcordanceCrawler(CrawlerConfigurator):
 		#print("link:",l['link'])
 		try:
 			# here is the link visited
-			concordances = self.visit_link(l)
+			concordances = self.concordances_from_link(l)
 			if not concordances:
 				return
 			for i,c in enumerate(concordances):

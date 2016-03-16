@@ -33,8 +33,8 @@ def setup_logger(log_level):
 class WiseExceptionHandlingCrawler(ConcordanceCrawler):
 	'''Crash when there is too much of RequestExceptions'''
 
-	def __init__(self, word, bazgen):
-		super(WiseExceptionHandlingCrawler, self).__init__(word, bazgen)
+	def __init__(self, words, bazgen):
+		super(WiseExceptionHandlingCrawler, self).__init__(words, bazgen)
 		exc_handler = [
 			(requests.exceptions.RequestException, self.handle_connection_error),
 			(SERPError, self.handle_serp_error),
@@ -108,8 +108,8 @@ concordances\t{num_concordances} ({more_times} crawled repeatedly)""".format(
 class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):	
 	'''Crawls concordances and logs statistics'''
 
-	def __init__(self, word, bazgen):
-		super(LoggingCrawler, self).__init__(word,bazgen)
+	def __init__(self, words, bazgen):
+		super(LoggingCrawler, self).__init__(words,bazgen)
 		Logging.__init__(self)
 		self._raw_filter_link = self.filter_link
 		self.filter_link = self.filter_link_logwrapper
@@ -142,8 +142,8 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 		con['id'] = self.num_concordances
 		return con
 
-	def yield_concordances(self, word):
-		for con in super(LoggingCrawler, self).yield_concordances(word):
+	def yield_concordances(self, words):
+		for con in super(LoggingCrawler, self).yield_concordances(words):
 			con = self.modify_concordance(con)
 			yield con
 

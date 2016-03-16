@@ -7,7 +7,7 @@ import re
 import datetime
 
 from ConcordanceCrawler.core.visible_text import *
-from ConcordanceCrawler.core.concordance_filter import concordance_filtering
+from ConcordanceCrawler.core.simple_concordance_filter import regex_concordance_filtering as concordance_filtering
 import ConcordanceCrawler.core.segmenter as segmenter
 import ConcordanceCrawler.core.urlrequest as urlrequest
 import ConcordanceCrawler.core.encoding as encoding
@@ -29,17 +29,23 @@ class Visitor():
 		self.norm_encoding = encoding.norm_encoding
 		self.concordance_filtering = concordance_filtering
 	
-	def visit(self, url, target):
+	def visit(self, url, targets, *conc_filter_arg, **conc_filter_kwarg):
 		'''Visits a page on given url and extracts all sentences containing
 		target word from visible text.
 	
 		Args:
 			url
-			target
+			targets -- a list of target words
 	
 		Returns:
-			a list of sentences or None
-		'''
+			a list of pairs (concordance, target_word) or None
+			e.g.
+			>>> visit('https://someurl.com', ['hi', 'hello'])
+			[('Hi!', 'hi'), ('Hello there!', 'hello')]
+
+			>>> visit('http://nonenglishsite.cz/', ['hoovercraft'])
+			None  # returns None if the text e.g. doesn't pass language filter
+			'''
 		# TODO: rename it and add returning header
 		raw_data, header = self.get_raw_html(url), None
 		normed_data = self.norm_encoding(raw_data, header)
@@ -48,42 +54,43 @@ class Visitor():
 			return None
 		text = self.get_visible_text(normed_data)
 
-# filter whole document here
 		if not self.language_filter(text):
 			return None
 
 		sentences = self.sentence_segmentation(text)
 
-		concordances = list(filter(lambda s: self.concordance_filtering(target,s), sentences))
-	
+		concordances = []
+		for s in sentences:
+			t = self.concordance_filtering(targets, s, *conc_filter_arg, **conc_filter_kwarg)
+			if t:
+				concordances.append((s,t))
 		return concordances
 
-	def visit_links(self, links, target_word):
+	def concordances_from_link(self, link, target_words):
 		'''Gets list of links, visits them and crawls concordances.
 		
 		Args:
 			links -- list of dicts, where dict is a link and has at least key 'link'
-			target_word
+			target_words
 
 		Returns:
 			list of concordances, where a concordance is a dict with keys:
 				url, date, concordance (a sentence), keyword
 		'''
+		url = link['link']
+		concs = self.visit(url,target_words)
+		if concs is None:
+			return []
 		concordances = []
-		for i in links:
-			url = i['link']
-			concs = self.visit(url,target_word)
-			if concs is None:
-				continue
-			date = str(datetime.datetime.now())
-			for j in concs:
-				c = {
-					'url':url,
-					'date':date,
-					'concordance':j,
-					'keyword':target_word
-				}
-				concordances.append(c)
+		date = str(datetime.datetime.now())
+		for con, target in concs:
+			c = {
+				'url':url,
+				'date':date,
+				'concordance':con,
+				'keyword':target,
+			}
+			concordances.append(c)
 
 		return concordances
 

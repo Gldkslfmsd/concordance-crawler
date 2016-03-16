@@ -51,9 +51,8 @@ def filter_link_by_format(link):
 	if True, link is accepted and can be visited
 	otherwise rejected
 	'''
-	if any(link.endswith(suffix) for suffix in [
-			'.docx','.doc','.pdf','.ppt','.odt','.img',
-			'.DOC','.PDF','.PPT','.ODT','.IMG']):
+	if any(link.lower().endswith(suffix) for suffix in [
+			'.docx','.doc','.pdf','.ppt','.pptx','.odt','.img']):
 			return False
 	return True
 

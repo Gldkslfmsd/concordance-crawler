@@ -1,0 +1,19 @@
+Parts-of-speech taggers / Lemmatizers
+=====================================
+
+gensim
+======
+https://radimrehurek.com/gensim/utils.html
+-- for lemmatize function it needs pattern package
+-- pattern package is just for python2: http://www.clips.ua.ac.be/pattern
+
+
+textblob
+========
+-- works both for python2 and 3
+-- uses nltk
+
+
+inflect
+=======
+-- it's only able pluralize/singularize

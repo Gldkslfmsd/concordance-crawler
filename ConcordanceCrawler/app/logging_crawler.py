@@ -68,9 +68,11 @@ class Logging(object):
 		self.num_pages = 0 # number of visited pages
 		self.page_errors = 0 # number of errors during visiting pages
 		self.num_concordances = 0 # number of found concordances
-		self.links_filtered = 0
+		self.links_filtered_suffix = 0
+		self.links_filtered_rep = 0
 		self.repeated_concordances = 0
 		self.page_lan_filtered = 0
+		self.links_crawled = 0
 
 
 	def log_details(self,*a):
@@ -80,10 +82,14 @@ class Logging(object):
 		'logs interesting numbers about progress'''
 		self.Logger.info("""Crawling status 
 serp\t\t{num_serps} ({serp_errors} errors) 
-pages visited\t{num_pages} ({links_filtered} links filtered, {lan_filter} filtered by language filter, {page_errors} errors)
+links crawled\t{num_links} ({suffix} filtered because of format suffix, {rep} crawled repeatedly)
+pages visited\t{num_pages} ({lan_filter} filtered by language filter, {page_errors} errors)
 concordances\t{num_concordances} ({more_times} crawled repeatedly)""".format(
 			num_serps=self.num_serps,
 			serp_errors=self.serp_errors,
+			num_links=self.links_crawled,
+			suffix=self.links_filtered_suffix,
+			rep=self.links_filtered_rep,
 			num_pages=self.num_pages,
 			links_filtered=self.links_filtered,
 			lan_filter=self.page_lan_filtered,
@@ -134,8 +140,10 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 #		f.close()
 		if res:
 			return True
-		self.log_details("page rejected by language filter")
+		self.Logger.debug("page rejected by language filter")
+		self.num_pages += 1
 		self.page_lan_filtered += 1
+		self.log_state()
 		return False
 
 	def modify_concordance(self, con):
@@ -156,13 +164,13 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 	def filter_link_logwrapper(self,link):
 		res = self._raw_filter_link(link)
 		if not res:
-			self.Logger.info('link {0} rejected because of format suffix'.format(link))
-			self.links_filtered += 1
+			self.Logger.debug('link {0} rejected because of format suffix'.format(link))
+			self.links_filtered_suffix += 1
 			self.log_state()
 			return False
 		if self.visited_pages.contains(link):
-			self.Logger.info('link {0} rejected because it has already been visited'.format(link))
-			self.links_filtered += 1
+			self.Logger.debug('link {0} rejected because it has already been visited'.format(link))
+			self.links_filtered_rep += 1
 			self.log_state()
 			return False
 		return True
@@ -172,6 +180,8 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 		self.num_serps += 1
 		self.log_details("crawled SERP, parsed {0} links".format(
 			len(links)))
+		self.links_crawled += len(links)
+		self.log_state()
 		return links
 
 	def _yield_concordances_from_link(self, link):
@@ -189,21 +199,21 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 				self.log_state()
 
 
-	def visit_link(self, link):
+	def concordances_from_link(self, link):
 		try:
-			concordances = super(LoggingCrawler, self).visit_link(link)
+			concordances = super(LoggingCrawler, self).concordances_from_link(link)
 		except requests.exceptions.Timeout:
-			logging.error("request {0} cannot be handled for a long time".format(
+			self.Logger.error("request {0} cannot be handled for a long time".format(
 				link['link']))
 			self.page_errors += 1
 			raise
 		except requests.exceptions.RequestException as e:
-			logging.error("\'{}\' occured during getting {}".format(
+			self.Logger.error("\'{}\' occured during getting {}".format(
 				e,link['link']))
 			self.page_errors += 1
 			raise
 		except TypeError:
-			logging.error("parsing error during processing \'{}\'".format(
+			self.Logger.error("parsing error during processing \'{}\'".format(
 				link['link']))
 			self.page_errors += 1
 		except Exception:

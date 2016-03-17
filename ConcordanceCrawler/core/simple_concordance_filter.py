@@ -16,7 +16,7 @@ class ReConcordanceFilter:
 
 
 filters = {}
-def regex_concordance_filtering(targets, sentence):
+def regex_concordance_filtering(sentence, targets):
 	global filters
 	for target in targets:
 		if not target in filters:

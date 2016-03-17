@@ -1,0 +1,118 @@
+
+langdetect
+==========
+
+https://github.com/Mimino666/langdetect
+
+- direct port from Java
+Java version:
+	- Generate language profiles from Wikipedia abstract xml
+	- Detect language of a text using naive Bayesian filter
+	- 99% over precision for 53 languages 
+
+- copyright licence
+- Python 2 and 3
+- works good after quick test
+- loads slowly
+- author is Slovak and Matfyz alumnus
+
+- short demo runs 0.689s
+	- it detects this textfile and two short other examples
+
+langid
+======
+
+https://github.com/saffsd/langid.py
+
+- needs numpy
+- 97 languages
+- Python 2 and 3
+- looks complex (because of long GitHub documentation)
+- short demo runs 3.045s (but is correct)
+	- there's a really huge string in source code, a default model in binary
+		which is loading long
+
+
+
+cheap ntlk language detection
+=============================
+
+source: this blogpost
+http://www.algorithm.co.il/blogs/programming/python/cheap-language-detection-nltk/
+
+- uses nltk
+- wasn't rigorously tested!
+- detects just few languages (maybe can be more if I download nlkt support for
+	other languages), but has also is_english function which suffices
+- works on basis of counting stopwords
+- incorrect
+	- I found false positive counterexamples
+- short demo appr. 0.2s
+
+
+
+detectlanguage
+==============
+
+https://github.com/detectlanguage/detectlanguage-python
+
+- API to some web service, API key is needed
+
+ldig
+====
+
+https://github.com/shuyo/ldig
+
+- not on PYPI
+- 4 years old
+- intended for Twitter tweets, usage for texts untrivial
+- does distinguish Czech, but not Slovak
+- author is Japanese
+- not easy to test it (no example snippets on GitHub page)
+
+
+
+detectlanguage and ldig are not suitable for use in CorcondanceCrawler
+
+________________________________________________________________________________
+
+
+
+Test of correctness:
+====================
+
+I compared langdetect, langid and cheap nltk for correctness (see other
+files in this directory). 
+
+I found some counterexamples for nltk's distinguishing English/not English.
+It marked some normal Czech and Slovak texts as English, which is a bad
+mistake. Therefore this approach is not suitable.
+
+langdetect and langid differ in this ways:
+
+- Old English:
+	- correct approach is rejecting that it's English
+ 	- langdetect's result was 57% English, 42% Dutch, so the
+	result would be English (default threshold for marking one language is 50%)
+	- langid's result was 99.9999% Latin, which was correct
+
+- sample of HTML with lots of urls containing English words:
+	- langdetect: 85% English
+	- langid 38% Italian
+	=> correct answer is disputable
+		
+- Latin and other languages
+	- langdetect doesn't know Latin and langid does, but that's not
+		significant, I'm choosing a library that is able to receive/reject
+		English
+
+
+Conclusion
+==========
+
+I'm choosing langdetect, but I will raise it's threshold for receiving
+English to avoid similar errors as with the Old English.
+
+It is at least as good as langid, but langid is much slower than langdetect. 
+langid also needs numpy, but langdetect is light-weight, doesn't use any big
+libraries.

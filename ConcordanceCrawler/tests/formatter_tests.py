@@ -21,5 +21,9 @@ class TestFormatter(unittest.TestCase):
 		self.assertTrue(f.read()==correct)
 		f.close()
 
+	# TODO
+	def test_xml(self):
+		pass
+
 if __name__=='__main__':
 	unittest.main()

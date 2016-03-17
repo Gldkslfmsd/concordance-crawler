@@ -27,19 +27,29 @@ def get_args():
 
 	parser.add_argument("word",
 		type=str,
-		help="a target word"
+		nargs="+",
+		help="""A target word to be crawled. You can specify more of its forms
+		(e.g. differing only by singular/plural, case, tense etc.). The first
+		one will be considered as canonical form."""
 		)
 
-	parser.add_argument("-n",
+	parser.add_argument("-n", "--number-of-concordances",
 		default=10,
 		type=int,
 		help="number of concordances to be crawled (default %(default)s)"
 		)
 
-	parser.add_argument("-p",
+	parser.add_argument("-m", "--max-per-page",
 		default=None,
 		type=int,
 		help="maximum number of concordances per page (default: unlimited)"
+		)
+
+	parser.add_argument("--disable-english-filter",
+		default=None,
+		const=True,
+		action='store_const',
+		help="disable filtering Non-English sentences from concordances",
 		)
 
 	# TODO -- does it work for all version without encoding=?
@@ -79,9 +89,35 @@ def get_args():
 		levels. All this messages are printed to stderr.
 		0 (DEBUG) -- logs all visiting urls before visit.
 		1 (DETAILS) -- logs all crawled urls and number of found concordances.
-		2 (STATUS) -- regurarly logs total number of visited pages, crawled
+		2 (STATUS) -- regularly logs total number of visited pages, crawled
 		concordances and errors.
 		3 (ERROR) -- logs just errors and anything else.
+		"""
+		)
+
+	parser.add_argument("-p", "--part-of-speech",
+		default=None,
+		type=str,
+		choices=["v","a","n","x"],
+		help="""Target word's part-of-speech. Concordances with any forms of
+		target word conjugated/inflected as given part-of-speech will be
+		crawled. Options are v: verbs, a: adjectives, n: nouns, x: any other
+		indeclinable part of speech (default).
+		
+		If your option is v, a or n, ConcordanceCrawler will terminate, unless you 
+		installed `textblob` library first.
+
+		Size of this library is not neglible, because it uses `nltk`, therefore
+		it's not an integral part of ConcordanceCrawler. Install it manually
+		with `pip install textblob`, if you wish. 
+
+		Instead of it you can also omit this option, decline your target word
+		manually and use all its forms as additional values for `word`
+		argument.
+
+		If you have installed textblob and you choose v, a or n, its automatic
+		lemmatizing of English will be used and other arguments for `word` than
+		the first one will be ignored.
 		"""
 		)
 
@@ -89,19 +125,38 @@ def get_args():
 	args = vars(parser.parse_args())
 	return args
 
+def use_textblob_lemmatizer(lc, pos):
+	try:
+		from ConcordanceCrawler.core.lemmatizer_concordance_filter import lemmatizing_concordance_filtering
+	except ImportError as e:
+		print(e)
+		import sys
+		sys.exit("""You have --part-of-speech among your options, your intention
+is to use automatic lemmatizing of verbs, adjectives or nouns, but you
+don't have `textblob` library installed. ConcordanceCrawler will terminate.
+
+Please install textblob by using `pip install textblob`.
+
+Or you can omit --part-of-speech option, conjugate/inflect your target word
+by yourself and use it as additional argument for word. See help message
+for more info.""")
+	else:
+		lc.setup(concordance_filtering=
+			lambda sentence, target:
+				lemmatizing_concordance_filtering(sentence, target, pos)
+				)
+
+
+
 
 def main():
-	# setup command-line arguments and get them from user
+
 	args = get_args()
-	word = args["word"]
-	number = args["n"]
-	# here is output formatter
-	of = create_formatter(
-		format=args["format"],
-		output_stream=args["output"]
-		)
+	# setup command-line arguments and get them from user
+	words = args["word"]
+	number = args["number_of_concordances"]
 	baz = args["bazword_generator"]
-	max_per_page = args["p"]
+	max_per_page = args["max_per_page"]
 	page_limited = True if max_per_page else False
 	if baz=="RANDOM":
 		bazgen = RandomShortWords()
@@ -114,20 +169,39 @@ def main():
 
 	log_level = ["DEBUG","DETAILS","STATUS","ERROR"][args['verbosity']]
 
-	# setup logger and print welcome message
+
+	lc = LoggingCrawler(words,bazgen)
+
+	pos = args['part_of_speech']
+	if pos is None or ( len(pos)==1 and pos[0] == 'x' ):
+		pass
+	else:
+		use_textblob_lemmatizer(lc, pos)
+
+	# setup logger
 	setup_logger(log_level)
+
+	# here is output formatter
+	of = create_formatter(
+		format=args["format"],
+		output_stream=args["output"]
+		)
+
+	# setup crawler
+	lc.max_per_page = max_per_page
+	lc.page_limited = page_limited
+	#lc.total_concordances = number
+	lc.Logger.setLevel(log_level)
+
+	if args['disable_english_filter']:
+		lc.setup(language_filter=lambda _: True)
+
 	logging.info("ConcordanceCrawler version {0} started, press Ctrl+C for \
 	interrupt".format(
 		__version__))
 
-	# setup crawler
-	lc = LoggingCrawler(word,bazgen)
-	lc.max_per_page = max_per_page
-	lc.page_limited = page_limited
-	lc.total_concordances = number
-
 	# generator that crawls exact number of concordances
-	concordances = ( c for _,c in zip(range(number), lc.yield_concordances(word)) )
+	concordances = ( c for _,c in zip(range(number), lc.yield_concordances(words)) )
 
 	# find concordances:
 	try:

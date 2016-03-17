@@ -1,0 +1,166 @@
+
+some simple regex
+=================
+source:
+http://stackoverflow.com/questions/25735644/python-regex-for-splitting-text-into-sentences-sentence-tokenizing
+
+(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s
+
+pros:
+	-- simple
+	-- should be fast
+	-- should be portable everywhere
+	-- handles ..., two characters abreviations like e.g. and numbers
+	-- language independent
+
+cons:
+	-- doesn't handle Mrs. and so on
+	-> inaccurate
+
+
+segtok
+======
+source: https://github.com/fnl/segtok
+more info: http://fnl.es/segtok-a-segmentation-and-tokenization-library.html
+
+-- for English, Spanish and German
+	-- maybe I could help to transfer it to Czech
+-- rule based
+
+pros:
+	-- slim
+		--> according to author it's faster than nltk
+	-- handles all Unicode dashes "the right way"
+	-- handles some of the more common cases of heavy abbreviation use
+	-- handles sentences starting with lowercase letters
+
+cons:
+	-- it's not easy to install on every computer via pip and virtualenv
+		-- uses "regex" library which must be compliled
+	-- according to author it's just for Python 2.7, 3.3 and 3.4
+		-- but maybe could be helpful to fix it
+
+nltk.tokenize.punkt
+===================
+source: http://www.nltk.org/api/nltk.tokenize.html#module-nltk.tokenize.punkt
+
+online demo:
+http://textanalysisonline.com/nltk-sentence-segmentation
+
+about:
+http://www.robincamille.com/2012-02-18-nltk-sentence-tokenizer/
+
+-- uses some unsupervised algorithm
+-- can be retrained for every language
+-- consists pretrained tokenizer for English
+
+pros:
+	-- trainable for any language
+
+cons:
+	-- must download some datatools
+	-- too heavy and slow
+
+
+Test of correctness:
+====================
+
+| method | category | result |
+------------------------------
+| nltk   | 
+| segtok | 
+| re     |
+
+| category | nltk    | segtok  |    re    |
+-------------------------------------------
+|  1  | + | + | + |
+|  2  | - | - | - |
+|  3  | - | + | + |
+|  4  | - | + | - |
+|  5  | + | - | - |
+|  6  | - | - | + |
+|  7  | + | - | - |
+|  8  | - | + | - | 
+|  9  | - | + | - |
+| 10  | - | + | - |
+| 11  | - | + | + |
+| 12  | + | + | + |
+| 13  | + | - | + |
+| 14  | - | + | + | -
+| 15  | + | + ! + |
+| 16  | - | + | + |
+| 17  | - | - | + |
+===================
+| sum | 6 | 11| 10|
+
+1 known academic degress like Ph.D, B.S., B.Sc., M.A. etc
+2 not standard academic degrees pb., b. and cand. (from wikipedia)
+3 abbreviation in paranthesis like (B.S./B.Sc.)
+4 sentence without final stop, next starts with capital letter
+5 one-letter middle name abreviation (Homer J. Simpson)
+6 two-letters as name abreviations without space (Homer J.S. Simpson)
+7 George H. W. Bush
+8 e.g.
+9 etc. (once)
+10 etc. etc. etc. etc. (multiple times)
+11 R.I.P.
+12 ... (three and more dots)
+13 text in lowercase
+14 text in parenthesis
+15 ip address and link
+16 127.0.0.1... ip address ended with three dots
+17 dates: 17.12. 2015 (don't split it before year)
+
+notes:
+7 maybe it's a luck that nltk is trained for this name
+11 segtok also knows that if next word starts with lowercase, it's not a new
+sentence
+13 segtok consider it one sentence
+
+Conclusion:
+
+This test is not much independent, e.g. some of points 1-16 above refer to
+the same or similar thing, so nltk could lost points multiple times for the
+same reason. Therefore we shouldn't conclude that nltk is much worse than
+nltk.
+
+But we at least cannot say that any method is much worse than other. They
+might be comparable.
+
+
+Little performance test:
+========================
+
+python -mtimeit -c 'from nltk.tokenize import sent_tokenize
+text = open("abbrev._text","r").read()
+sentences = sent_tokenize(text)'
+
+10 loops, best of 3: 3.28 msec per loop
+
+python -mtimeit -c 'from segtok.segmenter import split_multi
+text = open("abbrev._text","r").read()
+sentences = split_multi(text)'
+
+10000 loops, best of 3: 174 usec per loop
+
+python -mtimeit -c 'import re
+r = re.compile(r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s",re.MULTILINE)
+text = open("abbrev._text","r").read()
+sentences = r.split(text)'
+
+1000 loops, best of 3: 328 usec per loop
+
+|time [msec] | method   |
+-------------------------
+|3.28        | nltk     |
+|0.174       | segtok   |
+|0.328       | re       |
+
+
+
+Conclusion
+==========
+
+I'm choosing segtok, because test of correctness showed that it might be the
+best or at least not much worse than other methods. Segtok is also the
+fastest.

@@ -1,3 +1,14 @@
+import six
+if six.PY3:
+	import sys
+	if sys.version_info.minor>=4:
+		from multiprocessing.context import TimeoutError as multiprocessing_TimeoutError
+	else:
+		from multiprocessing import TimeoutError as multiprocessing_TimeoutError
+elif six.PY2:
+	from multiprocessing import TimeoutError as multiprocessing_TimeoutError
+
+
 import requests
 from ConcordanceCrawler.core.user_agents import random_user_agent
 import multiprocessing
@@ -52,14 +63,17 @@ def get_raw_html(url):
 # we run this command in side process and measure its time, if it
 # lasts more than 5 minutes we kill it.
 
-	# run it in a pool
-	app_res = pool.apply_async(
-		request_get, # a function
-		(url,), # function arguments
-		{'timeout':10,'headers':headers} # keyword arguments
-		)
-	# waits maximally 5 minutes for result
-	req = app_res.get(5*60)
+	try:
+		# run it in a pool
+		app_res = pool.apply_async(
+			request_get, # a function
+			(url,), # function arguments
+			{'timeout':10,'headers':headers} # keyword arguments
+			)
+		# waits maximally 5 minutes for result
+		req = app_res.get(5*60)
+	except multiprocessing_TimeoutError:
+		raise requests.exceptions.Timeout
 	return req.text
 
 # for debugging purposes:

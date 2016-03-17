@@ -3,26 +3,36 @@
 [![Build Status](https://travis-ci.org/Gldkslfmsd/concordance-crawler.svg?branch=master)](https://travis-ci.org/Gldkslfmsd/concordance-crawler)
 
 ConcordanceCrawler is a tool for automatic concordance extraction from the
-Internet. A concordance is a sentence containing some given word. You can
-choose a word in any language, and ConcordanceCrawler is able to download you
-hundreds of thousands sentences with the chosen word. 
+Internet. A concordance is a sentence containing some given word. Take an
+English word, and ConcordanceCrawler will be able to download you hundreds
+thousands of sentences with your word. 
+
+ConcordanceCrawler is a console application whose main purpose is
+crawling of English verbs or other words, but you can also use its API. It allows you to
+adapt ConcordanceCrawler to any other language. 
 
 ## Installation
 
-I recommend install ConcordanceCrawler in Python virtual environment (see
+I recommend ConcordanceCrawler installation in Python virtual environment (see
 https://virtualenv.pypa.io/ ). 
 
 ```
 virtualenv -p python3 p3
 source p3/bin/activate
-pip install git+https://github.com/Gldkslfmsd/concordance-crawler.git
+pip install ConcordanceCrawler
 ```
+
+If you want to use also automatic conjugating of English verbs (or
+inflecting of nouns or comparing of adjectives), then install also
+`textblob` library, but it's not necessary, you can use ConcordanceCrawler
+pretty well without it. It's quite huge, because it uses `nltk`. For
+installing it just type `pip install textblob`.
 
 Now you can use simply ```ConcordanceCrawler -h``` to run it and see its options.
 
 ## Version
 
-This is version 0.1.21. It's intended just python >= 2.7 and >= 3.2.
+This is version 0.3.0. It's intended for Python >= 2.7 and >= 3.2.
 
 Required libraries will be installed automaticaly.
 
@@ -32,32 +42,65 @@ You can use ConcordanceCrawler like a command-line application just as
 a Python library. This is a part of ConcordanceCrawler's help message:
 
 ```
-usage: ConcordanceCrawler [-h] [-n N] [-p P] [-o OUTPUT]
+usage: ConcordanceCrawler [-h] [-n NUMBER_OF_CONCORDANCES] [-m MAX_PER_PAGE]
+                          [--disable-english-filter] [-o OUTPUT]
                           [-b {RANDOM,WIKI_ARTICLES,WIKI_TITLES,NUMBERS}]
-                          [-f {json}] [-v {0,1,2,3}]
-                          word
+                          [-f {json}] [-v {0,1,2,3}] [-p {v,a,n,x}]
+                          word [word ...]
 ```
-`-n N` is a number of concordances that you wish a program would crawl. By default it's 10.
+`-n N`, `--number-of-concordances N` is a number of concordances that you
+wish a program would crawl. By default it's 10.
 
-`-p P` is a maximum number of concordances that will be crawled from one site. They are gotten from top to down. Default is to skip this option and then this number won't be limited. 
+`-m M`, `--max-per-page M` is a maximum number of concordances that will be
+crawled from one site. They are gotten from top to down. Default is to skip
+this option and then this number won't be limited. 
 
-`-o OUTPUT` is a name of an output "file". It can be e.g. `concordances.xml`, `concordances.json` or any other "file" as `/dev/null`. If a file exists, then it's overwritten, otherwise a new one is created. Default `OUTPUT` is standard output. 
+`-o OUTPUT`, `--output OUTPUT` is a name of an output "file". It can be e.g.
+`concordances.xml`, `concordances.json` or any other "file" as `/dev/null`.
+If a file exists, then it's overwritten, otherwise a new one is created.
+Default `OUTPUT` is standard output. 
 
-`-b {RANDOM,WIKI_ARTICLES,WIKI_TITLES,NUMBERS}` is a way how ConcordanceCrawler generates or takes bazwords. It uses them for increasing a number of links that can be found at Bing.com.
+`-b {RANDOM,WIKI_ARTICLES,WIKI_TITLES,NUMBERS}, --bazword-generator` is a way how
+ConcordanceCrawler generates or takes bazwords. It uses them for increasing
+a number of links that can be found at Bing.com.
 
-- `RANDOM` -- bazword will be a random four-letter word. This option is default.
+- `RANDOM` -- bazword will be a random four-letter word. This option is
+	default.
 
-- `WIKI_ARTICLES` -- from https://en.wikipedia.org/wiki/Special:Random will be downloaded random Wikipedia article. Its words will be used as bazwords, one word per one searching request.
+- `WIKI_ARTICLES` -- from https://en.wikipedia.org/wiki/Special:Random will
+	be downloaded random Wikipedia article. Its words will be used as
+	bazwords, one word per one searching request.
 
-- `WIKI_TITLES` -- same as previous, but as bazwords will be chosen just words from titles.
+- `WIKI_TITLES` -- same as previous, but as bazwords will be chosen just
+	words from titles.
 
 - `NUMBERS` -- bazwords will be 0, 1, 2, 3, ...
 
-`-f {json}` is an output format, default is json. Format xml will be operational in later versions.
+`-f {json}, --format` is an output format, default is json. Format xml will be
+operational in later versions.
 
-`-v {0,1,2,3}` is verbosity level, see rest of help message (`ConcordanceCrawler -h`) for more info.
+`-v {0,1,2,3}, --verbosity` is verbosity level, see rest of help message
+(`ConcordanceCrawler -h`) for more info.
 
-`word` is the target word in the centre of your interest.
+`-p {v,a,n,x}`, `--part-of-speech {v,a,n,x}` is target word's part of
+speech. It can be
+
+- `v` verb
+
+- `a` adjective
+
+- `n` noun
+
+- `x` any part of speech
+
+If you choose `-p` and `v`, `a` or `n`, then ConcordanceCrawler will use
+textblob's automatic lemmatizing, you must install it first, otherwise
+ConcordanceCrawler terminates.
+
+`word` is the target word in the centre of your interest. You can specify
+more of its forms, then all sentences containing at least one of this words
+will be crawled. The first word is considered as canonical form and
+ConcordanceCrawler will seek this 
 
 ### Example
 
@@ -70,7 +113,8 @@ containing word "hello".
         "date": "2015-09-07 19:19:26.907794",
         "url": "http://rssjgroup.com/",
         "concordance": "Hello !",
-        "keyword": "hello"
+        "keyword": "hello",
+				"id": 1
     }
 ]
 ```
@@ -81,68 +125,48 @@ ConcordanceCrawler apple -n 1
 ```
 
 ```
-2015-09-07 20:33:37,175 STATUS: ConcordanceCrawler started, press Ctrl+C for interrupt
-2015-09-07 20:33:38,068 DETAILS: crawled SERP, parsed 50 links
-2015-09-07 20:33:38,354 DETAILS: page http://www.windowsphone.com/en-us/how-to/wp8/cortana/meet-cortana visited, 0 concordances found
-2015-09-07 20:33:40,491 DETAILS: page http://www.yelp.com/biz/best-buy-libertyville visited, 4 concordances found
-2015-09-07 20:33:40,491 STATUS: Crawling status 
-	serp		1 (0 errors) 
-	pages visited	2	(2 unique pages, 0 errors)
-	concordances	1
+2016-03-17 15:42:38,776 STATUS: ConcordanceCrawler version 0.3.0 started, press Ctrl+C for 	interrupt
+2016-03-17 15:42:39,418 DETAILS: crawled SERP, parsed 50 links
+2016-03-17 15:42:39,418 STATUS: Crawling status 
+serp		1 (0 errors) 
+links crawled	50 (0 filtered because of format suffix, 0 crawled repeatedly)
+pages visited	0 (0 filtered by language filter, 0 errors)
+concordances	0 (0 crawled repeatedly)
+2016-03-17 15:42:41,060 DETAILS: page https://discussions.apple.com/thread/5524646?start=0&tstart=0 visited, 6 concordances found
+2016-03-17 15:42:41,060 STATUS: Crawling status 
+serp		1 (0 errors) 
+links crawled	50 (0 filtered because of format suffix, 0 crawled repeatedly)
+pages visited	1 (0 filtered by language filter, 0 errors)
+concordances	1 (0 crawled repeatedly)
 [
     {
-        "url": "http://www.yelp.com/biz/best-buy-libertyville",
-        "concordance": " They killed my Apple computer.",
+        "url": "https://discussions.apple.com/thread/5524646?start=0&tstart=0",
         "keyword": "apple",
-        "date": "2015-09-07 20:33:40.490945"
+        "concordance": "Apple may provide or recommend responses as a possible solution based on the information provided; every potential issue may involve several factors not detailed in the conversations captured in an electronic forum and Apple can therefore provide no guarantee as to the efficacy of any proposed solutions on the community forums.",
+        "date": "2016-03-17 15:42:41.060341",
+        "id": 1
     }
 ]
 ```
 
-Xml output would look like this, but it's currently out of service.
-```
-<root>
-<item>
-    <concordance>One Bright Red Apple Isolated on White with Slight Shadow - 24"H x 16"W - Peel and Stick Wall Decal by Wallmonkeys
-    </concordance>
-    <date>2015-09-07 20:39:48.028556</date>
-    <keyword>apple</keyword>
-    <url>http://www.amazon.com/Isolated-Wall-Sticker-Wallmonkeys-Decals/dp/B005M9PVNU</url>
-</item>
-</root>
-```
 ### Use in your own code
 
 You can also use ConcordanceCrawler as a library in your own project. Then
 you would be interested in a subpackage ```core```. There isn't any other
-code documentation yet, but might be available later.
+code documentation yet, but will be available later.
 
 ## How does ConcordanceCrawler work?
 
 ConcordanceCrawler finds links on Bing.com search engine, visits them and
-finds there the sentences containing the target word.
+finds there sentences containing the target word.
 
 There's a little problem, you can find on Bing.com at most first 1000 links
 for every keyword, and that's too few. Therefore ConcordanceCrawler lets
 finding keywords as for example "sdtn look", "naxe look", "jzmw look" and
-similar combinations of bazword and target word. By this approach it
-gets sufficient number of different links to crawl
-concordances.
+similar combinations of bazword and target word. By this approach it gets
+sufficient number of different links to crawl concordances.
 
 You can find more informations [here](https://github.com/Gldkslfmsd/concordance-crawler/tree/master/doc), but in Czech.
-
-## Future plans with ConcordanceCrawler
-
-This is the first version of ConcordanceCrawler, but other versions are also
-planned. In plan is that ConcordanceCrawler will be able to extract
-sentences with more accuracy (this version detects words just in one form,
-e.g. -ing forms of verbs are ignored). At least it will also detect language
-of sentence and encoding of document.
-
-ConcordanceCrawler is also published on Cheeseshop
-[here](https://pypi.python.org/pypi/ConcordanceCrawler) under open-source license
-and in future there will exist a web-page with demo application. This could be
-finished until June 2016.
 
 ## Contact me!
 

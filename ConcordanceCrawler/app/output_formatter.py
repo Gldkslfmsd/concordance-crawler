@@ -24,6 +24,9 @@ class OutputFormatter(object):
 		'''
 		self.output_stream = output_stream
 
+	def flush(self):
+		self.output_stream.flush()
+
 	def close(self):
 		# every formatter must close the file in the end
 		self.output_stream.close()
@@ -79,6 +82,7 @@ class JsonFormatter(OutputFormatter):
 		# make an extra indent for every row.
 		result = comma + dumps([concordance],indent=' '*4)[2:-2]
 		self.output_stream.write(result)
+		self.flush()
 
 	def close(self):
 		# ...and terminating ] of list
@@ -102,6 +106,7 @@ class XmlFormatter(OutputFormatter):
 		pretty = parseString(xml).toprettyxml()
 		result = pretty
 		self.output_stream.write(result)
+		self.flush()
 
 	def close(self):
 		self.output_stream.write("</root>\n")

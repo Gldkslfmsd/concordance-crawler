@@ -26,9 +26,10 @@ def handler(_):
 
 common_words = ["a","the","in","of","at","to"]
 class TestCrawler(unittest.TestCase):
+	pass
 
 # TODO
-"""
+	"""
 	def test_setting_handler_fails(self):
 		crawler = ConcordanceCrawler(common_words)
 		# test that you cannot set handler on ignored exception

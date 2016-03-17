@@ -113,7 +113,7 @@ class TestVisitor(unittest.TestCase):
 	def test_concordances_filtering(self):
 		# todo
 		#self.assertTrue(self.visitor.concordance_filtering("večer","Dobrý večer, ..."))
-		self.assertTrue(self.visitor.concordance_filtering("večer","Dobrý večer ..."))
+		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer ...",["večer"]))
 
 	# todo: delete
 	def test_split(self):
@@ -124,7 +124,7 @@ class TestVisitor(unittest.TestCase):
 			s.split(2)
 
 	def test_visit_links(self):
-		concs = self.visitor.visit_links([{"link":"https://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation"}],"string")
+		concs = self.visitor.concordances_from_link({"link":"https://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation"},["string"])
 		self.assertTrue(len(concs)>0)
 
 

@@ -19,7 +19,7 @@ https://virtualenv.pypa.io/ ).
 ```
 virtualenv -p python3 p3
 source p3/bin/activate
-pip install ConcordanceCrawler
+pip install git+https://github.com/Gldkslfmsd/concordance-crawler.git
 ```
 
 If you want to use also automatic conjugating of English verbs (or

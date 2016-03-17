@@ -14,6 +14,7 @@ elif six.PY2:
 import requests
 
 from ConcordanceCrawler.core.limited_buffer import LimitedBuffer
+import re
 
 '''This class is used just by demo commandline application.
 '''
@@ -138,8 +139,13 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 		return False
 
 	def modify_concordance(self, con):
-		'''adds id to every concordance'''
+		'''adds id to every concordance
+		change \n to spaces, delete more than two following spaces'''
 		con['id'] = self.num_concordances
+		c = con["concordance"].strip()
+		c = re.sub(r"[\n\t]"," ",c)
+		c = re.sub(r" +"," ",c)
+		con["concordance"] = c
 		return con
 
 	def yield_concordances(self, words):

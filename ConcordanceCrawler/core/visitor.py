@@ -29,7 +29,7 @@ class Visitor():
 		self.norm_encoding = encoding.norm_encoding
 		self.concordance_filtering = concordance_filtering
 	
-	def visit(self, url, targets, *conc_filter_arg, **conc_filter_kwarg):
+	def visit(self, url, targets):
 		'''Visits a page on given url and extracts all sentences containing
 		target word from visible text.
 	
@@ -61,7 +61,7 @@ class Visitor():
 
 		concordances = []
 		for s in sentences:
-			t = self.concordance_filtering(targets, s, *conc_filter_arg, **conc_filter_kwarg)
+			t = self.concordance_filtering(s, targets)
 			if t:
 				concordances.append((s,t))
 		return concordances

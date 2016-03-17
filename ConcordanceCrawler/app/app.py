@@ -125,9 +125,31 @@ def get_args():
 	args = vars(parser.parse_args())
 	return args
 
+def use_textblob_lemmatizer(lc, pos):
+	try:
+		from ConcordanceCrawler.core.lemmatizer_concordance_filter import lemmatizing_concordance_filtering
+	except ImportError as e:
+		print(e)
+		import sys
+		sys.exit("""You have --part-of-speech among your options, your intention
+is to use automatic lemmatizing of verbs, adjectives or nouns, but you
+don't have `textblob` library installed. ConcordanceCrawler will terminate.
+
+Please install textblob by using `pip install textblob`.
+
+Or you can omit --part-of-speech option, conjugate/inflect your target word
+by yourself and use it as additional argument for word. See help message
+for more info.""")
+	else:
+		lc.setup(concordance_filtering=
+			lambda sentence, target:
+				lemmatizing_concordance_filtering(sentence, target, pos)
+				)
+
+
+
 
 def main():
-
 
 	args = get_args()
 	# setup command-line arguments and get them from user
@@ -154,26 +176,16 @@ def main():
 	if pos is None or ( len(pos)==1 and pos[0] == 'x' ):
 		pass
 	else:
-		try:
-			from lemmatizer_concordance_filter import lemmatizing_concordance_filtering
-		except ImportError:
-			import sys
-			sys.exit('install textblob first TODO')
-		else:
-			print('ok')
+		use_textblob_lemmatizer(lc, pos)
 
-	# setup logger and print welcome message
+	# setup logger
 	setup_logger(log_level)
-	logging.info("ConcordanceCrawler version {0} started, press Ctrl+C for \
-	interrupt".format(
-		__version__))
 
 	# here is output formatter
 	of = create_formatter(
 		format=args["format"],
 		output_stream=args["output"]
 		)
-
 
 	# setup crawler
 	lc.max_per_page = max_per_page
@@ -183,6 +195,10 @@ def main():
 
 	if args['disable_english_filter']:
 		lc.setup(language_filter=lambda _: True)
+
+	logging.info("ConcordanceCrawler version {0} started, press Ctrl+C for \
+	interrupt".format(
+		__version__))
 
 	# generator that crawls exact number of concordances
 	concordances = ( c for _,c in zip(range(number), lc.yield_concordances(words)) )

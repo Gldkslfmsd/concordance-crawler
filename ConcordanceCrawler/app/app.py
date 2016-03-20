@@ -8,6 +8,8 @@ point).
 
 import sys
 import six
+if six.PY2:
+	range = xrange
 import argparse
 from sys import stdout
 import logging

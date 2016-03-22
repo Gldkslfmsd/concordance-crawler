@@ -80,7 +80,7 @@ class JsonFormatter(OutputFormatter):
 		# needful because I'm printing just one concordance per one call of this
 		# function, but together I want a whole list. There isn't any option to
 		# make an extra indent for every row.
-		result = comma + dumps([concordance],indent=' '*4)[2:-2]
+		result = comma + dumps([concordance],indent=' '*4,ensure_ascii=False)[2:-2]
 		self.output_stream.write(result)
 		self.flush()
 

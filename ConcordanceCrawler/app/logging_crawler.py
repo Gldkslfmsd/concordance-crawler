@@ -115,7 +115,7 @@ concordances\t{num_concordances} ({more_times} crawled repeatedly)""".format(
 class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):	
 	'''Crawls concordances and logs statistics'''
 
-	def __init__(self, words, bazgen):
+	def __init__(self, words, bazgen=None):
 		super(LoggingCrawler, self).__init__(words,bazgen)
 		Logging.__init__(self)
 		self._raw_filter_link = self.filter_link
@@ -151,7 +151,7 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 		change \n to spaces, delete more than two following spaces'''
 		con['id'] = self.num_concordances
 		c = con["concordance"].strip()
-		c = re.sub(r"[\n\t]"," ",c)
+		c = re.sub(r"\s"," ",c,flags=re.UNICODE | re.MULTILINE)
 		c = re.sub(r" +"," ",c)
 		con["concordance"] = c
 		return con

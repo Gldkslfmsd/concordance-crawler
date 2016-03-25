@@ -1,8 +1,12 @@
 import six
 if six.PY2:
 	from simplejson import dumps
+	def correct_encode(string):
+		return string.encode('utf-8')
 else:
 	from json import dumps
+	def correct_encode(a):
+		return a
 
 '''Output formatter classes.
 
@@ -81,7 +85,7 @@ class JsonFormatter(OutputFormatter):
 		# function, but together I want a whole list. There isn't any option to
 		# make an extra indent for every row.
 		result = comma + dumps([concordance],indent=' '*4,ensure_ascii=False)[2:-2]
-		self.output_stream.write(result)
+		self.output_stream.write(correct_encode(result))
 		self.flush()
 
 	def close(self):

@@ -203,12 +203,16 @@ def main():
 		__version__))
 
 	# generator that crawls exact number of concordances
-	concordances = ( c for _,c in zip(range(number), lc.yield_concordances(words)) )
+	concordances = lc.yield_concordances(words)
 
 	# find concordances:
 	try:
+		i = 0
 		for c in concordances:
 			of.output(c)
+			i += 1
+			if i>= number:
+				break
 	except KeyboardInterrupt:
 		lc.log_state()
 		logging.info("\n\nConcordanceCrawler aborted, you can try to find " +

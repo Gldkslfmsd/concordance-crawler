@@ -9,6 +9,10 @@ import requests
 from ConcordanceCrawler.core.bazwords import *
 from ConcordanceCrawler.core.parsing import parse
 import ConcordanceCrawler.core.urlrequest as urlrequest
+import six
+if six.PY3:
+	def unicode(a):
+		return a
 
 
 class SERPError(Exception):
@@ -73,6 +77,7 @@ def crawlonekeyword(keyword):
 	for i in links:
 		i['date'] = date
 		i['keyword'] = keyword
+		i['link'] = unicode(i['link'])#.encode('UTF-8')
 
 	return links
 

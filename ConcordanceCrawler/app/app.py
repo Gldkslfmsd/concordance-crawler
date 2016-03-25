@@ -54,12 +54,8 @@ def get_args():
 		help="disable filtering Non-English sentences from concordances",
 		)
 
-	# TODO -- does it work for all version without encoding=?
-	if six.PY3 and sys.version_info.minor>=4 and False:
-		filetype = argparse.FileType('w', encoding='UTF-8')
 
-	else:
-		filetype = argparse.FileType('w')
+	filetype = argparse.FileType('w')
 	parser.add_argument("-o","--output",
 		default=stdout,
 		type=filetype,

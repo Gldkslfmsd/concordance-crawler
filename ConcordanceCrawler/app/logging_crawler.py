@@ -71,6 +71,7 @@ class Logging(object):
 		self.links_filtered_suffix = 0
 		self.links_filtered_rep = 0
 		self.repeated_concordances = 0
+		self.page_enc_filtered = 0
 		self.page_lan_filtered = 0
 		self.links_crawled = 0
 
@@ -83,7 +84,7 @@ class Logging(object):
 		self.Logger.info("""Crawling status 
 serp\t\t{num_serps} ({serp_errors} errors) 
 links crawled\t{num_links} ({suffix} filtered because of format suffix, {rep} crawled repeatedly)
-pages visited\t{num_pages} ({lan_filter} filtered by language filter, {page_errors} errors)
+pages visited\t{num_pages} ({enc_filter} filtered by encoding filter, {lan_filter} filtered by language filter, {page_errors} errors)
 concordances\t{num_concordances} ({more_times} crawled repeatedly)""".format(
 			num_serps=self.num_serps,
 			serp_errors=self.serp_errors,
@@ -92,6 +93,7 @@ concordances\t{num_concordances} ({more_times} crawled repeatedly)""".format(
 			rep=self.links_filtered_rep,
 			num_pages=self.num_pages,
 			links_filtered=self.links_filtered,
+			enc_filter=self.page_enc_filtered,
 			lan_filter=self.page_lan_filtered,
 			page_errors=self.page_errors,
 			num_concordances=self.num_concordances,
@@ -126,8 +128,19 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 		self._raw_language_filter = self.visitor.language_filter
 		self.visitor.language_filter = self.language_filter_log_wrapper
 
+		self._raw_norm_encoding = self.visitor.norm_encoding
+		self.visitor.norm_encoding = self.norm_encoding
+
 		self.visited_pages = LimitedBuffer()
 		self.crawled_concordances = LimitedBuffer()
+
+	def norm_encoding(self, document, headers):
+		res = self._raw_norm_encoding(document, headers)
+		if not res:
+			self.Logger.debug("page rejected by encoding filter")
+			self.page_enc_filtered += 1
+			self.log_state()
+		return res
 
 	def language_filter_log_wrapper(self, text):
 		res = self._raw_language_filter(text)

@@ -71,7 +71,6 @@ if __name__ == "__main__":
 		x = norm_encoding(a, headers=b)
 		print("|",x+"x","W")
 
-	print("všě")
 	for a,b in false:
 		x = norm_encoding(a, headers=b)
 		print("nic:",x)

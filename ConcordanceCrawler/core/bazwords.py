@@ -28,7 +28,7 @@ class WikipediaRandomArticleTitles():
 
 	def _generate(self):
 		while True:
-			x = urlrequest.get_raw_html('https://en.wikipedia.org/wiki/Special:Random')
+			x,_ = urlrequest.get_raw_html('https://en.wikipedia.org/wiki/Special:Random')
 			pagetitle = BeautifulSoup(x,"lxml").html.head.title.string
 			# there is " - Wikipedia, the free encyclopedia" in the end of every
 			# page title, I'm removing it
@@ -48,7 +48,7 @@ class WikipediaRandomArticle():
 	def _generate(self):
 		while True:
 			url = "https://en.wikipedia.org/wiki/Special:Random"
-			html = urlrequest.get_raw_html(url)
+			html, _ = urlrequest.get_raw_html(url)
 			soup = BeautifulSoup(html,"lxml").html
 			divs = soup('div',{"id":"mw-content-text"})
 			if len(divs)==0: # article is probably empty

@@ -141,7 +141,6 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 		if res:
 			return True
 		self.Logger.debug("page rejected by language filter")
-		self.num_pages += 1
 		self.page_lan_filtered += 1
 		self.log_state()
 		return False

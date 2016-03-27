@@ -28,6 +28,9 @@ class Visitor():
 		self.language_filter = EngDetector().is_english
 		self.norm_encoding = encoding.norm_encoding
 		self.concordance_filtering = concordance_filtering
+
+#		open("logfile","w").close()
+	#	self.i = 0
 	
 	def visit(self, url, targets):
 		'''Visits a page on given url and extracts all sentences containing
@@ -46,9 +49,8 @@ class Visitor():
 			>>> visit('http://nonenglishsite.cz/', ['hoovercraft'])
 			None  # returns None if the text e.g. doesn't pass language filter
 			'''
-		# TODO: rename it and add returning header
-		raw_data, header = self.get_raw_html(url), None
-		normed_data = self.norm_encoding(raw_data, header)
+		raw_data, headers = self.get_raw_html(url)
+		normed_data = self.norm_encoding(raw_data, headers)
 		data_format = self.predict_format(normed_data)
 		if not self.accept_format(data_format):
 			return None
@@ -56,6 +58,23 @@ class Visitor():
 
 		if not self.language_filter(text):
 			return None
+
+		# logging charset in http header and in meta tag 
+#		m = re.search(r"charset=\S*", raw_data)
+#		if m:
+#			x = m.string[m.start():m.end()]
+#			x = re.sub(r"['\"]","",x)
+#			x = re.sub(r"charset=","",x)
+#			x = re.sub(r"[</>].*",r"",x)
+#		else:
+#			x = ""
+#		m = re.search(r"charset=\S*",raw_data)
+#		self.i += 1
+#		f=open("logfile","a")
+#		f.write(targets[0]+str(self.i)+"; header:"+ headers['Content-Type']+"; metatag:"+x+"\n")
+#		f.close()
+#		with open(targets[0]+str(self.i)+".html","w") as f:
+#			f.write(raw_data)
 
 		sentences = self.sentence_segmentation(text)
 

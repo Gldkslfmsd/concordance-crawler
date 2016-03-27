@@ -74,7 +74,8 @@ def get_raw_html(url):
 		req = app_res.get(5*60)
 	except multiprocessing_TimeoutError:
 		raise requests.exceptions.Timeout
-	return req.text
+
+	return req.text, req.headers
 
 # for debugging purposes:
 if __name__=="__main__":

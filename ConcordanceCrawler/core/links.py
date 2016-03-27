@@ -63,7 +63,7 @@ def crawlonekeyword(keyword):
 	url = get_keyword_url(keyword)
 	logging.debug("trying to download SERP {}".format(url))
 	try:
-		rawhtml = urlrequest.get_raw_html(url)
+		rawhtml, headers = urlrequest.get_raw_html(url)
 	except requests.exceptions.RequestException as e:
 		raise SERPError(e)
 

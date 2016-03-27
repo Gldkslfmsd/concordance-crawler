@@ -118,7 +118,7 @@ class ConcordanceCrawler(CrawlerConfigurator):
 				return
 			for i,c in enumerate(concordances):
 				# maximum limit of concordances per page reached
-				if self.page_limited and i>self.max_per_page:
+				if self.page_limited and i==self.max_per_page:
 					break
 				# here is formed the output structure for concordance
 				res = c

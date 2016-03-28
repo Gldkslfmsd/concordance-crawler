@@ -8,4 +8,5 @@ urlpatterns = [
 	url(r'^browsejobs/', views.browsejobs, name='browsejobs'),
 	url(r'^jobdetail/(?P<job_id>[0-9]*)/?$', views.jobdetail, name='jobdetail'),
 	url(r'^createjob/', views.createjob, name='createjob'),
+	url(r'^create/', views.create, name='create'),
 		]

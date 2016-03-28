@@ -4,5 +4,19 @@
 
 create new crawling job
 
+{%if error_message %}
+<b>
+	{{ error_message }}
+</b><br>
+{% endif %}
+
+<form action="{% url 'create' %}" method="post">
+{% csrf_token %}
+    <input type="radio" name="choice" id="choice1"
+		value="1" />
+		    <label for="choice1">1</label><br />
+		<input type="submit" value="Vote" />
+</form>
+
 {% endblock %}
 

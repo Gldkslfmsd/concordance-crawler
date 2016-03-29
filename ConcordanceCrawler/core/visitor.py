@@ -17,7 +17,8 @@ from ConcordanceCrawler.core.eng_detect.eng_detect import EngDetector
 class Visitor():
 	attributes = ['get_raw_html', 'get_visible_text', 'predict_format',
 		'accept_format', 'sentence_segmentation',
-		'language_filter', 'norm_encoding', 'concordance_filtering']
+		'language_filter', 'norm_encoding', 'concordance_filtering',
+		'sentence_filter']
 
 	def __init__(self):
 		self.get_raw_html = urlrequest.get_raw_html
@@ -28,6 +29,7 @@ class Visitor():
 		self.language_filter = EngDetector().is_english
 		self.norm_encoding = encoding.norm_encoding
 		self.concordance_filtering = concordance_filtering
+		self.sentence_filter = lambda _: True  # default sentence filter does nothing
 
 #		open("logfile","w").close()
 	#	self.i = 0
@@ -51,6 +53,8 @@ class Visitor():
 			'''
 		raw_data, headers = self.get_raw_html(url)
 		normed_data = self.norm_encoding(raw_data, headers)
+		if not normed_data:
+			return None
 		data_format = self.predict_format(normed_data)
 		if not self.accept_format(data_format):
 			return None
@@ -76,7 +80,8 @@ class Visitor():
 #		with open(targets[0]+str(self.i)+".html","w") as f:
 #			f.write(raw_data)
 
-		sentences = self.sentence_segmentation(text)
+		sentences = filter(self.sentence_filter,
+			self.sentence_segmentation(text))
 
 		concordances = []
 		for s in sentences:

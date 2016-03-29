@@ -120,10 +120,14 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 	def __init__(self, words, bazgen=None):
 		super(LoggingCrawler, self).__init__(words,bazgen)
 		Logging.__init__(self)
-		self._raw_filter_link = self.filter_link
-		self.filter_link = self.filter_link_logwrapper
 		self.Logger = logging.getLogger().getChild('ConcordanceCrawlerLogger')
 		self.Logger.setLevel(50) # mutes all warnings and logs # TODO: why?
+
+		self.visited_pages = LimitedBuffer()
+		self.crawled_concordances = LimitedBuffer()
+
+		self._raw_filter_link = self.filter_link
+		self.filter_link = self.filter_link_logwrapper
 
 		self._raw_language_filter = self.visitor.language_filter
 		self.visitor.language_filter = self.language_filter_log_wrapper
@@ -131,15 +135,25 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 		self._raw_norm_encoding = self.visitor.norm_encoding
 		self.visitor.norm_encoding = self.norm_encoding
 
-		self.visited_pages = LimitedBuffer()
-		self.crawled_concordances = LimitedBuffer()
+	def after_setup(self,**kwargs):
+		if 'filter_link' in kwargs:
+			self._raw_filter_link = self.filter_link
+			self.filter_link = self.filter_link_logwrapper
+
+		if 'language_filter' in kwargs:
+			self._raw_language_filter = self.visitor.language_filter
+			self.visitor.language_filter = self.language_filter_log_wrapper
+
+		if 'norm_encoding' in kwargs:
+			self._raw_norm_encoding = self.visitor.norm_encoding
+			self.visitor.norm_encoding = self.norm_encoding
+
 
 	def norm_encoding(self, document, headers):
 		res = self._raw_norm_encoding(document, headers)
 		if not res:
 			self.Logger.debug("page rejected by encoding filter")
 			self.page_enc_filtered += 1
-			self.log_state()
 		return res
 
 	def language_filter_log_wrapper(self, text):
@@ -155,7 +169,6 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 			return True
 		self.Logger.debug("page rejected by language filter")
 		self.page_lan_filtered += 1
-		self.log_state()
 		return False
 
 	def modify_concordance(self, con):
@@ -238,6 +251,7 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 				link['link'],len(concordances)))
 			# because of statistics (is not thread-safe)
 			self.num_pages += 1
+			self.log_state()
 			return concordances
 
 

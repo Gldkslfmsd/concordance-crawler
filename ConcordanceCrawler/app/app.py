@@ -16,6 +16,7 @@ import logging
 from traceback import format_exc
 
 from ConcordanceCrawler.core.bazwords import *
+from ConcordanceCrawler.core.encoding import norm_encoding
 from ConcordanceCrawler.app.output_formatter import *
 from ConcordanceCrawler.app.logging_crawler import *
 from ConcordanceCrawler.__init__ import __version__
@@ -119,6 +120,19 @@ def get_args():
 		"""
 		)
 
+	parser.add_argument("-e", "--encoding",
+		default=None,
+		type=str,
+		help="""Select filtering of document by encoding. This option impacts
+		quality of resulting corpus. If not given, documents without respect to
+		their encoding will be crawled. If you select ASCII, all concordances
+		containing any non-ASCII character will be removed. If you select any other
+		charset, all documents without this charset specification in http header or in html
+		metatag will be ignored (as well as documents with unequal charset
+		value in http header and in metatag).
+		"""
+		)
+
 
 	args = vars(parser.parse_args())
 	return args
@@ -144,6 +158,27 @@ for more info.""")
 				lemmatizing_concordance_filtering(sentence, target, pos)
 				)
 
+def config_encoding(lc, enc):
+	if enc is None:
+		lc.setup(norm_encoding=lambda s, h: s)
+	elif enc.lower()=="ascii":
+		def ascii_filter(sentence):
+			return all(ord(c) < 128 for c in sentence)
+		lc.setup(norm_encoding=lambda s, h: s, 
+			sentence_filter=ascii_filter)
+	else:
+		if enc.lower() not in ["utf-8", "utf-16", "utf-32", "iso-8859-1", "iso-8859-2",
+			"gb2312", "gb18030"]:
+			lc.Logger.warning("Are you sure you want to crawl only documents with {0}"
+			" charset? It doesn't seem like any common valid encoding name. Maybe"
+			" there aren't any documents in {0} charset on the Internet, so you will never get any"
+			" concordances. But it's your option.".format(enc))
+
+		lc.setup(norm_encoding=
+			lambda doc, head: norm_encoding(doc, head, allowed=enc)
+			)
+
+			
 
 
 
@@ -194,13 +229,14 @@ def main():
 	if args['disable_english_filter']:
 		lc.setup(language_filter=lambda _: True)
 
+	config_encoding(lc, args['encoding'])
+
 	logging.info("ConcordanceCrawler version {0} started, press Ctrl+C for \
 	interrupt".format(
 		__version__))
 
 	# generator that crawls exact number of concordances
 	concordances = lc.yield_concordances(words)
-
 	# find concordances:
 	try:
 		i = 0

@@ -1,15 +1,15 @@
 import re
 
-def norm_encoding(document, headers):
+def norm_encoding(document, headers, allowed="utf-8"):
 	# missing Content-Type header
 	if not 'Content-Type' in headers:
-		return ""
+		return None
 	
 	h = headers['Content-Type']
 	# charset in header is present and is different from utf-8
 	charset = "harset=" in h
-	if charset and not 'utf-8' in h and not 'UTF-8' in h:
-		return ""
+	if charset and not allowed in h and not allowed.upper() in h:
+		return None
 
 	# charset in header is missing or is utf-8
 	
@@ -19,14 +19,14 @@ def norm_encoding(document, headers):
 		x = re.sub(r"['\"]","",x)
 		x = re.sub(r"charset=","",x)
 		x = re.sub(r"[</>;\"].*",r"",x)
-		if x.lower()=="utf-8":  # charset in meta tag is utf-8
+		if x.lower()==allowed:  # charset in meta tag is utf-8
 			return document
-		return ""  # charset in meta tag is not utf-8
+		return None  # charset in meta tag is not utf-8
 
 	
 	if charset:  # charset was present in header, but not in meta tag
 		return document
-	return ""  # charset unspecified
+	return None  # charset unspecified
 
 
 

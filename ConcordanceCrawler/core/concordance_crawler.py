@@ -11,7 +11,7 @@ class CrawlerConfigurator(object):
 	this method'''
 
 	def setup(self, **kwargs):
-		visitor = Visitor()
+		visitor = self.visitor 
 		for atr in kwargs.keys():
 			if atr in Visitor.attributes:
 				setattr(visitor, atr, kwargs[atr])
@@ -19,7 +19,10 @@ class CrawlerConfigurator(object):
 				setattr(self, atr, kwargs[atr])
 			else:
 				raise AttributeError("Attribute '{0}' is not known and cannot be set.".format(atr))
-		self.visitor = visitor
+		self.after_setup(**kwargs)
+
+	def after_setup(self,**kwargs):
+		pass
 	
 class ConcordanceCrawler(CrawlerConfigurator):	
 	attributes = ["bazgen", "filter_link"]

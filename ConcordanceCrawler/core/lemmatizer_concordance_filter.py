@@ -1,5 +1,5 @@
 from textblob import TextBlob, Word
-import time
+import re
 
 def lemmatizing_concordance_filtering(sentence, target, target_pos):
 	target = target[0]
@@ -16,8 +16,11 @@ def lemmatizing_concordance_filtering(sentence, target, target_pos):
 		if pos in target_pos:
 			lemma = Word(w).lemmatize(pos)
 			if lemma == target:
-				return lemma
+				m = re.search(w,sentence)
+				return lemma, m.start(0), m.end(0)
 	return None
 
 if __name__ == "__main__":
+	res = lemmatizing_concordance_filtering("We were flying from PRG to NY.",["fly"], "v")
+	print(res)
 	pass

@@ -87,7 +87,8 @@ class Visitor():
 		for s in sentences:
 			t = self.concordance_filtering(s, targets)
 			if t:
-				concordances.append((s,t))
+				target, start, end = t
+				concordances.append((s, target, start, end))
 		return concordances
 
 	def concordances_from_link(self, link, target_words):
@@ -107,12 +108,14 @@ class Visitor():
 			return []
 		concordances = []
 		date = str(datetime.datetime.now())
-		for con, target in concs:
+		for con, target, start, end in concs:
 			c = {
 				'url':url,
 				'date':date,
 				'concordance':con,
 				'keyword':target,
+				'start': start,
+				'end': end,
 			}
 			concordances.append(c)
 

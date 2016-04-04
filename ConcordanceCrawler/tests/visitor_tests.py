@@ -110,6 +110,7 @@ class TestVisitor(unittest.TestCase):
 		# todo
 		#self.assertTrue(self.visitor.concordance_filtering("večer","Dobrý večer, ..."))
 		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer ...",["večer"]))
+		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer...",["večer"]))
 
 	# todo: delete
 	def test_split(self):

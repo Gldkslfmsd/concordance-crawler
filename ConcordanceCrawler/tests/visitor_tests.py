@@ -111,6 +111,8 @@ class TestVisitor(unittest.TestCase):
 		#self.assertTrue(self.visitor.concordance_filtering("večer","Dobrý večer, ..."))
 		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer ...",["večer"]))
 		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer...",["večer"]))
+		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer!",["večer"]))
+		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer?sdfas",["večer"]))
 
 	# todo: delete
 	def test_split(self):
@@ -159,11 +161,11 @@ class TestVisitor(unittest.TestCase):
 
 		for a,b in true:
 			x = self.visitor.norm_encoding(a, headers=b)
-			self.assertTrue(x!="")
+			self.assertIsNotNone(x)
 
 		for a,b in false:
 			x = self.visitor.norm_encoding(a, headers=b)
-			self.assertTrue(x=="")
+			self.assertIsNone(x)
 
 
 

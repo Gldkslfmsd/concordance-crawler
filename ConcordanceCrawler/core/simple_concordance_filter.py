@@ -9,7 +9,7 @@ class ReConcordanceFilter:
 
 	def __init__(self, target):
 		self.target = target
-		self.regex = re.compile("(\s|^)("+target+")(\s|$)",flags=re.IGNORECASE)
+		self.regex = re.compile("(\s|^)("+target+")(\s|$|[\.?!])",flags=re.IGNORECASE)
 
 	def process(self, sentence):
 		m = self.regex.search(sentence)

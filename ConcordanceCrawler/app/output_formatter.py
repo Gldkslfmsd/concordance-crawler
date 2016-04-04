@@ -98,7 +98,10 @@ class XmlFormatter(OutputFormatter):
 	'''
 	def __init__(self,output_stream):
 		super(XmlFormatter, self).__init__(output_stream)
-		self.output_stream.write("<root>\n")
+		self.output_stream.write("<concordances>\n")
+
+	def tag(self,key,value,endsep=""):
+		return "<"+key+">"+str(value)+endsep+"</"+key+">"
 
 	def output(self,concordance):
 		'''writes a concordance in xml format to output_stream
@@ -106,12 +109,21 @@ class XmlFormatter(OutputFormatter):
 		Args:
 			concordance: concordance as a dict
 		'''
-		xml = dicttoxml(concordance, root=False, custom_root="item")
-		pretty = parseString(xml).toprettyxml()
-		result = pretty
-		self.output_stream.write(result)
+		xml = "\t"+self.tag("item",
+			"\n\t\t"+"\n\t\t".join(self.tag(k,v) for k,v in
+			concordance.items())+"\n\t"
+			)+"\t\n"
+		self.output_stream.write(xml)
 		self.flush()
 
 	def close(self):
-		self.output_stream.write("</root>\n")
+		self.output_stream.write("</concordances>\n")
 		super(XmlFormatter, self).close()
+
+if __name__ == "__main__":
+	from sys import stdout
+	form = create_formatter("xml", stdout)
+	form.output({"a":5,"csdfsdf":None})
+	form.output({"a":5})
+
+	form.close()

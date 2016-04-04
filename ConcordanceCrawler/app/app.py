@@ -76,7 +76,7 @@ def get_args():
 	parser.add_argument("-f","--format",
 		default="json",
 		type=str,
-		choices=["json"],# ,"xml"], # TODO: fix and allow xml
+		choices=["json","xml"],
 		help="output format (default %(default)s)"
 		)
 

@@ -168,7 +168,5 @@ class TestVisitor(unittest.TestCase):
 			self.assertIsNone(x)
 
 
-
-
 if __name__=='__main__':
 	unittest.main()

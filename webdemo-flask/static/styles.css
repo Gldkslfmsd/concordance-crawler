@@ -11,7 +11,7 @@ body {
 #header {
     padding: 10px;
     height: 40px;
-    background: #15699C;
+    background: #1D651E;
     border-bottom: 1px solid black;
     box-shadow: 0px 0px 10px grey;
     margin-bottom: 10px;
@@ -71,7 +71,7 @@ body {
 
 #footer p {
     text-align: center;
-    color: #15699C;
+    color: #1D651E;
     font-size: 10pt;
 }
 
@@ -135,8 +135,8 @@ body {
  */
 
 .box {
-    border-top: 10px solid #15699C;
-    border-bottom: 1px solid #15699C;
+    border-top: 10px solid #1D651E;
+    border-bottom: 1px solid #1D651E;
     padding: 5px;
     margin: 1px;
     float: left;
@@ -169,7 +169,7 @@ body {
 
 .box .list th {
     text-align: left;
-    background-color: #15699C;
+    background-color: #1D651E;
     color: white;
     cursor: auto;
 }
@@ -282,8 +282,8 @@ select {
     float: left;
     width: 200px;
     /*min-height: 100px;*/
-    border-top: 10px solid #15699C;
-    border-bottom: 1px solid #15699C;
+    border-top: 10px solid #1D651E;
+    border-bottom: 1px solid #1D651E;
     padding: 5px;
     margin-left: 10px;
 }
@@ -358,7 +358,7 @@ select {
 }
 
 .delete {
-    color: #15699C;
+    color: #1D651E;
     text-decoration: underline;
     cursor: pointer;
 }
@@ -421,4 +421,15 @@ select {
 .new_submit_tooltip_icon {
     margin: 10px;
     float: left;
+}
+
+
+/** My extensions for ConcordanceCrawler
+**/
+
+h1 {
+  font-weight: bold;
+  color: #fff;
+  font-size: 32px;
+	margin-top: 0px;
 }

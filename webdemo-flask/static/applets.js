@@ -39,7 +39,7 @@ var dbrs = {
 // Start with welcome screen
 jQuery('body').ready(function() {
     applet_server_status();
-    applet_text_box('welcome');
+    applet_text_box('home');
 });
 
 // Functions in menu
@@ -82,6 +82,7 @@ function run_document(id) {
  * APPLETS
  */
 function applet_server_status() {
+		return; // TODO
     jQuery.ajax({
         url: "./index.cgi?command=server-state",
         success: function(data) {
@@ -121,7 +122,7 @@ function applet_text_box(text_id) {
     clearTimeout(timeout);
 
     jQuery.ajax({
-        url: "./texts/" + text_id + ".html",
+        url: "./static/" + text_id + ".html",
         success: function(data) {
             // Format HTML output
             var output = "";
@@ -329,43 +330,50 @@ function applet_submit() {
 
     // Form
     var form = "";
-    form += "<p>Select extraction strategy:</p>";
-    form += "<select id='new_submit_strategy'>";
-    for (strategy_id in strategies) {
-        form += "<option value='" + strategy_id + "'>" + strategies[strategy_id] + "</option>";
-    }
-    form += "</select>";
-    form += "<p>Job identification:</p>";
-    form += "<input type='text' id='new_submit_id' value='" + id + "'>";
-    form += "<p>Input unstructured text:</p>";
-    form += "<textarea id='new_submit_content'>" + content + "</textarea><br>";
-    form += "<input id='new_submit_submit' type='button' value='Submit new job!' onClick='applet_submit_click()'>";
+    form += "<p>Number of concordances:</p>";
+		form += "<input type='number' id='number' min='1' max='10000' value='10'>";
 
-    // Box with sample data
-    var tooltip = "";
-    tooltip += "<div id='new_submit_tooltip_en'>";
-    tooltip += "<img src='./images/icon_idea.png' class='new_submit_tooltip_icon'>";
-    tooltip += "<p>Samples of English legal texts: ";
-    tooltip += "<a href='http://www.usoud.cz/en/constitution-of-the-czech-republic/' target='_blank'>Constitution of the Czech Republic</a>, ";
-    tooltip += "<a href='http://www.cnb.cz/miranda2/export/sites/www.cnb.cz/en/legislation/acts/download/act_on_cnb.pdf' target='_blank'>Bank Act</a>, ";
-    tooltip += "<a href='http://ipk.nkp.cz/docs/Law25720013412006eng.doc' target='_blank'>Libraries Act</a>, ";
-    tooltip += "<a href='http://www.usoud.cz/en/charter-of-fundamental-rights-and-freedoms/' target='_blank'>Charter of fundamental rights and freedoms</a>";
-    tooltip += "</div>";
-    tooltip += "<div id='new_submit_tooltip_cz'>";
-    tooltip += "<img src='./images/icon_idea.png' class='new_submit_tooltip_icon'>";
-    tooltip += "<p>Samples of Czech legal texts: ";
-    tooltip += "<a href='http://www.zakonyprolidi.cz/' target='_blank'>ZákonyProLidi.cz</a>, ";
-    tooltip += "<a href='https://portal.gov.cz/app/zakony/?path=/portal/obcan/' target='_blank'>Portál veřejné správy</a> ";
-    tooltip += "</div>";
+		form += "<p>Maximum number of concordances per page:</p>";
+		form += "<input type='number' id='max_per_page' min='1' max='10000' value='10000'>";
+
+		form += "<p><input type='checkbox' id='disable' name='disable'>Disable English filter</p>";
+
+		form += "<p>Bazword generator</p>";
+		form += "<select id='bazgen' size='1'>";
+		var bazgens = {
+			'RANDOM':'random 4-letter words',
+			'WIKI_ARTICLES': 'words from titles of random Wikipedia articles',
+			'WIKI_TITLES': 'words from titles of random Wikipedia articles',
+			'NUMBERS': 'increasing numbers from 1'
+		};
+		for (baz in bazgens) {
+			form += "<option value='" + baz + "'>" + bazgens[baz] + "</option>";
+		}
+		form += "</select>";
+		form += '<p>Encoding</p>';
+		var encs = {
+			'utf-8': 'utf-8',
+			'ascii': 'ascii',
+			'any': 'any' 
+		};
+		form += "<select id='enc' size='1'>";
+		for (enc in encs) {
+			form += "<option value='" + enc + "'>" + encs[enc] + "</option>";
+		}
+		form += "</select>";
+		form += "<p>Target word(s)</p>";
+		form += "<input type='text' id='target' value=''>";
+		form += "<p>Target word part of speech tag regex</p>";
+		form += "<input type='text' id='pos' value='.*'>";
+    form += "<input id='new_submit_submit' type='button' value='Submit new job' onClick='applet_submit_click()'>";
 
     var output = "";
     output += "<div class='box'>";
-    output += "<h2>Submit new job</h2>"
+    output += "<h2>Submit new crawling job</h2>"
     output += "<div class='loading'></div>";
     output += "<div class='message'>" + message + "</div>";
     output += "<div class='form'>";
     output += form;
-    output += tooltip;
     output += "</div>";
     output += "<div class='data'></div>";
     output += "</div>";
@@ -376,19 +384,6 @@ function applet_submit() {
         jQuery(this).slideDown();
     });
     box.find('.loading').slideUp();
-
-    // When strategy change, show language dependent tooltip
-    jQuery('#new_submit_strategy').change(function() {
-        var value = jQuery(this).val();
-        if (value.match(/en/) && jQuery('#new_submit_tooltip_en').css('display') == "none") {
-            jQuery('#new_submit_tooltip_cz').slideUp();
-            jQuery('#new_submit_tooltip_en').slideDown();
-        }
-        if (value.match(/cz/) && jQuery('#new_submit_tooltip_cz').css('display') == "none") {
-            jQuery('#new_submit_tooltip_cz').slideDown();
-            jQuery('#new_submit_tooltip_en').slideUp();
-        }
-    });
 }
 
 function applet_submit_click() {
@@ -397,10 +392,19 @@ function applet_submit_click() {
     box.find('.loading').slideDown();
 
     // Read data
-    id = jQuery('#new_submit_id').val();
-    content = jQuery('#new_submit_content').val();
-    strategy = jQuery('#new_submit_strategy').val();
+    number = jQuery('#number').val();
+    max_per_page = jQuery('#max_per_page').val();
+    disable = jQuery('#disable').is(':checked');
+		post_data = "number="+number+"&max_per_page="+max_per_page+"&disable="+disable;
 
+		bazgen = jQuery('#bazgen').val();
+		encoding = jQuery('#enc').val();
+		target = jQuery('#target').val();
+		pos = jQuery('#pos').val();
+
+		post_data += '&bazgen='+bazgen + '&enc='+ encoding + '&target='+target + '&pos='+pos;
+
+		/*
     // Check data
     id = id.replace(/\W+/, "");
     if (!id.match(/^\w+$/)) {
@@ -421,6 +425,7 @@ function applet_submit_click() {
         return;
     }
     
+		
     // If there is no HTML tags, put <p> tags around the text
     if (!content.match(/^<p>/)) {
         var new_content = "";
@@ -436,14 +441,13 @@ function applet_submit_click() {
         content = new_content;
     }
 
+		*/
+
     // Everything OK, submit query on the server
     jQuery.ajax({
-        url: "./index.cgi?command=document-submit",
-        data: {
-          doc_id: id,
-          doc_content: content,
-          doc_strategy: strategy
-        },
+				type: "POST",
+        url: "/newjob",
+        data: post_data,
         success: function(data) {
             if (data.match(/OK/)) {
                 message = "<p class='ok'>Job submitted correctly.</p>";

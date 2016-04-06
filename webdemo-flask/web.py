@@ -9,7 +9,9 @@ def root():
 @app.route("/newjob", methods=["POST"])
 def newjob():
 	print(request.form)
-	return str(request.form)
+	if request.form['target'] == '':
+		return 'target word cannot be empty'
+	return 'OK'+str(request.form)
 	
 
 if __name__ == "__main__":

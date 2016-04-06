@@ -19,6 +19,7 @@ from ConcordanceCrawler.core.bazwords import *
 from ConcordanceCrawler.core.encoding import norm_encoding
 from ConcordanceCrawler.app.output_formatter import *
 from ConcordanceCrawler.app.logging_crawler import *
+from ConcordanceCrawler.app.load_from_corpus import load_from_corpus
 from ConcordanceCrawler.__init__ import __version__
 
 def get_args():
@@ -30,7 +31,7 @@ def get_args():
 
 	parser.add_argument("word",
 		type=str,
-		nargs="+",
+		nargs="*",
 		help="""A target word to be crawled. You can specify more of its forms
 		(e.g. differing only by singular/plural, case, tense etc.). The first
 		one will be considered as canonical form."""
@@ -133,9 +134,58 @@ def get_args():
 		"""
 		)
 
+	#########################################
+	# backup options:
+
+	parser.add_argument("--backup-off",
+		default=None,
+		const=True,
+		action='store_const',
+		help="""Don't create crawling status backup file. A corpus cannot be
+		extended in future, even if crawling will be unexpectedly aborted."""
+		)
+
+	parser.add_argument("--backup-file",
+		default="ConcordanceCrawler.backup",
+		type=str,
+		help="""Name for backup file. This backup file allows you to continue
+		aborted crawling job and extend corpus. Default name is
+		`ConcordanceCrawler.backup`."""
+		)
+
+	parser.add_argument("--extend-corpus",
+		default=None,
+		type=argparse.FileType("a"),
+		help="""A corpus created in previous crawling job which will be
+		extended now."""
+		)
+
+	parser.add_argument("--continue-from-backup",
+		default=None,
+		type=argparse.FileType("r"),
+		help="""Continue crawling job from this backup file."""
+		)
 
 	args = vars(parser.parse_args())
-	return args
+
+	#############################
+	# constraints:
+	ext_cont = [args['extend_corpus'], args['continue_from_backup']].count(None)
+	if ext_cont == 1:
+		parser.print_usage()
+		sys.exit("If you want to extend corpus, you must to input both "
+		"options --extend-corpus and --continue-from-backup."
+		)
+	if (args['word'] == [] and ext_cont==2) or (ext_cont==0 and args['word']!=[]):
+		parser.print_usage()
+		sys.exit("\nYou can either download a brand new corpus, then input at \n"
+		"least the `word` option and omit options `--extend-corpus` and\n"
+		"`--continue-from-backup`. Or you can continue crawling job from backup,\n"
+		"then input options `--continue-from-backup` and `--extend-corpus` and\n"
+		"omit `word` option.\n"
+		"\nSee ConcordanceCrawler -h for more info.")
+
+	return args, "backup" if ext_cont==0 else "run"
 
 def use_textblob_lemmatizer(lc, pos):
 	try:
@@ -178,13 +228,63 @@ def config_encoding(lc, enc):
 			lambda doc, head: norm_encoding(doc, head, allowed=enc)
 			)
 
-			
+def save_backup(args):
+	if args['backup_off'] is not None:
+		return
+	bf = open(args['backup_file'], "w")
+	bf.write("# ConcordanceCrawler-"+__version__+"\n")
+	from time import ctime
+	bf.write("# "+ctime()+"\n")
+	import socket
+	hostname = socket.gethostname()
+	bf.write("# hostname: "+hostname+"\n")
+	import getpass
+	bf.write("# user: "+getpass.getuser()+"\n")
+	import sys
+	bf.write("# python version: "+sys.version.replace("\n","")+"\n")
+	bf.write("# python executable: "+sys.executable+"\n")
 
+	bf.write("\n\n{\n")
+	t = "\t"
+	n = "\n"
+	for k,v in args.items():
+		if k in ('output'):
+			v = v.name
+		if isinstance(v, str):
+			v = '"'+v+'"'
+		k = '"'+k+'"'
+		bf.write(t + str(k) + " : " + str(v) + ",\n")
+	bf.write("}\n")
+	bf.close()
 
+def load_from_backup(args):
+	bf = args["continue_from_backup"]
+	print(bf)
+	try:
+		nargs = eval(bf.read())
+		bf.close()
+		assert set(nargs.keys())==set(args.keys())
+	except (SyntaxError, AssertionError) as e:
+		sys.exit("Error in backup file. Make sure it's really a backup file\n"
+		"from current version of ConcordanceCrawler.")
+
+	load = load_from_corpus(nargs['output'],nargs['format'])
+	nargs['output'] = open(nargs['output'], 'a')
+
+	return nargs, load
+
+	
 
 def main():
 
-	args = get_args()
+	args, mode = get_args()
+	if mode == "run":
+		save_backup(args)
+	elif mode == "backup":
+		args, load = load_from_backup(args)
+	else:
+		assert False, "error, undefined mode"
+
 	# setup command-line arguments and get them from user
 	words = args["word"]
 	number = args["number_of_concordances"]
@@ -204,6 +304,10 @@ def main():
 
 
 	lc = LoggingCrawler(words,bazgen)
+	if mode == 'backup':
+		lc.visited_pages = load['links']
+		lc.crawled_concordances = load['concordances']
+		lc.num_concordances = load['maxid']
 
 	pos = args['part_of_speech']
 	if pos is None or ( len(pos)==1 and pos[0] == 'x' ):
@@ -217,7 +321,8 @@ def main():
 	# here is output formatter
 	of = create_formatter(
 		format=args["format"],
-		output_stream=args["output"]
+		output_stream=args["output"],
+		extending=False if mode=="run" else True
 		)
 
 	# setup crawler

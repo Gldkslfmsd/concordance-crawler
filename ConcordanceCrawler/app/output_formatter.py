@@ -35,7 +35,7 @@ class OutputFormatter(object):
 		# every formatter must close the file in the end
 		self.output_stream.close()
 
-def create_formatter(format,output_stream):
+def create_formatter(format,output_stream,extending):
 	'''creates output formatter for given format
 
 	Args:
@@ -49,20 +49,23 @@ def create_formatter(format,output_stream):
 		ValueError, if format is not "json" or "xml"
 	'''
 	if format=='json':
-		return JsonFormatter(output_stream)
+		return JsonFormatter(output_stream,extending)
 	elif format=='xml':
-		return XmlFormatter(output_stream)
+		return XmlFormatter(output_stream,extending)
 	else:
 		raise ValueError("format must be \'json\' or \'xml\'")
 
 class JsonFormatter(OutputFormatter):
 	'''Writes pretty-printed concordances in json.
 	'''
-	def __init__(self,output_stream):
+	def __init__(self,output_stream,extending):
 		super(JsonFormatter, self).__init__(output_stream)
 		# writes [ to output as a begining symbol of list of concordances...
-		self.output_stream.write("[")
-		self.first = True
+		if not extending:
+			self.output_stream.write("[")
+			self.first = True
+		else:
+			self.first = False
 
 	def output(self,concordance):
 		'''writes a concordance in json format to output_stream
@@ -96,10 +99,11 @@ class JsonFormatter(OutputFormatter):
 class XmlFormatter(OutputFormatter):
 	'''Writes pretty-printed concordances in xml.
 	'''
-	def __init__(self,output_stream):
+	def __init__(self,output_stream,extending):
 		super(XmlFormatter, self).__init__(output_stream)
-		self.output_stream.write('<?xml version="1.0"?>\n')
-		self.output_stream.write("<concordances>\n")
+		if not extending:
+			self.output_stream.write('<?xml version="1.0"?>\n')
+			self.output_stream.write("<concordances>\n")
 
 	def escape(self,string):
 		rep = [

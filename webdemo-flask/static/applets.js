@@ -220,7 +220,7 @@ function applet_list(id_to_highlight, refresh) {
                     output += "<tr class='highlight' id='document_" + fields[0] + "'>";
                 }
                 else {
-                    output += "<tr id='document_" + fields[0] + "'>";
+                    output += "<tr id='" + fields[3] + "'>";
                 }
 
                 // Process icon
@@ -236,12 +236,11 @@ function applet_list(id_to_highlight, refresh) {
                 }
 
                 // Progress bar
-                var state = fields[2];
-                var percent = "";
-                percent = state.replace(/^(\d).*$/, "$1");
-                percent -= 1;
-                percent = (100 / 6) * percent;
-                var color = state.match(/\d10/) ? "red" : "green";
+//                var state = fields[2];
+                var percent = fields[4];
+                //percent -= 1;
+               // percent = (100 / 6) * percent;
+                var color = "green"; // state.match(/FI/) ? "red" : "green"; // TODO
                 var progress_bar = "<div class='state-bar-mini'><div class='state-bar-content-mini' style='width: " + percent + "%; background: " + color + "'></div></div>";
 
                 // Fill table
@@ -280,7 +279,7 @@ function applet_list(id_to_highlight, refresh) {
 
             box.find('.data').find('tr:not(:first)').each(function() {
                 jQuery(this).click(function() {
-                    var id = jQuery(this).attr('id').replace(/document_/, "");
+                    var id = jQuery(this).attr('id');//.replace(/(.)/, ""); //TODO
                     run_document(id);
                 })
             })
@@ -472,7 +471,7 @@ function applet_submit_click() {
 function applet_document(id) {
     var output = "";
     output += "<div class='box'>";
-    output += "<h2>Document " + id + " </h2>"
+    output += "<h2>Job detail #" + id + "</h2>"
     output += "<div class='state'></div>";
     output += "<div class='content'></div>";
     output += "<div class='relations'></div>";

@@ -3,6 +3,7 @@ app = Flask(__name__)
 
 from model import *
 from time import ctime
+import random
 
 @app.route("/", methods=["GET", "POST"])
 def root():
@@ -40,6 +41,8 @@ def listjobs(start, limit, orderby, orderdir):
 			get_target(j),
 			get_time(j),
 			get_status(j),
+			j,
+			str(random.randint(0,100)),  # percent (TODO)
 			])
 	
 	reverse = True if orderdir == "DESC" else False	
@@ -56,6 +59,10 @@ def listjobs(start, limit, orderby, orderdir):
 		data[1] = ctime(data[1]).strip()
 		response += ",".join(data)+"\n"
 	return response
+
+@app.route("/jobdetail/<path:jobid>")
+def jobdetail(jobid):
+	return "TODO"
 	
 
 if __name__ == "__main__":

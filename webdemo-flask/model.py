@@ -1,4 +1,5 @@
 import os
+from time import time
 
 defaultargs = {
 	"word" : [],
@@ -55,6 +56,10 @@ def create_new_job(data):
 	status.write('CREATED\n')
 	status.close()
 
+	tf = open(path+'/time','w')
+	tf.write(str(time()))
+	tf.close()
+
 	return 'OK'
 
 def get_status(jobid):
@@ -63,17 +68,27 @@ def get_status(jobid):
 	f.close()
 	return status
 
-def get_target(jobid):
+def get_args(jobid):
 	f = open(DIR+jobid+"/backup","r")
 	b = f.read()
 	f.close()
 	args = eval(b)
-	return args['word'][0]
+	return args
+
+def get_target(jobid):
+	return " ".join(get_args(jobid)['word'])
+
+def get_number_of_concordances(jobid):
+	return get_args(jobid)['number_of_concordances']
+
+def get_time(jobid):
+	f = open(DIR+jobid+"/time","r")
+	t = float(f.read().strip())
+	f.close()
+	return t
 
 def browse_jobs():
-	print(os.listdir(DIR))
 	return os.listdir(DIR)
-	
 
 if __name__ == "__main__":
 	for j in browse_jobs():

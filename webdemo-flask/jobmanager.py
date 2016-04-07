@@ -52,7 +52,7 @@ class Manager:
 	def __init__(self):
 		self.running = []
 		self.paused = []
-		self.maxrunning = 5
+		self.maxrunning = 1
 
 	def pause(self):
 		if not self.running:

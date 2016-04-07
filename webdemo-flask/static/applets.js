@@ -97,10 +97,10 @@ function applet_server_status() {
                 }
 
                 if (servers[i].match(/ON/)) {
-                    output += "<tr><td><img src='images/green.png'></td><td>" + servers[i] + "</td></tr>";
+                    output += "<tr><td><img src='static/green.png'></td><td>" + servers[i] + "</td></tr>";
                 }
                 else {
-                    output += "<tr><td><img src='images/red.png'></td><td>" + servers[i] + "</td></tr>";
+                    output += "<tr><td><img src='static/red.png'></td><td>" + servers[i] + "</td></tr>";
                 }
             }
             output += "</table>";
@@ -153,7 +153,7 @@ function applet_list(id_to_highlight, refresh) {
 
     if (!refresh) {
         output += "<div class='box'>";
-        output += "<h2>List of submitted documents <div class='short-loading'>Loading ...</div></h2>"
+        output += "<h2>List of crawling jobs <div class='short-loading'>Loading ...</div></h2>"
         output += "<div class='loading'></div>";
         output += "<div class='message'>" + message + "</div>";
         output += "<div class='data'></div>";
@@ -167,36 +167,36 @@ function applet_list(id_to_highlight, refresh) {
     }
 
     jQuery.ajax({
-        url: "./index.cgi?command=list-all&start=" + list_start + "&limit=" + list_limit + "&order_by=" + list_order_by + "&order_dir=" + list_order_dir,
+        url: "/listjobs/start=" + list_start + "/limit=" + list_limit + "/order_by=" + list_order_by + "/order_dir=" + list_order_dir,
         success: function(data) {
             var jobs = data.split('\n');
 
             // Sorting icon
             var sorting = ["", "", ""];
 
-            var sorting_data = jobs[1].split("\t");
+            var sorting_data = jobs[1].split(",");
             if (sorting_data[3] == "id") {
                 if (sorting_data[4] == "DESC") {
-                    sorting[0] = "<img src='images/sort-desc.png'>";
+                    sorting[0] = "<img src='static/sort-desc.png'>";
                 }
                 else {
-                    sorting[0] = "<img src='images/sort-asc.png'>";
+                    sorting[0] = "<img src='static/sort-asc.png'>";
                 }
             }
             if (sorting_data[3] == "ctime") {
                 if (sorting_data[4] == "DESC") {
-                    sorting[1] = "<img src='images/sort-desc.png'>";
+                    sorting[1] = "<img src='static/sort-desc.png'>";
                 }
                 else {
-                    sorting[1] = "<img src='images/sort-asc.png'>";
+                    sorting[1] = "<img src='static/sort-asc.png'>";
                 }
             }
             if (sorting_data[3] == "status") {
                 if (sorting_data[4] == "DESC") {
-                    sorting[2] = "<img src='images/sort-desc.png'>";
+                    sorting[2] = "<img src='static/sort-desc.png'>";
                 }
                 else {
-                    sorting[2] = "<img src='images/sort-asc.png'>";
+                    sorting[2] = "<img src='static/sort-asc.png'>";
                 }
             }
 
@@ -204,7 +204,7 @@ function applet_list(id_to_highlight, refresh) {
             var output = "";
             output += "<table class='list'>";
             output += "<tr>";
-            output += "<th colspan=1><a href='javascript:list_sort(\"id\")'    > Document</a>       " + sorting[0] + "</th>";
+            output += "<th colspan=1><a href='javascript:list_sort(\"id\")'    > Target word</a>       " + sorting[0] + "</th>";
             output += "<th colspan=1><a href='javascript:list_sort(\"ctime\")' > Submition time</a> " + sorting[1] + "</th>";
             output += "<th colspan=3><a href='javascript:list_sort(\"status\")'> State</a>          " + sorting[2] + "</th>";
             output += "</tr>";
@@ -213,7 +213,7 @@ function applet_list(id_to_highlight, refresh) {
                     continue;
                 }
 
-                var fields = jobs[i].split(/\t/);
+                var fields = jobs[i].split(/,/);
 
                 // Highlight selected document
                 if (id_to_highlight && jobs[i].match(new RegExp("^" + id_to_highlight + "\t"))) {
@@ -225,14 +225,14 @@ function applet_list(id_to_highlight, refresh) {
 
                 // Process icon
                 var icon = "";
-                if (fields[2].match(/[34567]00/)) {
-                    icon = "images/greening.gif";
+                if (fields[2].match(/STARTED|CREATED/)) {
+                    icon = "static/greening.gif";
                 }
-                if (fields[2].match(/\d10/)) {
-                    icon = "images/red.png";
+                if (fields[2].match(/ERROR|ABORTED/)) {
+                    icon = "static/red.png";
                 }
-                if (fields[2].match(/(200|[34567]20)/)) {
-                    icon = "images/green.png";
+                if (fields[2].match(/FINISHED/)) {
+                    icon = "static/green.png";
                 }
 
                 // Progress bar
@@ -247,15 +247,18 @@ function applet_list(id_to_highlight, refresh) {
                 // Fill table
                 output += "<td>" + fields[0] + "</td>";
                 output += "<td>" + fields[1] + "</td>";
-                output += "<td><img src='" + icon + "'></td>";
+                output += "<td><img src='" + icon + "' + alt='" + icon + "'></td>";
                 output += "<td>" + progress_bar + "</td>";
                 output += "<td>" + fields[2] + "</td>";
             }
             output += "</table>";
 
             // First line contains data for paging...
-            var pagging = jobs[1].split("\t");
-            output += "<p>Presenting <b>" + (list_start + 1) + "</b> - <b>" + (list_start + list_limit) + "</b> jobs from <b>" + pagging[0] + "</b> jobs in total. | ";
+            var pagging = jobs[1].split(",");
+						var min = function(a,b) {
+							return a<b?a:b;
+						}
+            output += "<p>Presenting <b>" + (list_start + 1) + "</b> - <b>" + (min(list_start + list_limit,pagging[0])) + "</b> jobs from <b>" + pagging[0] + "</b> jobs in total. | ";
             if (list_start > 0) {
                 output += "<a href='javascript:list_previous()'>Show previous jobs</a>";
             }
@@ -841,19 +844,19 @@ function get_document_state(id, box) {
             var icon = "";
             var text = "";
             if (data.match(/[34567]00/)) {
-                icon = "images/greening.gif";
+                icon = "static/greening.gif";
                 text = "At this moment, document is processing by one of the RExtractor components.";
             }
             if (data.match(/\d10/)) {
-                icon = "images/red.png";
+                icon = "static/red.png";
                 text = "An error occured during document processing. Job was cancelled."
             }
             if (data.match(/(200|[3456]20)/)) {
-                icon = "images/green.png";
+                icon = "static/green.png";
                 text = "Document is waiting for another component.";
             }
             if (data.match(/(720)/)) {
-                icon = "images/green.png";
+                icon = "static/green.png";
                 text = "Document processing is complete.";
             }
 

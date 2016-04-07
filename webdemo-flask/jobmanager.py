@@ -2,6 +2,8 @@ import os
 import subprocess
 from model import  *
 from time import sleep
+import signal
+import sys
 
 run_job = 'ConcordanceCrawler  --continue-from-backup '+DIR+'{0}/backup --extend-corpus '+DIR+'{0}/corpus.json'
 
@@ -40,9 +42,10 @@ class Job:
 	def __repr__(self):
 		return str(self.jobid)
 
-	def abort(self):
+	def interrupt(self):
 		if self.running_status()=="RUNNING":
 			self.update_state("ABORTED")
+		self.process.kill()
 
 
 class Manager:
@@ -103,4 +106,13 @@ class Manager:
 			print("running",self.running, "paused",self.paused)
 			sleep(3)
 
-Manager().loop()
+	def interrupt(self,_=None,__=None):
+		print("interrupting manager")
+		for job in self.running+self.paused:
+			job.interrupt()
+		sys.exit(1)
+
+manager = Manager()
+for signum in (signal.SIGABRT, signal.SIGILL, signal.SIGINT, signal.SIGSEGV, signal.SIGTERM):
+	signal.signal(signum, manager.interrupt)
+manager.loop()

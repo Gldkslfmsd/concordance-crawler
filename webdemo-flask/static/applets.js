@@ -395,14 +395,14 @@ function applet_submit_click() {
     number = jQuery('#number').val();
     max_per_page = jQuery('#max_per_page').val();
     disable = jQuery('#disable').is(':checked');
-		post_data = "number="+number+"&max_per_page="+max_per_page+"&disable="+disable;
+		post_data = "number_of_concordances="+number+"&max_per_page="+max_per_page+"&disable_english_filter="+disable;
 
 		bazgen = jQuery('#bazgen').val();
 		encoding = jQuery('#enc').val();
 		target = jQuery('#target').val();
 		pos = jQuery('#pos').val();
 
-		post_data += '&bazgen='+bazgen + '&enc='+ encoding + '&target='+target + '&pos='+pos;
+		post_data += '&bazword_generator='+bazgen + '&encoding='+ encoding + '&target='+target + '&part_of_speech='+pos;
 
 		/*
     // Check data

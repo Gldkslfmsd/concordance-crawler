@@ -259,7 +259,6 @@ def save_backup(args):
 
 def load_from_backup(args):
 	bf = args["continue_from_backup"]
-	print(bf)
 	try:
 		nargs = eval(bf.read())
 		bf.close()

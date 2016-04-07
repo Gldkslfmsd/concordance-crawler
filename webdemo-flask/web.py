@@ -1,6 +1,8 @@
 from flask import Flask, send_from_directory, url_for, redirect, request
 app = Flask(__name__)
 
+from model import *
+
 @app.route("/", methods=["GET", "POST"])
 def root():
 	if request.method=="GET":
@@ -8,10 +10,10 @@ def root():
 
 @app.route("/newjob", methods=["POST"])
 def newjob():
-	print(request.form)
 	if request.form['target'] == '':
 		return 'target word cannot be empty'
-	return 'OK'+str(request.form)
+	res = create_new_job(request.form)
+	return str(res)
 	
 
 if __name__ == "__main__":

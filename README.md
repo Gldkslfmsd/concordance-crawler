@@ -14,13 +14,24 @@ adapt ConcordanceCrawler to any other language.
 ## Installation
 
 I recommend ConcordanceCrawler installation in Python virtual environment (see
-https://virtualenv.pypa.io/ ). 
+https://virtualenv.pypa.io/ ). All dependent libraries will be installed automaticaly except one.
+The only nontrivial dependency is `lxml`, you must install it globaly with root permissions. On the other hand it's needed 
+for fast parsing. Install `lxml` by following command (if you use Python 3) or follow instructions on its [homepage](http://lxml.de/installation.html):
 
 ```
-virtualenv -p python3 p3
+sudo apt-get install python3-lxml
+```
+
+If you have working `lxml` library, you can create your new Python virtual environment with access to the global `lxml` installation, and then install ConcordanceCrawler there.
+For Python3:
+
+```
+virtualenv -p python3 p3 --system-site-packages
 source p3/bin/activate
 pip install ConcordanceCrawler
 ```
+
+(For Python2 just substitute 3 for 2.)
 
 If you want to use also automatic conjugating of English verbs (or
 inflecting of nouns or comparing of adjectives), then install also

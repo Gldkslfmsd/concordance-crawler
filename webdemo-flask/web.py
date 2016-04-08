@@ -42,7 +42,7 @@ def listjobs(start, limit, orderby, orderdir):
 			get_time(j),
 			get_status(j),
 			j,
-			str(random.randint(0,100)),  # percent (TODO)
+			get_percent_str(j)
 			])
 	
 	reverse = True if orderdir == "DESC" else False	
@@ -56,14 +56,47 @@ def listjobs(start, limit, orderby, orderdir):
 	jobdata = sorted(jobdata, key=key, reverse=reverse)[start:start+limit]
 
 	for data in jobdata:
-		data[1] = ctime(data[1]).strip()
+		data[1] = get_ctime(data[3])
 		response += ",".join(data)+"\n"
 	return response
 
+
+resp = """[OK]
+400 Language processing started.
+Submition time: 2016-04-08 11:09:14
+Extraction strategy: intlib_en
+"""
+
 @app.route("/jobdetail/<path:jobid>")
 def jobdetail(jobid):
-	return "TODO"
+	resp = [ "[0K]",  # response status 0
+		get_status(jobid),  # status 1
+		get_ctime(jobid),  # submition ctime 2
+		get_percent_str(jobid),  # percent 3
+		get_target(jobid),  # target 4
+		] + get_crawling_status(jobid)  # raw crawling status 5 -- 8
+	resp += [  # job parameters
+		get_target(jobid), # 9
+		get_pos(jobid), # 10
+		get_number_of_concordances(jobid),
+		get_max_per_page(jobid),
+		get_english_filter(jobid),
+		get_bazgen(jobid),
+		get_encoding(jobid),
+		] + [
+		get_concordances_crawled(jobid),  # 15
+		]
+	return "\n".join(map(str,resp))
+
+@app.route("/deletejob/<path:jobid>")
+def deletejob(jobid):
+	return "["+delete_job(jobid)+"]"
 	
+
+@app.route("/concordances/<path:jobid>")
+def concordances(jobid,start=0,limit=100):
+	corpus = get_corpus(jobid, start, limit)
+	return "[OK]\n"+"".join(corpus)
 
 if __name__ == "__main__":
 	app.debug=True

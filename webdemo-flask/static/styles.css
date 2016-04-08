@@ -280,22 +280,24 @@ select {
 
 .entities {
     float: left;
-    width: 200px;
-    /*min-height: 100px;*/
+    width: 0px; /* TODO  */
+    /*min-height: 100px;
     border-top: 10px solid #1D651E;
     border-bottom: 1px solid #1D651E;
     padding: 5px;
     margin-left: 10px;
+		*/
 }
 
-.document {
+.corpus {
     float: left;
-    width: 500px;
-    max-height: 400px;
-    overflow: auto;
-    border: 1px solid silver;
-    border-radius: 3px;
-    line-height: 150%;
+    width: 800px;
+}
+
+.corpus textarea {
+	height: 600px;
+	resize: none;
+	width: 780px;
 }
 
 .document_relation {

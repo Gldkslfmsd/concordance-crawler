@@ -68,10 +68,12 @@ function run_dbe() {
     applet_dbe();
 }
 
+/*
 function run_dbr() {
     clear_main_column();
     applet_dbr();
 }
+*/
 
 function run_document(id) {
     clear_main_column();
@@ -486,7 +488,7 @@ function applet_document(id) {
     // Document status
     get_document_state(id, box);
     get_document_content(id, box);
-    get_document_relations(id, box);
+    //get_document_relations(id, box);
 }
 
 function applet_sb() {
@@ -613,10 +615,7 @@ function applet_dbe_click() {
 
     // Everything OK, submit query on the server
     jQuery.ajax({
-        url: "./index.cgi?command=dbe-html",
-        data: {
-          dbe_id: dbe_id,
-        },
+        url: "/concordances/" + dbe_id,
         success: function(data) {
             if (data.match(/OK/)) {
                 data = data.replace("[OK]\n", "");
@@ -752,78 +751,36 @@ function get_document_relations(doc_id, box) {
 }
 
 function get_document_content(doc_id, box) {
-    box.find(".content").html("<h3>Entities</h3><div class='loading'></div>");
+    box.find(".content").html("<h3>Corpus preview</h3><div class='loading'></div>");
 
     jQuery.ajax({
-        url: "./index.cgi?command=content-html&doc_id=" + doc_id,
+        url: "/concordances/" + doc_id,
         success: function(data) {
             data = data.replace("[OK]\n", "");
-            box.find(".content").html("<h3>Entities</h3><div class='document'>" + data + "</div><div class='entities'></div><div style='clear: both'></div>");
+						var corpus = "<h3>Corpus preview</h3>";
+						// TODO: I can add browsing options
+						corpus += "<div class='corpus'>";
+						corpus += "Here you can see first 100 lines of corpus.";
+						corpus += "<textarea class='corpus' readonly>" + data + "</textarea>";
+						corpus += "</div>";
+						//<div class='entities'></div><div style='clear: both'></div>";
+            box.find(".content").html(corpus);
+						/*
             jQuery('.chunk').click(function() {
                 chunk_id = jQuery(this).attr('id');
                 highlight_chunk(doc_id, chunk_id, box);
             });
+						*/
         },
         error: function() {
-            box.find(".content").html("<h3>Entities</h3><div class='document'><p>Couldn't retrieve document.</p></div><div class='entities'></div><div style='clear: both'></div>");
+            box.find(".content").html("<h3>Corpus preview</h3><div class='document'><p>Couldn't retrieve corpus.</p></div><div class='entities'></div><div style='clear: both'></div>");
         }
     });
 }
 
-function highlight_chunk(doc_id, chunk_id, box) {
-    box.find(".entities").slideUp();
-    box.find(".entities").html("<div class='loading'></div>");
-    box.find(".entities").slideDown();
 
-    jQuery.ajax({
-        url: "./index.cgi?command=content-chunks&doc_id=" + doc_id + "&chunk_id=" + chunk_id,
-        success: function(data) {
-            // Fill entities box
-            var output = "";
-            var entities = data.split("\n");
-            for (var i = 1; i < entities.length - 1; i++) {
-                var fields = entities[i].split(/\t/);
-                if (fields[2]) {
-                    output += "<div class='highlighted_entity' id='" + i + "'>";
-                    output += "<b>" + fields[2] + "</b><br>";
-                    output += "<i>" + fields[3] + "</i>";
-                    output += "</div>";
-                }
-                //else {
-                //    output += "<i>Chunk is a part of entity automatically created during relation extraction.</i>";
-                //}
-                //output += "Entity: " + fields[0] + "<br>";
-                //output += "Chunks: " + fields[1] + "<br>";
-            }
 
-            box.find(".entities").html("<h2>Entity details</h2><p>" + output + "</p>");
 
-            // Highlight entity
-            jQuery('.highlighted_entity').hover(function() {
-                var line = jQuery(this).attr('id');
-                var fields = entities[line].split(/\t/);
-                var chunks = fields[1].split(/, /);
-
-                for (var i = 0; i < chunks.length; i++) {
-                    jQuery('#' + chunks[i]).addClass("highlighted_chunk");
-                }
-            },
-            function() {
-                var line = jQuery(this).attr('id');
-                var fields = entities[line].split(/\t/);
-                var chunks = fields[1].split(/, /);
-
-                for (var i = 0; i < chunks.length; i++) {
-                    jQuery('#' + chunks[i]).removeClass("highlighted_chunk");
-                }
-            });
-        },
-        error: function() {
-            return "";
-        }
-    });
-
-}
 
 function get_document_state(id, box) {
     clearTimeout(timeout);
@@ -833,73 +790,97 @@ function get_document_state(id, box) {
     }
 
     jQuery.ajax({
-        url: "./index.cgi?command=document-state&doc_id=" + id,
+        url: "/jobdetail/" + id,
         success: function(data) {
             if (data.match(/ERROR/)) {
                 box.find(".state").html("<p class='error'>Couldn't retrieve document state.</p>");
                 return;
             }
 
+            var lines = data.split("\n");
             var icon = "";
             var text = "";
-            if (data.match(/[34567]00/)) {
+						var color = "green";
+
+						var incomplete = " (it's incomplete, job is not finished yet)"
+
+						var state = lines[1];
+            if (state.match(/STARTED/)) {
                 icon = "static/greening.gif";
-                text = "At this moment, document is processing by one of the RExtractor components.";
+                text = "Job is running.";
             }
-            if (data.match(/\d10/)) {
+            if (state.match(/ERROR/)) {
                 icon = "static/red.png";
-                text = "An error occured during document processing. Job was cancelled."
+                text = "An error occured during job processing. Job was cancelled."
+								color = "red";
             }
-            if (data.match(/(200|[3456]20)/)) {
+            if (state.match(/FINISHED/)) {
                 icon = "static/green.png";
-                text = "Document is waiting for another component.";
+                text = "Job is finished, corpus is available to download.";
+								incomplete = "";
             }
-            if (data.match(/(720)/)) {
-                icon = "static/green.png";
-                text = "Document processing is complete.";
+            if (state.match(/ABORTED/)) {
+                icon = "static/red.png";
+                text = "Job was aborted.";
+								color = "red";
             }
 
-            var lines = data.split("\n");
             var submition_time = lines[2];
-            submition_time = submition_time.replace(/Submition time:/, "");
 
-            var state = lines[1];
-            state = state.replace(/\[OK\] /, "");
-
-            var percent = "";
-            percent = state.replace(/^(\d).*$/, "$1");
-            percent -= 1;
-            percent = (100 / 6) * percent;
-            var color = state.match(/\d10/) ? "red" : "green";
+            var percent = lines[3];
             var progress_bar = "<div class='state-bar'><div class='state-bar-content' style='width: " + percent + "%; background: " + color + "'></div></div>";
 
-            var doc_strategy = lines[3];
-            doc_strategy = doc_strategy.replace(/.*:\s+/, "");
-            doc_strategy = strategies[doc_strategy];
+						var parameters = "<h3>Job parameters</h3>";
+						parameters += "<table class='list'>";
+						parameters += "<tr><td><b>target word</b></td> <td>" + lines[9] + "</td></tr>";
+						parameters += "<tr><td><b>POS tag</b></td> <td>" + lines[10] + "</td></tr>";
+						parameters += "<tr><td><b>desired number of concordances</b></td> <td>" + lines[11] + "</td></tr>";
+						parameters += "<tr><td><b>max concordances from page</b></td> <td>" + lines[12] + "</td></tr>";
+						parameters += "<tr><td><b>disable English filter</b></td> <td>" + lines[13] + "</td></tr>";
+						parameters += "<tr><td><b>bazword generator</b></td> <td>" + lines[14] + "</td></tr>";
+						parameters += "<tr><td><b>encoding</b></td> <td>" + lines[15] + "</td></tr>";
+						parameters += "</table>";
+						
+            var output = parameters;
 
-            var output = "";
-            output += "<h3>Current status</h3>";
-            output += "<table><tr><td><img src='" + icon + "'></td><td>" + text + "</td></tr></table>";
-            output += "<h3>Progress bar</h3>";
+            output += "<h3>Progress info</h3>";
+            output += "<table><tr><td><img src='" + icon + "'></td><td>" + text + "</td></tr>";
+						output += "</table>    <br>";
+						var concordances = lines[16];
+						var desired_concs = lines[11];
+						output += "<table><tr><td> Crawled " + concordances + " concordances from " + desired_concs + ", "+percent+" % completed.</td></td>";
+						output += "</table>    <br>";
             output += progress_bar;
-            output += "<h3>Details</h3>";
             output += "<table class='list'>";
-            output += "<tr><th>Document</th><th>Submition time</th><th>State</th><th>Strategy</th><th>Actions</th></tr>";
-            output += "<tr><td>" + id + "</td><td>" + submition_time + "</td><td>" + state + "</td><td>" + doc_strategy + "</td><td><span class='delete'>Delete document</span></td></tr>";
+            output += "<tr><th>ID</th><th>Submition time</th><th>Completed</th><th>Actions</th></tr>";
+            output += "<tr><td>" + id + "</td><td>" + submition_time + "</td><td>" + percent + " %</td><td><span class='delete'>Delete job</span></td></tr>";
             output += "</table>";
+						
+						output += "<h3>Last crawling status</h3>";	
+						output += "<table class='list'>";
+						for (var i = 5; i < 9; ++i) {
+							output += "<tr>";
+							output += "<td>" + lines[i].match(/^.*\t/) + "</td><td>" + lines[i].match(/\t.*/)  + "</td>";
+							output += "</tr>";
+						}
+						output += "</table>";
+
+						output += "<h3>Download</h3>";
+						output += "<a href='/static/jobs/"+id+"/corpus.json' download>Download corpus.json</a>" + incomplete + "<br>";
+						output += "<a href='/static/jobs/"+id+"/err' download>Download job's logfile</a>";
 
             box.find(".state").html(output);
 
             jQuery('.delete').click(function() {
-                if (!confirm("Document will be permanently deleted from the RExtractor system. Do you want to continue?")) {
+                if (!confirm("Job and its corpus will be permanently deleted. Do you want to continue?")) {
                     return;
                 }
 
                 jQuery.ajax({
-                    url: "./index.cgi?command=document-delete&doc_id=" + id,
+                    url: "/deletejob/" + id,
                     success: function(data) {
                         if (data.match(/\[OK\]/)) {
-                            message = "<p class='ok'>Document " + id + " was deleted from the RExtractor system.</p>";
+                            message = "<p class='ok'>Job " + id + " was deleted.</p>";
                             run_list();
                         }
                         else {
@@ -907,13 +888,13 @@ function get_document_state(id, box) {
                         }
                     },
                     error: function() {
-                        alert("An error occured during deleting document.");
+                        alert("An error occured during deleting job.");
                     }
                 });
             });
         },
         error: function() {
-            box.find(".state").html("<p class='error'>Couldn't retrieve document.</p>");
+            box.find(".state").html("<p class='error'>Couldn't retrieve job data.</p>");
         }
     });
 

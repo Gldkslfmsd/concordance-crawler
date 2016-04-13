@@ -8,7 +8,6 @@ if six.PY3:
 elif six.PY2:
 	from multiprocessing import TimeoutError as multiprocessing_TimeoutError
 
-
 import requests
 from ConcordanceCrawler.core.user_agents import random_user_agent
 import multiprocessing
@@ -79,4 +78,8 @@ def get_raw_html(url):
 
 # for debugging purposes:
 if __name__=="__main__":
-	print(get_raw_html("http://cd.cz/"))
+#	print(get_raw_html("http://cd.cz/"))
+
+	# an url which generates socket.timeout exception
+#	print(get_raw_html("http://www.njrtvu.com/kgy/review.asp?id=270"))
+	print(get_raw_html("http://atrey.karlin.mff.cuni.cz:12345"))

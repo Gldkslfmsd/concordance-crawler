@@ -231,12 +231,10 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 			self.Logger.error("request {0} cannot be handled for a long time".format(
 				link['link']))
 			self.page_errors += 1
-			raise
 		except requests.exceptions.RequestException as e:
 			self.Logger.error("\'{}\' occured during getting {}".format(
 				e,link['link']))
 			self.page_errors += 1
-			raise
 		except TypeError:
 			self.Logger.error("parsing error during processing \'{}\'".format(
 				link['link']))
@@ -244,7 +242,6 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 		except Exception:
 			self.Logger.error("!!! Undefined error occured, {0}".format(format_exc()))
 			self.page_errors += 1
-			raise
 		else:
 			self.visited_pages.insert(link['link'])
 			self.log_details("page {0} visited, {1} concordances found".format(

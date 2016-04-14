@@ -1,4 +1,5 @@
 import os
+import os.path
 import subprocess
 from model import  *
 from time import sleep
@@ -19,9 +20,10 @@ class Job:
 		f.close()
 
 	def launch(self,new_state="STARTED"):
-		f = open(self.path+"/corpus.json","w")
-		f.write('[\n')
-		f.close()
+		if not os.path.isfile(self.path+"/corpus.json"):
+			f = open(self.path+"/corpus.json","w")
+			f.write('[\n')
+			f.close()
 		self.process = subprocess.Popen(run_job.format(self.jobid).split(),stderr=open(self.path+"/err","a"))
 		self.update_state(new_state)
 
@@ -104,6 +106,8 @@ class Manager:
 		while True:
 			self.check()
 			print("running",self.running, "paused",self.paused)
+			f = open("jobmanager_livestamp","w")
+			f.close()
 			sleep(3)
 
 	def interrupt(self,_=None,__=None):

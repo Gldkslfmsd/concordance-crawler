@@ -2,8 +2,9 @@ from flask import Flask, send_from_directory, url_for, redirect, request
 app = Flask(__name__)
 
 from model import *
-from time import ctime
+from time import ctime, time
 import random
+import os.path
 
 @app.route("/", methods=["GET", "POST"])
 def root():
@@ -97,6 +98,22 @@ def deletejob(jobid):
 def concordances(jobid,start=0,limit=100):
 	corpus = get_corpus(jobid, start, limit)
 	return "[OK]\n"+"".join(corpus)
+
+
+last_call = 0  # time where jobmanager was last seen living
+@app.route("/serverstatus")
+def serverstatus():
+	global last_call
+	if os.path.isfile("jobmanager_livestamp"):
+		print("žije", last_call)
+		os.remove("jobmanager_livestamp")
+		last_call = time()
+	else:
+		print("nežije", last_call)
+	tnow = time()
+	if tnow - last_call > 10:
+		return "[OK]\nServer is OFF"
+	return "[OK]\nServer is ON"
 
 if __name__ == "__main__":
 	app.debug=True

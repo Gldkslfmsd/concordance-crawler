@@ -84,9 +84,8 @@ function run_document(id) {
  * APPLETS
  */
 function applet_server_status() {
-		return; // TODO
     jQuery.ajax({
-        url: "./index.cgi?command=server-state",
+        url: "/serverstatus",
         success: function(data) {
             var servers = data.split('\n');
 
@@ -334,6 +333,12 @@ function applet_submit() {
 
     // Form
     var form = "";
+
+		form += "<p>Target word(s)</p>";
+		form += "<input type='text' id='target' value=''>";
+		form += "<p>Target word part of speech tag regex</p>";
+		form += "<input type='text' id='pos' value='.*'>";
+
     form += "<p>Number of concordances:</p>";
 		form += "<input type='number' id='number' min='1' max='10000' value='10'>";
 
@@ -364,11 +369,8 @@ function applet_submit() {
 		for (enc in encs) {
 			form += "<option value='" + enc + "'>" + encs[enc] + "</option>";
 		}
-		form += "</select>";
-		form += "<p>Target word(s)</p>";
-		form += "<input type='text' id='target' value=''>";
-		form += "<p>Target word part of speech tag regex</p>";
-		form += "<input type='text' id='pos' value='.*'>";
+		form += "</select><br><br>";
+		
     form += "<input id='new_submit_submit' type='button' value='Submit new job' onClick='applet_submit_click()'>";
 
     var output = "";

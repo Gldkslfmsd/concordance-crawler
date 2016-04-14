@@ -1,6 +1,6 @@
 import re
 import segtok.segmenter as segmenter
-from words_lower import words
+from ConcordanceCrawler.core.words_lower import words
 
 reg = re.compile(r"[a-zA-Z]+\)?[.?!]\(?[a-zA-Z]+")
 

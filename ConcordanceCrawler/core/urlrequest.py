@@ -82,9 +82,14 @@ def get_raw_html(url):
 
 # for debugging purposes:
 if __name__=="__main__":
-#	print(get_raw_html("http://cd.cz/"))
 
 	# an url which generates socket.timeout exception
 #	print(get_raw_html("http://www.njrtvu.com/kgy/review.asp?id=270"))
 	#print(get_raw_html("http://atrey.karlin.mff.cuni.cz:12345"))
-	print(get_raw_html("https://www.waukeshacounty.gov/Product_Disp/"))
+	try:
+		print("waukeshacounty")
+		print(get_raw_html("https://www.waukeshacounty.gov/Product_Disp/"))
+	except:
+		pass
+	print("cd.cz")
+	print(get_raw_html("http://cd.cz/"))

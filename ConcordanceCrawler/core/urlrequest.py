@@ -82,14 +82,16 @@ def get_raw_html(url):
 
 # for debugging purposes:
 if __name__=="__main__":
-
-	# an url which generates socket.timeout exception
+# an url which generates socket.timeout exception
 #	print(get_raw_html("http://www.njrtvu.com/kgy/review.asp?id=270"))
-	#print(get_raw_html("http://atrey.karlin.mff.cuni.cz:12345"))
-	try:
-		print("waukeshacounty")
-		print(get_raw_html("https://www.waukeshacounty.gov/Product_Disp/"))
-	except:
-		pass
+#print(get_raw_html("http://atrey.karlin.mff.cuni.cz:12345"))
 	print("cd.cz")
-	print(get_raw_html("http://cd.cz/"))
+	print(get_raw_html("https://github.com/Gldkslfmsd/concordance-crawler/issues/28"))
+	try:
+	   print("waukeshacounty")
+	   print(get_raw_html("https://www.waukeshacounty.gov/Product_Disp/"))
+	except:
+	   print("error") 
+	   pass
+	print("cd.cz")
+	print(get_raw_html("https://github.com/Gldkslfmsd/concordance-crawler/issues/28"))

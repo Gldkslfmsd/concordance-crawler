@@ -24,6 +24,8 @@ def request_get(*args,**kwargs):
 	# without this it would write stack trace when the application is aborted
 	except KeyboardInterrupt:
 		pass
+	except TypeError:
+		print("type error in request_get")
 
 
 # we use just one pool for all calls, because it spares time, memory and
@@ -70,9 +72,11 @@ def get_raw_html(url):
 			{'timeout':10,'headers':headers} # keyword arguments
 			)
 		# waits maximally 5 minutes for result
-		req = app_res.get(5*60)
+		req = app_res.get(15)
 	except multiprocessing_TimeoutError:
 		raise requests.exceptions.Timeout
+	except TypeError:
+		print("typerror")
 
 	return req.text, req.headers
 
@@ -82,4 +86,5 @@ if __name__=="__main__":
 
 	# an url which generates socket.timeout exception
 #	print(get_raw_html("http://www.njrtvu.com/kgy/review.asp?id=270"))
-	print(get_raw_html("http://atrey.karlin.mff.cuni.cz:12345"))
+	#print(get_raw_html("http://atrey.karlin.mff.cuni.cz:12345"))
+	print(get_raw_html("https://www.waukeshacounty.gov/Product_Disp/"))

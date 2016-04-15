@@ -10,7 +10,7 @@ elif six.PY2:
 
 import requests
 from ConcordanceCrawler.core.user_agents import random_user_agent
-import multiprocessing
+#import multiprocessing
 
 '''A funcion that downloads content from url.
 '''
@@ -30,7 +30,8 @@ def request_get(*args,**kwargs):
 
 # we use just one pool for all calls, because it spares time, memory and
 # processes
-pool = multiprocessing.Pool(1)
+#i = 0
+#pool = multiprocessing.Pool(1)
 def get_raw_html(url):
 	'''Get raw html.
 
@@ -63,20 +64,23 @@ def get_raw_html(url):
 # Sometimes it get stuck on requests.get command without known reason, so
 # we run this command in side process and measure its time, if it
 # lasts more than 5 minutes we kill it.
+#	global i
+#	if i==3:
+#		url = "https://www.waukeshacounty.gov/Product_Disp/"
+#	i += 1
 
 	try:
 		# run it in a pool
-		app_res = pool.apply_async(
-			request_get, # a function
-			(url,), # function arguments
-			{'timeout':10,'headers':headers} # keyword arguments
-			)
+#		app_res = pool.apply_async(
+#			request_get, # a function
+#			(url,), # function arguments
+#			{'timeout':10,'headers':headers} # keyword arguments
+#			)
 		# waits maximally 5 minutes for result
-		req = app_res.get(15)
-	except multiprocessing_TimeoutError:
-		raise requests.exceptions.Timeout
-	except TypeError:
-		print("typerror")
+	#	req = app_res.get(15)
+		req = request_get(url, timeout=10, headers=headers)
+	except Exception as e:
+		raise
 
 	return req.text, req.headers
 
@@ -84,14 +88,10 @@ def get_raw_html(url):
 if __name__=="__main__":
 # an url which generates socket.timeout exception
 #	print(get_raw_html("http://www.njrtvu.com/kgy/review.asp?id=270"))
-#print(get_raw_html("http://atrey.karlin.mff.cuni.cz:12345"))
+	print(get_raw_html("http://atrey.karlin.mff.cuni.cz:12345"))
 	print("cd.cz")
 	print(get_raw_html("https://github.com/Gldkslfmsd/concordance-crawler/issues/28"))
-	try:
-	   print("waukeshacounty")
-	   print(get_raw_html("https://www.waukeshacounty.gov/Product_Disp/"))
-	except:
-	   print("error") 
-	   pass
-	print("cd.cz")
-	print(get_raw_html("https://github.com/Gldkslfmsd/concordance-crawler/issues/28"))
+	print("waukeshacounty")
+	print(get_raw_html("https://www.waukeshacounty.gov/Product_Disp/"))
+#	print("cd.cz")
+#	print(get_raw_html("https://github.com/Gldkslfmsd/concordance-crawler/issues/28"))

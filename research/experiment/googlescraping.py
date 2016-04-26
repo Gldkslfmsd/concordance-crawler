@@ -1,29 +1,6 @@
 #!/usr/bin/env python3
 
 '''Experiment:
-How many queries per second can Bing handle without blocking?
-
-Result: maximally 37
-
-I proved it with this script. With this number every query succeeded. With
-38 requests per minute cca one third succeeded and two thirds failed (but
-this ratio differs). Tried on two different computers with different IP's
-for 1 and 10 minutes.
-
-Recommended usage:
-	python3 bingscraping.py | tee output
-
-Then you can count your score, how many times your query was blocked or
-succeeded:
-
-	grep "ok" output | wc -l
-	grep "blocked" output | wc -l
-
-In working directory you can see also all scraped html files, they're called
-"raw_[id of query].html". You can control them by ```ls -l```, if you see
-their sizes are for example 53073, 55098, 54308, 59379, 53122 etc., then it's
-all right and they might contain search results. If more of them have the
-same size, then it's suspicious, open it via web browser and look.
 '''
 
 # this comes from concordance crawler, but it may change, so I copy this
@@ -31,7 +8,7 @@ same size, then it's suspicious, open it via web browser and look.
 
 def get_keyword_url(keyword):
 	replacedspaces = keyword.replace(" ","+")
-	url = "http://www.bing.com/search?q={keyword}&first=1&FORM=PERE1".format(
+	url = "https://www.google.cz/search?q={keyword}".format(
 		keyword = replacedspaces
 	)
 	return url
@@ -104,7 +81,7 @@ def one_scrape(id):
 	# keyword will be a random bazword and a word "employ", you can change it
 	url = get_keyword_url(rsw.get_bazword() + " employ")
 	rawhtml = requests.get(url).text
-	f = open("raw_bing_"+str(id)+".html","w")
+	f = open("raw_google_"+str(id)+".html","w")
 	f.write(rawhtml)
 	f.close()
 	if is_blocked(rawhtml):
@@ -133,5 +110,5 @@ def is_blocked(rawhtml):
 
 # with this configuration your experiment will last 60 seconds and you try
 # 37 requests (which is maximum)
-sec = 6
-events_per_minute(37*sec,seconds=sec,event=one_scrape)
+sec = 10
+events_per_minute(3*sec,seconds=sec,event=one_scrape)

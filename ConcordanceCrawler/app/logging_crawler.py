@@ -1,16 +1,7 @@
 from ConcordanceCrawler.core.concordance_crawler import *
 from ConcordanceCrawler.core.links import SERPError
-import six
-if six.PY3:
-	import sys
-	if sys.version_info.minor>=4:
-		from multiprocessing.context import TimeoutError as multiprocessing_TimeoutError
-	else:
-		from multiprocessing import TimeoutError as multiprocessing_TimeoutError
+from ConcordanceCrawler.core.urlrequest import UrlRequestException
 
-elif six.PY2:
-	from multiprocessing import TimeoutError as multiprocessing_TimeoutError
-	from requests.exceptions import ConnectionError
 import requests
 
 from ConcordanceCrawler.core.limited_buffer import LimitedBuffer
@@ -227,11 +218,7 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 	def concordances_from_link(self, link):
 		try:
 			concordances = super(LoggingCrawler, self).concordances_from_link(link)
-		except requests.exceptions.Timeout:
-			self.Logger.error("request {0} cannot be handled for a long time".format(
-				link['link']))
-			self.page_errors += 1
-		except requests.exceptions.RequestException as e:
+		except (requests.exceptions.RequestException, UrlRequestException) as e:
 			self.Logger.error("\'{}\' occured during getting {}".format(
 				e,link['link']))
 			self.page_errors += 1
@@ -239,8 +226,10 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 			self.Logger.error("parsing error during processing \'{}\'".format(
 				link['link']))
 			self.page_errors += 1
+		except KeyboardInterrupt:  # terminate whole application
+			raise
 		except Exception:
-			self.Logger.error("!!! Undefined error occured, {0}".format(format_exc()))
+			self.Logger.error("!!! Unknown error occured, {0}".format(format_exc()))
 			self.page_errors += 1
 		else:
 			self.visited_pages.insert(link['link'])
@@ -251,9 +240,3 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 			self.log_state()
 			return concordances
 
-
-
-# TODO
-#class SimpleLoggingCrawler(LoggingCrawler):
-#	def __init__(self, word, bazgen):
-#		super(SimpleLoggingCrawler, self).__init__(word,bazgen)

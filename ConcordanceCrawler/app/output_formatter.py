@@ -58,7 +58,7 @@ def create_formatter(format,output_stream,extending):
 class JsonFormatter(OutputFormatter):
 	'''Writes pretty-printed concordances in json.
 	'''
-	def __init__(self,output_stream,extending):
+	def __init__(self,output_stream,extending=False):
 		super(JsonFormatter, self).__init__(output_stream)
 		# writes [ to output as a begining symbol of list of concordances...
 		if not extending:
@@ -99,7 +99,7 @@ class JsonFormatter(OutputFormatter):
 class XmlFormatter(OutputFormatter):
 	'''Writes pretty-printed concordances in xml.
 	'''
-	def __init__(self,output_stream,extending):
+	def __init__(self,output_stream,extending=False):
 		super(XmlFormatter, self).__init__(output_stream)
 		if not extending:
 			self.output_stream.write('<?xml version="1.0"?>\n')
@@ -147,7 +147,7 @@ if __name__ == "__main__":
 #	form.close()
 
 	form = create_formatter("xml", stdout)
-	form.output({"a":5,"cs><něco><sdf":None})
+	form.output({"a":5,"cs><neco><sdf":None})
 	form.output({"a":5})
 
 	form.close()

@@ -1,8 +1,8 @@
 # this dictionary comes from nltk.corpus.words.words()
 
 words = set([
-	"a",
-	"a",
+	
+	
 	"aa",
 	"aal",
 	"aalii",
@@ -17097,8 +17097,8 @@ words = set([
 	"azyme",
 	"azymite",
 	"azymous",
-	"b",
-	"b",
+	
+	
 	"ba",
 	"baa",
 	"baahling",
@@ -28167,8 +28167,8 @@ words = set([
 	"byzantinesque",
 	"byzantinism",
 	"byzantinize",
-	"c",
-	"c",
+	
+	
 	"ca",
 	"caam",
 	"caama",
@@ -48068,8 +48068,8 @@ words = set([
 	"czechization",
 	"czechoslovak",
 	"czechoslovakian",
-	"d",
-	"d",
+	
+	
 	"da",
 	"daalder",
 	"dab",
@@ -58964,8 +58964,8 @@ words = set([
 	"dytiscus",
 	"dzeren",
 	"dzungar",
-	"e",
-	"e",
+	
+	
 	"ea",
 	"each",
 	"eachwhere",
@@ -67700,8 +67700,8 @@ words = set([
 	"ezba",
 	"ezekiel",
 	"ezra",
-	"f",
-	"f",
+	
+	
 	"fa",
 	"faba",
 	"fabaceae",
@@ -74560,8 +74560,8 @@ words = set([
 	"fyke",
 	"fylfot",
 	"fyrd",
-	"g",
-	"g",
+	
+	
 	"ga",
 	"ga",
 	"gab",
@@ -81421,8 +81421,8 @@ words = set([
 	"gyte",
 	"gytling",
 	"gyve",
-	"h",
-	"h",
+	
+	
 	"ha",
 	"haab",
 	"haaf",
@@ -90448,8 +90448,8 @@ words = set([
 	"hystricomorphic",
 	"hystricomorphous",
 	"hystrix",
-	"i",
-	"i",
+	
+	
 	"iacchic",
 	"iacchos",
 	"iacchus",
@@ -99247,8 +99247,8 @@ words = set([
 	"izumi",
 	"izzard",
 	"izzy",
-	"j",
-	"j",
+	
+	
 	"jaalin",
 	"jab",
 	"jabarite",
@@ -100889,8 +100889,8 @@ words = set([
 	"jyngine",
 	"jynx",
 	"jynx",
-	"k",
-	"k",
+	
+	
 	"ka",
 	"kababish",
 	"kabaka",
@@ -103170,8 +103170,8 @@ words = set([
 	"kyung",
 	"kyurin",
 	"kyurinish",
-	"l",
-	"l",
+	
+	
 	"la",
 	"laager",
 	"laang",
@@ -109454,8 +109454,8 @@ words = set([
 	"lytic",
 	"lytta",
 	"lyxose",
-	"m",
-	"m",
+	
+	
 	"ma",
 	"ma",
 	"maam",
@@ -122070,8 +122070,8 @@ words = set([
 	"myzostomidae",
 	"myzostomidan",
 	"myzostomous",
-	"n",
-	"n",
+	
+	
 	"na",
 	"naa",
 	"naam",
@@ -128850,8 +128850,8 @@ words = set([
 	"nystagmic",
 	"nystagmus",
 	"nyxis",
-	"o",
-	"o",
+	
+	
 	"oadal",
 	"oaf",
 	"oafdom",
@@ -136699,8 +136699,8 @@ words = set([
 	"ozophene",
 	"ozostomia",
 	"ozotype",
-	"p",
-	"p",
+	
+	
 	"pa",
 	"paal",
 	"paar",
@@ -161160,8 +161160,8 @@ words = set([
 	"pyxie",
 	"pyxis",
 	"pyxis",
-	"q",
-	"q",
+	
+	
 	"qasida",
 	"qere",
 	"qeri",
@@ -162312,8 +162312,8 @@ words = set([
 	"quotlibet",
 	"quotum",
 	"qurti",
-	"r",
-	"r",
+	
+	
 	"ra",
 	"raad",
 	"raanan",
@@ -171983,8 +171983,8 @@ words = set([
 	"rytidosis",
 	"rytina",
 	"ryukyu",
-	"s",
-	"s",
+	
+	
 	"sa",
 	"saa",
 	"saad",
@@ -197145,8 +197145,8 @@ words = set([
 	"szekler",
 	"szlachta",
 	"szopelka",
-	"t",
-	"t",
+	
+	
 	"ta",
 	"taa",
 	"taal",
@@ -210111,8 +210111,8 @@ words = set([
 	"tzontle",
 	"tzotzil",
 	"tzutuhil",
-	"u",
-	"u",
+	
+	
 	"uang",
 	"uaraycu",
 	"uarekena",
@@ -226498,8 +226498,8 @@ words = set([
 	"uzbak",
 	"uzbeg",
 	"uzbek",
-	"v",
-	"v",
+	
+	
 	"vaagmer",
 	"vaalite",
 	"vaalpens",
@@ -229938,8 +229938,8 @@ words = set([
 	"vum",
 	"vying",
 	"vyingly",
-	"w",
-	"w",
+	
+	
 	"wa",
 	"wa",
 	"waac",
@@ -233882,8 +233882,8 @@ words = set([
 	"wyss",
 	"wyve",
 	"wyver",
-	"x",
-	"x",
+	
+	
 	"xanthaline",
 	"xanthamic",
 	"xanthamide",
@@ -234267,8 +234267,8 @@ words = set([
 	"xystos",
 	"xystum",
 	"xystus",
-	"y",
-	"y",
+	
+	
 	"ya",
 	"yaba",
 	"yabber",
@@ -234938,8 +234938,8 @@ words = set([
 	"yuzlik",
 	"yuzluk",
 	"yvonne",
-	"z",
-	"z",
+	
+	
 	"za",
 	"zabaean",
 	"zabaglione",
@@ -235887,8 +235887,8 @@ words = set([
 	"zythum",
 	"zyzomys",
 	"zyzzogeton",
-	"i",
-	"a",
+	
+	
 	"able",
 	"about",
 	"account",

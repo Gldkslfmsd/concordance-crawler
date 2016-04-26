@@ -37,7 +37,8 @@ class TestFormatter(unittest.TestCase):
 		jf.output({"b":"a"})
 		jf.close()
 		f = open("x.xml","r")
-		correct = """<concordances>
+		correct = """<?xml version="1.0"?>
+<concordances>
 	<item>
 		<a>b</a>
 	</item>	

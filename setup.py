@@ -32,7 +32,7 @@ setup(name='ConcordanceCrawler',
 				'ConcordanceCrawler = ConcordanceCrawler.app.app:main',
 				]
 				},
-      install_requires=['cssselect','lxml','requests','beautifulsoup4','simplejson','six','segtok','regex'],
+      install_requires=['cssselect','lxml','requests','beautifulsoup4','simplejson','six','segtok','regex','stopit'],
 			test_suite='ConcordanceCrawler.tests',
 			classifiers = [
 				"Development Status :: 3 - Alpha",

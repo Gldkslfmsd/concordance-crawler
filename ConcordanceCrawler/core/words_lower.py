@@ -1,4 +1,5 @@
-# this dictionary comes from nltk.corpus.words.words()
+# this dictionary was generated from nltk.corpus.words.words()
+# it should contain all English words
 
 words = set([
 	

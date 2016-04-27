@@ -27,7 +27,16 @@ def get_args():
 
 	Returns: a dict with arguments and their values
 	'''
-	parser = argparse.ArgumentParser(description='Crawl concordances')
+	parser = argparse.ArgumentParser(description='''Select a word. ConcordanceCrawler
+	enables you to download from the Internet any number of English sentences
+	containing the word selected by you! 
+
+	You can start a very new crawling job (then don't forget to include at
+	least the `word` option) or you can continue with a job that was
+	unexpectedly interrupted earlier, then you must include options
+	`--backup-file BACKUP_FILE`, `--extend-corpus EXTEND_CORPUS` and
+	`--continue-from-backup CONTINUE_FROM_BACKUP`.
+	''')
 
 	parser.add_argument("word",
 		type=str,
@@ -96,28 +105,37 @@ def get_args():
 		)
 
 	parser.add_argument("-p", "--part-of-speech",
-		default=None,
+		default=".*",
 		type=str,
-		choices=["v","a","n","x"],
-		help="""Target word's part-of-speech. Concordances with any forms of
-		target word conjugated/inflected as given part-of-speech will be
-		crawled. Options are v: verbs, a: adjectives, n: nouns, x: any other
-		indeclinable part of speech (default).
-		
-		If your option is v, a or n, ConcordanceCrawler will terminate, unless you 
-		installed `textblob` library first.
+		help="""Target word's part-of-speech tag regex. As concordances will be
+		crawled only sentences containing
+		target word in forms whose part-of-speech tag matches regex specified
+		by this option. 
+
+
+		Tag values are adopted from Penn Treebank II tagset, see
+		http://www.clips.ua.ac.be/pages/mbsp-tags for detailed description.
+
+		Example: assume that target word is "fly" and given regex is
+		"V.*", it means we want to crawl only verbs. Then a word "flies" (tagged
+		"VBS") matches, as well as "flew" whose tag is "VBD". On the other hand
+		an insect "fly" with tag "NN" doesn't match, so sentences with this word
+		will be ignored. 
+
+	
+		Default value for this option is ".*", it means any
+		arbitrary part-of-speech. If you select other regex (e.g. "V.*" for
+		verbs, "N.*" for nouns, "J.*" for adjectives), then a `textblob` library
+		will be used.
 
 		Size of this library is not neglible, because it uses `nltk`, therefore
-		it's not an integral part of ConcordanceCrawler. Install it manually
-		with `pip install textblob`, if you wish. 
+		it's not an integral part of ConcordanceCrawler. You must install it manually
+		with `pip install textblob` and `python -m textblob.download_corpora`,
+		if you wish. 
 
 		Instead of it you can also omit this option, decline your target word
 		manually and use all its forms as additional values for `word`
 		argument.
-
-		If you have installed textblob and you choose v, a or n, its automatic
-		lemmatizing of English will be used and other arguments for `word` than
-		the first one will be ignored.
 		"""
 		)
 
@@ -165,6 +183,21 @@ def get_args():
 		type=argparse.FileType("r"),
 		help="""Continue crawling job from this backup file."""
 		)
+
+#
+#	parser.add_argument("--buffer-size",
+#		default=10**6,
+#		type=int,
+#		help="""Setup maximal number of items in memory buffers which are used
+#		to prevent repeated visit of the same url and repeated crawling of
+#		the same concordance. 
+#		Default value is 1000000. Selecting of too big
+#		number can lead to out of memory error (but this should happen only
+#		after a very long time). Selecting of small number can lead to repeated
+#		visit of same url or repeated crawling of the same concordance, because
+#		the buffers are like queues, when they are full they delete the old values
+#		to save the new ones.
+#		"""
 
 	args = vars(parser.parse_args())
 

@@ -235,7 +235,6 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 			self.visited_pages.insert(link['link'])
 			self.log_details("page {0} visited, {1} concordances found".format(
 				link['link'],len(concordances)))
-			# because of statistics (is not thread-safe)
 			self.num_pages += 1
 			self.log_state()
 			return concordances

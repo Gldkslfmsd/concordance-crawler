@@ -5,7 +5,7 @@ from collections import OrderedDict
 class LimitedBuffer(object):
 	'''stores limited number of objects'''
 
-	def __init__(self, maxsize=10000):
+	def __init__(self, maxsize=1000000):
 		if maxsize <= 0:
 			raise ValueError("maxsize must be positive integer")
 		self.maxsize = maxsize

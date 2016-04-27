@@ -14,6 +14,7 @@ import argparse
 from sys import stdout
 import logging
 from traceback import format_exc
+import re
 
 from ConcordanceCrawler.core.bazwords import *
 from ConcordanceCrawler.core.encoding import norm_encoding
@@ -221,25 +222,41 @@ def get_args():
 	return args, "backup" if ext_cont==0 else "run"
 
 def use_textblob_lemmatizer(lc, pos):
+
+	# in this case a simple_condordance_filter.py is used
+	if pos == ".*":
+		return
+
+	# otherwise lemmatizer_concordance_filter.py is used
+	try:
+		pos_regex = re.compile(pos)
+	except re.error as e:
+		sys.exit(str(e)+"\n\nError occured during compiling part-of-speech tag \n"
+		"regex. Please ensure it's a corect regular expression.")
+	
+
 	try:
 		from ConcordanceCrawler.core.lemmatizer_concordance_filter import lemmatizing_concordance_filtering
 	except ImportError as e:
 		print(e)
-		import sys
+		#import sys
 		sys.exit("""You have --part-of-speech among your options, your intention
-is to use automatic lemmatizing of verbs, adjectives or nouns, but you
-don't have `textblob` library installed. ConcordanceCrawler will terminate.
+is to use automatic lemmatizing, but you don't have `textblob` library
+installed. ConcordanceCrawler will terminate.
 
-Please install textblob by using `pip install textblob`.
+Please install textblob by using `pip install textblob` and `python -m
+textblob.download_corpora`.
 
 Or you can omit --part-of-speech option, conjugate/inflect your target word
 by yourself and use it as additional argument for word. See help message
 for more info.""")
-	else:
-		lc.setup(concordance_filtering=
-			lambda sentence, target:
-				lemmatizing_concordance_filtering(sentence, target, pos)
-				)
+
+
+
+	lc.setup(concordance_filtering=
+		lambda sentence, target:
+			lemmatizing_concordance_filtering(sentence, target, pos_regex)
+			)
 
 def config_encoding(lc, enc):
 	if enc is None:
@@ -305,8 +322,6 @@ def load_from_backup(args):
 
 	return nargs, load
 
-	
-
 def main():
 
 	args, mode = get_args()
@@ -342,10 +357,7 @@ def main():
 		lc.num_concordances = load['maxid']
 
 	pos = args['part_of_speech']
-	if pos is None or ( len(pos)==1 and pos[0] == 'x' ):
-		pass
-	else:
-		use_textblob_lemmatizer(lc, pos)
+	use_textblob_lemmatizer(lc, pos)
 
 	# setup logger
 	setup_logger(log_level)

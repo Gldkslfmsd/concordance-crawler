@@ -1,10 +1,11 @@
 from ConcordanceCrawler.core.concordance_crawler import *
 from ConcordanceCrawler.core.links import SERPError
 from ConcordanceCrawler.core.urlrequest import UrlRequestException
-
+from ConcordanceCrawler.core.visitor import VisitTooLongException
 import requests
 
 from ConcordanceCrawler.core.limited_buffer import LimitedBuffer
+
 import re
 
 '''This class is used just by demo commandline application.
@@ -224,6 +225,10 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 			self.page_errors += 1
 		except TypeError:
 			self.Logger.error("parsing error during processing \'{}\'".format(
+				link['link']))
+			self.page_errors += 1
+		except VisitTooLongException:
+			self.Logger.error("processing of \'{}\' took too long".format(
 				link['link']))
 			self.page_errors += 1
 		except KeyboardInterrupt:  # terminate whole application

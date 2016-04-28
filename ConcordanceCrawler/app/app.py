@@ -394,7 +394,8 @@ def main():
 			i += 1
 			if i>= number:
 				break
-	except KeyboardInterrupt:
+	except KeyboardInterrupt as e:
+		print(format_exc(e))
 		lc.log_state()
 		logging.info("\n\nConcordanceCrawler aborted, you can try to find " +
 		"its output in " + args["output"].name)

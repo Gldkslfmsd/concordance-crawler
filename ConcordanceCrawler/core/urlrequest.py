@@ -32,4 +32,6 @@ def get_raw_html(url):
 # for debugging purposes:
 if __name__=="__main__":
 
-	print(get_raw_html("http://httpbin.org/absolute-redirect/30"))
+	#print(get_raw_html("http://httpbin.org/absolute-redirect/30"))
+	a = "http://ambit.tiddlyspace.com/"
+	print(get_raw_html(a))

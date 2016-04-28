@@ -14,6 +14,11 @@ import ConcordanceCrawler.core.encoding as encoding
 
 from ConcordanceCrawler.core.eng_detect.eng_detect import EngDetector
 
+import stopit
+
+class VisitTooLongException(Exception):
+	'''Visit took too long'''
+
 class Visitor():
 	attributes = ['get_raw_html', 'get_visible_text', 'predict_format',
 		'accept_format', 'sentence_segmentation',
@@ -80,6 +85,7 @@ class Visitor():
 #		with open(targets[0]+str(self.i)+".html","w") as f:
 #			f.write(raw_data)
 
+
 		sentences = filter(self.sentence_filter,
 			self.sentence_segmentation(text))
 
@@ -103,7 +109,13 @@ class Visitor():
 				url, date, concordance (a sentence), keyword
 		'''
 		url = link['link']
-		concs = self.visit(url,target_words)
+
+		with stopit.ThreadingTimeout(60) as timeout:
+			concs = self.visit(url,target_words)
+
+		if timeout.state != stopit.ThreadingTimeout.EXECUTED:
+			raise VisitTooLongException()
+
 		if concs is None:
 			return []
 		concordances = []

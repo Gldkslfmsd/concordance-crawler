@@ -57,6 +57,14 @@ class Visitor():
 			None  # returns None if the text e.g. doesn't pass language filter
 			'''
 		raw_data, headers = self.get_raw_html(url)
+
+		# headers is CaseInsensitiveDict, because http header fieldnames are case insensitive
+		if ('Content-Type' in headers and not 'text' in headers['Content-Type']):
+			raise ValueError("document is not text")
+
+		if len(raw_data) > 20 * 1024 ** 2:  # document is greater than 20 MB
+			raise ValueError("document is too long")
+
 		normed_data = self.norm_encoding(raw_data, headers)
 		del raw_data
 		del headers
@@ -153,4 +161,10 @@ if __name__ == "__main__":
 
 	import requests
 	v = Visitor()
-	print(v.visit("https://en.wikipedia.org/wiki/Viceroy_of_Liangguang","of"))
+	print(v.visit("https://en.wikipedia.org/wiki/Viceroy_of_Liangguang",["of"]))
+
+	try:
+		print(v.visit("http://cgg.mff.cuni.cz/~pepca/lectures/cv/083/083DominikMachacek.avi",["SDSDFSFSDFS"]))
+	except ValueError as e:
+		print(e)
+	#print(v.visit("http://lesbartavelles13.free.fr/IMAGE-ISO/ENGLISH6EME.iso", ["SDFS"]))

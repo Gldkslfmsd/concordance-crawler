@@ -107,10 +107,21 @@ class EnglishNGramsExtractor(NGramsExtractor):
 		return self.reg.match(word)
 
 if __name__=="__main__":
-	def example():
-		ext = NGramsExtractor()
-		print(ext.extract("Hello."))
+	#def example():
+	#	ext = NGramsExtractor()
+	#	print(ext.extract("Hello."))
 
-	print(EnglishNGramsExtractor(10).extract("čau"))
-	print(EnglishNGramsExtractor(5).extract("č-au"))
+	#print(EnglishNGramsExtractor(10).extract("čau"))
+	#print(EnglishNGramsExtractor(5).extract("č-au"))
 	#example()
+
+
+	import requests
+	t = requests.get("http://lesbartavelles13.free.fr/IMAGE-ISO/ENGLISH6EME.iso").text
+
+#	t = t[:100000]
+	ext = NGramsExtractor()
+	print(len(t))
+	f = ext.extract(t)
+	print(sum(len(e.keys()) for e in f))
+	print(f)

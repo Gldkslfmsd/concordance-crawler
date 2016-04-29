@@ -58,13 +58,15 @@ class Visitor():
 			'''
 		raw_data, headers = self.get_raw_html(url)
 		normed_data = self.norm_encoding(raw_data, headers)
+		del raw_data
+		del headers
 		if not normed_data:
 			return None
 		data_format = self.predict_format(normed_data)
 		if not self.accept_format(data_format):
 			return None
 		text = self.get_visible_text(normed_data)
-
+		del normed_data
 		if not self.language_filter(text):
 			return None
 

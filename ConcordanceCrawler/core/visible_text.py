@@ -1,5 +1,5 @@
 import six
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, SoupStrainer
 import re
 
 class VisibleTextParser:
@@ -26,11 +26,16 @@ class VisibleTextParser:
 		humans.
 		'''
 		# we delete html comments
-		html = re.sub('<!--([^-]|-[^-]|--[^>])*-->',"",html,count=len(html)+1000)
+		html = re.sub('<!--([^-]|-[^-]|--[^>])*-->',"",html)
+
 		# Taken from here: http://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
-		soup = BeautifulSoup(html, "lxml")
+		soup = BeautifulSoup(html, "lxml", parse_only=SoupStrainer(text=True))
+
 		text = soup.findAll(text=True)
+		soup.decompose()
+
 		visible_texts = "".join(filter(VisibleTextParser._visible, text))
+
 		return visible_texts
 
 

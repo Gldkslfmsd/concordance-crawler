@@ -101,3 +101,12 @@ class EngDetector:
 		else:
 			return True
 		
+if __name__ == "__main__":
+	import requests
+	t = requests.get("http://lesbartavelles13.free.fr/IMAGE-ISO/ENGLISH6EME.iso").text
+	print("staženo")
+	
+	d = EngDetector()
+
+	print(d.englishness(t))
+

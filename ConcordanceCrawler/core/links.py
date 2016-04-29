@@ -72,8 +72,12 @@ def crawlonekeyword(keyword):
 	if is_blocked(rawhtml):
 		return None
 
-	# adding scraping information to links
+
+	#links = parse(rawhtml) + [{'link':"http://lesbartavelles13.free.fr/IMAGE-ISO/ENGLISH6EME.iso"}]
+
 	links = parse(rawhtml)
+
+	# adding scraping information to links
 	for i in links:
 		i['date'] = date
 		i['keyword'] = keyword

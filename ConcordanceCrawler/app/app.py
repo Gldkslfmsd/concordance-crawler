@@ -187,7 +187,7 @@ def get_args():
 
 	
 	def nonnegative(string):
-		msg = "%r must be a nonnegative number" % string
+		msg = "%r must be a nonnegative integer" % string
 		try:
 			N = int(string)
 			if N<0:

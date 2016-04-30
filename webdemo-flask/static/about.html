@@ -1,6 +1,56 @@
 <h2>About ConcordanceCrawler</h2>
 
+<h3>How does ConcordanceCrawler work?</h3>
+
 <p>
-Once upon a time far far away they lived happily ever after.
+ConcordanceCrawler finds links on Bing.com search engine, visits them and
+extracts concordances from them. During that it
+filters documents in encodings different than specified by user, filters
+Non-English documents, splits text to sentences and filters sentences
+containing concordances. It uses morfological analysis, so it is able to
+find ocurrences of target word in any of its grammatical forms. Final list
+of concordances can be formatted as json or xml.
 </p>
+
+<p>
+ConcordanceCrawler also solves a problem that Bing.com (and all search
+engines) are able to offer at most 1000 links
+for every keyword, which is too few. Therefore ConcordanceCrawler lets
+finding keywords as for example "sdtn look", "naxe look", "jzmw look" and
+similar combinations of bazword and target word. By this approach it gets
+sufficient number of different links to crawl concordances.
+</p>
+
+
+<h3>How does ConcordanceCrawler look like?</h3>
+
+<p>ConcordanceCrawler is a command-line application intended for Linux
+platform. It's created in Python programming language (so it should
+work also on other platforms). It's compatible with both Python 2 and 3.
+</p>
+
+
+<p>
+<a href='https://pypi.python.org/pypi/ConcordanceCrawler/'>Install ConcordanceCrawler via 
+PyPI.</a><br><br>
+
+
+You can report issues or suggest new features to 
+<a href='https://github.com/Gldkslfmsd/concordance-crawler/issues'>
+issue tracker on GitHub.</a> <br><br>
+
+See the 
+<a href='https://github.com/Gldkslfmsd/concordance-crawler'>
+source code on GitHub.</a>
+</p>
+
+<h3> Speed and performance </h3>
+
+<p>The main goal of implementation is to download corpora of the best
+quality as possible, so sometimes "nice" concordances are excluded together
+with "bad" ones. There isn't accent on extraction speed, downloading is not
+done parallel.
+</p>
+
+
 

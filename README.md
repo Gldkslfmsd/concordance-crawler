@@ -37,34 +37,88 @@ If you want to use also automatic conjugating of English verbs (or
 inflecting of nouns or comparing of adjectives), then install also
 `textblob` library, but it's not necessary, you can use ConcordanceCrawler
 pretty well without it. It's quite huge, because it uses `nltk`. For
-installing it just type `pip install textblob`.
+installing it just type `pip install textblob` and `python -m textblob.download_corpora`.
 
 Now you can use simply ```ConcordanceCrawler -h``` to run it and see its options.
 
-## Version
+## Python version
 
-This is version 0.3.0. It's intended for Python >= 2.7 and >= 3.2.
+ConcordanceCrawler works with Python2 >= 2.7 and with Python3 >= 3.2.
 
-Required libraries will be installed automaticaly.
+Unfortunately you cannot use `textblob` together with Python3.2, so you
+cannot use automatic morphological analysis with this Python version. However all
+other features work well.
 
 ## Usage
 
 You can use ConcordanceCrawler like a command-line application just as
-a Python library. This is a part of ConcordanceCrawler's help message:
+a Python library. This is a part of ConcordanceCrawler's help message summarizing
+all your options:
 
 ```
 usage: ConcordanceCrawler [-h] [-n NUMBER_OF_CONCORDANCES] [-m MAX_PER_PAGE]
                           [--disable-english-filter] [-o OUTPUT]
                           [-b {RANDOM,WIKI_ARTICLES,WIKI_TITLES,NUMBERS}]
-                          [-f {json}] [-v {0,1,2,3}] [-p {v,a,n,x}]
-                          word [word ...]
+                          [-f {json,xml}] [-v {0,1,2,3}] [-p PART_OF_SPEECH]
+                          [-e ENCODING] [--backup-off]
+                          [--backup-file BACKUP_FILE]
+                          [--extend-corpus EXTEND_CORPUS]
+                          [--continue-from-backup CONTINUE_FROM_BACKUP]
+                          [word [word ...]]
 ```
+
+### Brand-new crawling job
+
+ConcordanceCrawler allows you to create a brand-new crawling job or continue crawling
+with an old job which was unexpectedly interrupted before finishing.
+
+During creating a new job you may want to use following options:
+
+`word [word ...]` is the target word in the centre of your interest. You can specify
+more of its forms, then all sentences containing at least one of this words
+will be crawled. The first word is considered as canonical form and
+ConcordanceCrawler will use it for seeking links on a search engine.
+
+`-p REGEX`, `--part-of-speech REGEX` is target word's part-of-speech tag
+regex, they're values are adopted from Penn Treebank II tagset. See 
+http://www.clips.ua.ac.be/pages/mbsp-tags for detailed description.
+
+Default value for this option is `.*`, it means any arbitrary
+part-of-speech.  If you select other regex (e.g.  `V.*` for verbs, `N.*` for
+nouns, `J.*` for adjectives), then a `textblob` library will be used.  Size
+of this library is not neglible, because it uses `nltk`, therefore it's not
+an integral part of ConcordanceCrawler.  You must install it manually, if you
+wish.  Instead of it you can omit this option, decline your target word
+manually and use all its forms as additional values for `word` argument.
+
+*Example usage:* assume that target word is `fly` and given regex is
+`V.*`, it means we want to crawl only verbs. Then a word `flies` (tagged
+`VBS`) matches, as well as `flew` whose tag is `VBD`.  On the other hand an
+insect `fly` with tag `NN` doesn't match, so sentences with this word will
+be ignored.  
+
+
+
+
 `-n N`, `--number-of-concordances N` is a number of concordances that you
 wish a program would crawl. By default it's 10.
 
 `-m M`, `--max-per-page M` is a maximum number of concordances that will be
 crawled from one site. They are gotten from top to down. Default is to skip
 this option and then this number won't be limited. 
+
+`--disable-english-filter` option disables filtering of Non-English sentences from
+concordances. By default it's enabled. This option affects quality of resulting corpus.
+
+`-e ENCODING, --encoding ENCODING`. If not given,
+documents without respect to their encoding will be
+crawled. If you select ASCII as encoding, all concordances containing
+any non-ASCII character will be ignored.
+If you select any other charset, e.g. utf-8, all documents without
+this charset specification in http header or in html
+metatag will be ignored (as well as documents with
+unequal charset values in http header and in metatag).
+This option has an impact on quality of corpus and speed of crawling.
 
 `-o OUTPUT`, `--output OUTPUT` is a name of an output "file". It can be e.g.
 `concordances.xml`, `concordances.json` or any other "file" as `/dev/null`.
@@ -92,30 +146,8 @@ a number of links that can be found at Bing.com.
 `-v {0,1,2,3}, --verbosity` is verbosity level, see rest of help message
 (`ConcordanceCrawler -h`) for more info.
 
-`-p REGEX`, `--part-of-speech REGEX` is target word's part-of-speech tag
-regex, they're values are adopted from Penn Treebank II tagset. See see
-http://www.clips.ua.ac.be/pages/mbsp-tags for detailed description.
-
-Example usage: assume that target word is "fly" and given regex is
-"V.*", it means we want to crawl only verbs. Then a word "flies" (tagged
-"VBS") matches, as well as "flew" whose tag is "VBD".  On the other hand an
-insect "fly" with tag "NN" doesn't match, so sentences with this word will
-be ignored.  
-
-Default value for this option is ".*", it means any arbitrary
-part-of-speech.  If you select other regex (e.g.  "V.*" for verbs, "N.*" for
-nouns, "J.*" for adjectives), then a `textblob` library will be used.  Size
-of this library is not neglible, because it uses `nltk`, therefore it's not
-an integral part of ConcordanceCrawler.  You must install it manually with
-`pip install textblob` and `python -m textblob.download_corpora`, if you
-wish.  Instead of it you can also omit this option, decline your target word
-manually and use all its forms as additional values for `word` argument.
 
 
-`word` is the target word in the centre of your interest. You can specify
-more of its forms, then all sentences containing at least one of this words
-will be crawled. The first word is considered as canonical form and
-ConcordanceCrawler will seek this 
 
 ### Example
 

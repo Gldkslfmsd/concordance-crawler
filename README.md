@@ -87,26 +87,30 @@ a number of links that can be found at Bing.com.
 
 - `NUMBERS` -- bazwords will be 0, 1, 2, 3, ...
 
-`-f {json}, --format` is an output format, default is json. Format xml will be
-operational in later versions.
+`-f {json, xml}, --format` is an output format, default is json.
 
 `-v {0,1,2,3}, --verbosity` is verbosity level, see rest of help message
 (`ConcordanceCrawler -h`) for more info.
 
-`-p {v,a,n,x}`, `--part-of-speech {v,a,n,x}` is target word's part of
-speech. It can be
+`-p REGEX`, `--part-of-speech REGEX` is target word's part-of-speech tag
+regex, they're values are adopted from Penn Treebank II tagset. See see
+http://www.clips.ua.ac.be/pages/mbsp-tags for detailed description.
 
-- `v` verb
+Example usage: assume that target word is "fly" and given regex is
+"V.*", it means we want to crawl only verbs. Then a word "flies" (tagged
+"VBS") matches, as well as "flew" whose tag is "VBD".  On the other hand an
+insect "fly" with tag "NN" doesn't match, so sentences with this word will
+be ignored.  
 
-- `a` adjective
+Default value for this option is ".*", it means any arbitrary
+part-of-speech.  If you select other regex (e.g.  "V.*" for verbs, "N.*" for
+nouns, "J.*" for adjectives), then a `textblob` library will be used.  Size
+of this library is not neglible, because it uses `nltk`, therefore it's not
+an integral part of ConcordanceCrawler.  You must install it manually with
+`pip install textblob` and `python -m textblob.download_corpora`, if you
+wish.  Instead of it you can also omit this option, decline your target word
+manually and use all its forms as additional values for `word` argument.
 
-- `n` noun
-
-- `x` any part of speech
-
-If you choose `-p` and `v`, `a` or `n`, then ConcordanceCrawler will use
-textblob's automatic lemmatizing, you must install it first, otherwise
-ConcordanceCrawler terminates.
 
 `word` is the target word in the centre of your interest. You can specify
 more of its forms, then all sentences containing at least one of this words

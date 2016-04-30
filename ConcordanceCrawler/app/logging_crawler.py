@@ -109,14 +109,18 @@ concordances\t{num_concordances} ({more_times} crawled repeatedly)""".format(
 class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):	
 	'''Crawls concordances and logs statistics'''
 
-	def __init__(self, words, bazgen=None):
+	def __init__(self, words, bazgen=None, bufsize=None):
 		super(LoggingCrawler, self).__init__(words,bazgen)
 		Logging.__init__(self)
 		self.Logger = logging.getLogger().getChild('ConcordanceCrawlerLogger')
 		self.Logger.setLevel(50) # mutes all warnings and logs # TODO: why?
 
-		self.visited_pages = LimitedBuffer()
-		self.crawled_concordances = LimitedBuffer()
+		if bufsize is None:
+			sizearg = ()  # empty tuple
+		else:
+			sizearg = (bufsize,)
+		self.visited_pages = LimitedBuffer(*sizearg)
+		self.crawled_concordances = LimitedBuffer(*sizearg)
 
 		self._raw_filter_link = self.filter_link
 		self.filter_link = self.filter_link_logwrapper

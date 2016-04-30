@@ -185,20 +185,31 @@ def get_args():
 		help="""Continue crawling job from this backup file."""
 		)
 
-#
-#	parser.add_argument("--buffer-size",
-#		default=10**6,
-#		type=int,
-#		help="""Setup maximal number of items in memory buffers which are used
-#		to prevent repeated visit of the same url and repeated crawling of
-#		the same concordance. 
-#		Default value is 1000000. Selecting of too big
-#		number can lead to out of memory error (but this should happen only
-#		after a very long time). Selecting of small number can lead to repeated
-#		visit of same url or repeated crawling of the same concordance, because
-#		the buffers are like queues, when they are full they delete the old values
-#		to save the new ones.
-#		"""
+	
+	def nonnegative(string):
+		msg = "%r must be a nonnegative number" % string
+		try:
+			N = int(string)
+			if N<0:
+				raise argparse.ArgumentTypeError(msg)
+		except ValueError:
+			raise argparse.ArgumentTypeError(msg)
+		return N
+
+	parser.add_argument("--buffer-size",
+		default=10**6,
+		type=nonnegative,
+		help="""Setup maximal number of items in memory buffers which are used
+		to prevent repeated visit of the same url and repeated crawling of
+		the same concordance. 
+		Default value is 1000000. Selecting of too big
+		number can lead to out of memory error (but this should happen only
+		after a very long time). Selecting of small number can lead to repeated
+		visit of same url or repeated crawling of the same concordance, because
+		the buffers are like queues, when they are full they delete the old values
+		to save the new ones.
+		"""
+		)
 
 	args = vars(parser.parse_args())
 
@@ -338,6 +349,7 @@ def main():
 	baz = args["bazword_generator"]
 	max_per_page = args["max_per_page"]
 	page_limited = True if max_per_page else False
+	bufsize = args["buffer_size"]
 	if baz=="RANDOM":
 		bazgen = RandomShortWords()
 	elif baz=="WIKI_ARTICLES":
@@ -350,7 +362,7 @@ def main():
 	log_level = ["DEBUG","DETAILS","STATUS","ERROR"][args['verbosity']]
 
 
-	lc = LoggingCrawler(words,bazgen)
+	lc = LoggingCrawler(words,bazgen,bufsize=bufsize)
 	if mode == 'backup':
 		lc.visited_pages = load['links']
 		lc.crawled_concordances = load['concordances']

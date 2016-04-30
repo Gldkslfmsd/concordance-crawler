@@ -11,6 +11,10 @@ ConcordanceCrawler is a console application whose main purpose is
 crawling of English verbs or other words, but you can also use its API. It allows you to
 adapt ConcordanceCrawler to any other language. 
 
+## Try web demo!
+
+TODO
+
 ## Installation
 
 I recommend ConcordanceCrawler installation in Python virtual environment (see
@@ -41,7 +45,7 @@ installing it just type `pip install textblob` and `python -m textblob.download_
 
 Now you can use simply ```ConcordanceCrawler -h``` to run it and see its options.
 
-## Python version
+## Python versions
 
 ConcordanceCrawler works with Python2 >= 2.7 and with Python3 >= 3.2.
 
@@ -120,10 +124,7 @@ metatag will be ignored (as well as documents with
 unequal charset values in http header and in metatag).
 This option has an impact on quality of corpus and speed of crawling.
 
-`-o OUTPUT`, `--output OUTPUT` is a name of an output "file". It can be e.g.
-`concordances.xml`, `concordances.json` or any other "file" as `/dev/null`.
-If a file exists, then it's overwritten, otherwise a new one is created.
-Default `OUTPUT` is standard output. 
+
 
 `-b {RANDOM,WIKI_ARTICLES,WIKI_TITLES,NUMBERS}, --bazword-generator` is a way how
 ConcordanceCrawler generates or takes bazwords. It uses them for increasing
@@ -141,15 +142,47 @@ a number of links that can be found at Bing.com.
 
 - `NUMBERS` -- bazwords will be 0, 1, 2, 3, ...
 
+
+`-o OUTPUT`, `--output OUTPUT` is a name of an output "file". It can be e.g.
+`concordances.xml`, `concordances.json` or any other "file" as `/dev/null`.
+If a file exists, then it's overwritten, otherwise a new one is created.
+Default `OUTPUT` is standard output. 
+
+
 `-f {json, xml}, --format` is an output format, default is json.
 
 `-v {0,1,2,3}, --verbosity` is verbosity level, see rest of help message
 (`ConcordanceCrawler -h`) for more info.
 
+`--buffer-size BUFFER_SIZE` -- setup maximal number of items in memory buffers which
+                        are used to prevent repeated visit of the same url and
+                        repeated crawling of the same concordance. Default
+                        value is 1000000. Selecting of too big number can lead
+                        to out of memory error (but this should happen only
+                        after a very long time). Selecting of small number can
+                        lead to repeated visit of same url or repeated
+                        crawling of the same concordance, because the buffers
+                        are like queues, when they are full they delete the
+                        old values to save the new ones.
 
 
+`--backup-file BACKUP_FILE` -- name for backup file. This backup file allows you to
+continue aborted crawling job and extend corpus.
+Default name is `ConcordanceCrawler.backup` and is created in working directory.
 
-### Example
+`--backup-off` -- don't create a backup file
+
+### Restarting of crawling job
+
+If you want to restart a crawling job that was interrupted earlier, you must 
+start ConcordanceCrawler with this 2 options:
+
+`--extend-corpus EXTEND_CORPUS` -- an output file created in previous crawling job which will
+be extended now.
+
+`--continue-from-backup CONTINUE_FROM_BACKUP` -- backup file
+
+## Examples
 
 ```ConcordanceCrawler hello -n 1 -v 3``` will crawl you one sentence
 containing word "hello".
@@ -157,43 +190,60 @@ containing word "hello".
 ```
 [
     {
-        "date": "2015-09-07 19:19:26.907794",
-        "url": "http://rssjgroup.com/",
-        "concordance": "Hello !",
+        "start": 0,
         "keyword": "hello",
-				"id": 1
-    }
-]
-```
-
-Here you can see some informations about progress of crawling:
-```
-ConcordanceCrawler apple -n 1
-```
-
-```
-2016-03-17 15:42:38,776 STATUS: ConcordanceCrawler version 0.3.0 started, press Ctrl+C for 	interrupt
-2016-03-17 15:42:39,418 DETAILS: crawled SERP, parsed 50 links
-2016-03-17 15:42:39,418 STATUS: Crawling status 
-serp		1 (0 errors) 
-links crawled	50 (0 filtered because of format suffix, 0 crawled repeatedly)
-pages visited	0 (0 filtered by language filter, 0 errors)
-concordances	0 (0 crawled repeatedly)
-2016-03-17 15:42:41,060 DETAILS: page https://discussions.apple.com/thread/5524646?start=0&tstart=0 visited, 6 concordances found
-2016-03-17 15:42:41,060 STATUS: Crawling status 
-serp		1 (0 errors) 
-links crawled	50 (0 filtered because of format suffix, 0 crawled repeatedly)
-pages visited	1 (0 filtered by language filter, 0 errors)
-concordances	1 (0 crawled repeatedly)
-[
-    {
-        "url": "https://discussions.apple.com/thread/5524646?start=0&tstart=0",
-        "keyword": "apple",
-        "concordance": "Apple may provide or recommend responses as a possible solution based on the information provided; every potential issue may involve several factors not detailed in the conversations captured in an electronic forum and Apple can therefore provide no guarantee as to the efficacy of any proposed solutions on the community forums.",
-        "date": "2016-03-17 15:42:41.060341",
+        "end": 5,
+        "url": "http://grokbase.com/t/mysql/maxdb/0469p5zksn/error-in-complete-backup",
+        "date": "2016-04-30 14:45:01.220790",
+        "concordance": "Hello Marco,you can find the output and error output of TSM's adint2 in the files dbm.ebp and dbm.ebl.",
         "id": 1
     }
 ]
+```
+
+Here you can see some informations about progress of crawling. We ordered one sentence with a verb *think*.
+
+```
+ ConcordanceCrawler think -p 'V.*' -n 1
+```
+
+```
+2016-04-30 14:52:53,220 STATUS: ConcordanceCrawler version 0.4.0 started, press Ctrl+C for 	interrupt
+2016-04-30 14:52:53,811 DETAILS: crawled SERP, parsed 50 links
+2016-04-30 14:52:53,812 STATUS: Crawling status 
+serp		1 (0 errors) 
+links crawled	50 (0 filtered because of format suffix, 0 crawled repeatedly)
+pages visited	0 (0 filtered by encoding filter, 0 filtered by language filter, 0 errors)
+concordances	0 (0 crawled repeatedly)
+2016-04-30 14:53:04,387 ERROR: 'HTTPConnectionPool(host='spknclothing.com', port=80): Read timed out. (read timeout=10)' occured during getting http://spknclothing.com/about/
+2016-04-30 14:53:09,411 DETAILS: page http://spknclothing.com/ visited, 1 concordances found
+2016-04-30 14:53:09,411 STATUS: Crawling status 
+serp		1 (0 errors) 
+links crawled	50 (0 filtered because of format suffix, 0 crawled repeatedly)
+pages visited	1 (0 filtered by encoding filter, 0 filtered by language filter, 1 errors)
+concordances	0 (0 crawled repeatedly)
+2016-04-30 14:53:09,411 STATUS: Crawling status 
+serp		1 (0 errors) 
+links crawled	50 (0 filtered because of format suffix, 0 crawled repeatedly)
+pages visited	1 (0 filtered by encoding filter, 0 filtered by language filter, 1 errors)
+concordances	1 (0 crawled repeatedly)
+[
+    {
+        "date": "2016-04-30 14:53:09.411287",
+        "concordance": "not everyone thinks about BMX when they think of Maine but these guys have a great scene…",
+        "url": "http://spknclothing.com/",
+        "id": 1,
+        "keyword": "think",
+        "end": 19,
+        "start": 13
+    }
+]
+```
+
+Without `textblob` installation we could get the same input by this command:
+
+```
+ConcordanceCrawler think thinks thinking thought -n 1
 ```
 
 ### Use in your own code
@@ -201,6 +251,8 @@ concordances	1 (0 crawled repeatedly)
 You can also use ConcordanceCrawler as a library in your own project. Then
 you would be interested in a subpackage ```core```. There isn't any other
 code documentation yet, but will be available later.
+
+TODO!!!
 
 ## How does ConcordanceCrawler work?
 
@@ -213,7 +265,9 @@ finding keywords as for example "sdtn look", "naxe look", "jzmw look" and
 similar combinations of bazword and target word. By this approach it gets
 sufficient number of different links to crawl concordances.
 
-You can find more informations [here](https://github.com/Gldkslfmsd/concordance-crawler/tree/master/doc), but in Czech.
+### Speed and performance 
+
+TODO
 
 ## Contact me!
 

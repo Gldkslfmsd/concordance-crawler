@@ -31,14 +31,17 @@ def crawl_links(target_word, number = 1, bazword_gen = None):
 	Returns:
 		list of links, where a link is a dictionary containing keys 
 			link, rank, snippet, title, visible_link, date, keyword
+			
+	raises:
+		SERPEror
 	'''
 	bazgen = bazword_gen if bazword_gen else RandomShortWords()
 	links = []
 	for i in range(number):
 		keyword = bazgen.get_bazword() + " " + target_word
-		bingresult = crawlonekeyword(keyword)
+		bingresult = crawl_one_keyword(keyword)
 		links.extend(bingresult)
-		
+	
 	return links
 
 # 59 links on page is maximum, more is blocked (probably)
@@ -53,12 +56,14 @@ def get_keyword_url(keyword):
 	)
 	return url
 	
-def crawlonekeyword(keyword):
+def crawl_one_keyword(keyword):
 	'''Scrapes one keyword.
 
 	Returns:
 		list of links, a link is a dictionary with keys:
 			link, rank, snippet, title, visible_link, date, keyword
+			
+	raises: SERPError
 	'''
 	url = get_keyword_url(keyword)
 	logging.debug("trying to download SERP {}".format(url))
@@ -70,8 +75,7 @@ def crawlonekeyword(keyword):
 	date = _date()
 
 	if is_blocked(rawhtml):
-		return None
-
+		raise SERPError()
 
 	#links = parse(rawhtml) + [{'link':"http://lesbartavelles13.free.fr/IMAGE-ISO/ENGLISH6EME.iso"}]
 
@@ -105,6 +109,21 @@ def _date():
 
 
 
+
+
+
+
+def filter_link_by_format(link):
+	'''returns True/False
+	if True, link is accepted and can be visited
+	otherwise rejected
+	
+	it rejects links of non-text documents (hopefully)
+	'''
+	if any(link.lower().endswith(suffix) for suffix in [
+		'.docx', '.doc', '.pdf', '.ppt', '.pptx', '.odt', '.img']):
+		return False
+	return True
 
 	
 

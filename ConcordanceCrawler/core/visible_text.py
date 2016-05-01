@@ -51,15 +51,7 @@ class FormatFilter():
 	def accept_format(self,format):
 		return True
 
-def filter_link_by_format(link):
-	'''returns True/False
-	if True, link is accepted and can be visited
-	otherwise rejected
-	'''
-	if any(link.lower().endswith(suffix) for suffix in [
-			'.docx','.doc','.pdf','.ppt','.pptx','.odt','.img']):
-			return False
-	return True
+
 
 if __name__=='__main__':
 	vp = VisibleTextParser()

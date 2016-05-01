@@ -23,31 +23,6 @@ def setup_logger(log_level):
 		format="%(asctime)-15s %(levelname)s: %(message)s")
 	logging.getLogger("requests").setLevel(logging.WARNING)
 
-class WiseExceptionHandlingCrawler(ConcordanceCrawler):
-	'''Crash when there is too much of RequestExceptions'''
-
-	def __init__(self, words, bazgen):
-		super(WiseExceptionHandlingCrawler, self).__init__(words, bazgen)
-		exc_handler = [
-			(requests.exceptions.RequestException, self.handle_connection_error),
-			(SERPError, self.handle_serp_error),
-			]
-
-
-		for e,h in exc_handler:
-			self.set_exception_handler(e,h)
-
-	def handle_serp_error(self, e):
-		self.Logger.error("SERP error")
-		self.serp_errors += 1
-		self.log_state()
-		self.handle_connection_error(e)
-
-	def handle_connection_error(self, e):
-		if self.serp_errors>10:
-			self.Logger.critical('aborting crawler due to high number of serp errors')
-			self.crawling_allowed = False
-
 # logging levels
 DETAILS = logging.INFO-5
 STATUS = logging.INFO
@@ -92,7 +67,7 @@ concordances\t{num_concordances} ({more_times} crawled repeatedly)""".format(
 			more_times=self.repeated_concordances,
 		)
 	)
-
+"""
 	# briefer version of log_state (could be sometimes useful)
 	# self.brief_log_state()
 
@@ -103,14 +78,13 @@ concordances\t{num_concordances} ({more_times} crawled repeatedly)""".format(
 	#			num_concordances=self.num_concordances,
 	#			total_concordances = self.total_concordances,
 	#			percent = self.num_concordances/self.total_concordances*100))
+"""
 	
-	
-
-class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):	
+class LoggingCrawler(ConcordanceCrawler, Logging):	
 	'''Crawls concordances and logs statistics'''
 
-	def __init__(self, words, bazgen=None, bufsize=None):
-		super(LoggingCrawler, self).__init__(words,bazgen)
+	def __init__(self, bazgen=None, bufsize=None):
+		super(LoggingCrawler, self).__init__(bazgen)
 		Logging.__init__(self)
 		self.Logger = logging.getLogger().getChild('ConcordanceCrawlerLogger')
 		self.Logger.setLevel(50) # mutes all warnings and logs # TODO: why?
@@ -144,7 +118,6 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 			self._raw_norm_encoding = self.visitor.norm_encoding
 			self.visitor.norm_encoding = self.norm_encoding
 
-
 	def norm_encoding(self, document, headers):
 		res = self._raw_norm_encoding(document, headers)
 		if not res:
@@ -154,6 +127,7 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 
 	def language_filter_log_wrapper(self, text):
 		res = self._raw_language_filter(text)
+		"""
 #		for manual testing of accuracy of language filter
 #		import re
 #		text = re.sub(r"\n+",r"\n",text,flags=re.M)
@@ -161,6 +135,7 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 #		f = open(("yes" if res else "no") + "/text"+str(random.random()),"w")
 #		f.write(text)
 #		f.close()
+		"""
 		if res:
 			return True
 		self.Logger.debug("page rejected by language filter")
@@ -196,18 +171,27 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 			return False
 		return True
 
-	def crawl_links(self):
-		links = super(LoggingCrawler, self).crawl_links()
-		self.num_serps += 1
-		self.log_details("crawled SERP, parsed {0} links".format(
-			len(links)))
-		self.links_crawled += len(links)
-		self.log_state()
+	def crawl_links(self, *args, **kwargs):
+		links = []
+		try:
+			links = super(LoggingCrawler, self).crawl_links(*args, **kwargs)
+		except SERPError:
+			self.Logger.error("SERP error")
+			self.serp_errors += 1
+			self.log_state()
+		else:
+			self.num_serps += 1
+			self.log_details("crawled SERP, parsed {0} links".format(
+				len(links)))
+			self.links_crawled += len(links)
+			self.log_state()
+		
+		self.stopping_criterion()
 		return links
 
-	def _yield_concordances_from_link(self, link):
+	def _yield_concordances_from_link(self, link, words):
 		self.Logger.debug("trying to download {0}".format(link['link']))
-		for c in super(LoggingCrawler, self)._yield_concordances_from_link(link):
+		for c in super(LoggingCrawler, self)._yield_concordances_from_link(link, words):
 			# repeatedly crawled concordances are filtered here
 			if not self.crawled_concordances.contains(c["concordance"]):
 				self.crawled_concordances.insert(c["concordance"])
@@ -220,9 +204,9 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 				self.log_state()
 
 
-	def concordances_from_link(self, link):
+	def concordances_from_link(self, link, words):
 		try:
-			concordances = super(LoggingCrawler, self).concordances_from_link(link)
+			concordances = super(LoggingCrawler, self).concordances_from_link(link, words)
 		except (requests.exceptions.RequestException, UrlRequestException) as e:
 			self.Logger.error("\'{}\' occured during getting {}".format(
 				e,link['link']))
@@ -248,3 +232,15 @@ class LoggingCrawler(WiseExceptionHandlingCrawler, Logging):
 			self.log_state()
 			return concordances
 
+	
+	def stopping_criterion(self):
+		'''if crawling is unperspective or there is some error with SE, 
+		assign False to self.crawling_allowed here and 
+		it will be aborted.
+		'''
+		if self.serp_errors > 10:
+			self.Logger.critical('aborting crawler due to high number of serp errors')
+			self.crawling_allowed = False
+		elif self.num_serps >= 10 and self.num_concordances <= 1:
+			self.Logger.critical('aborting crawler because this job seems unperspective')
+			self.crawling_allowed = False

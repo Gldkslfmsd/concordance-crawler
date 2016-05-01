@@ -24,7 +24,7 @@ class Job:
 			f = open(self.path+"/corpus.json","w")
 			f.write('[\n')
 			f.close()
-		self.process = subprocess.Popen(run_job.format(self.jobid).split(),stderr=open(self.path+"/err","a"))
+		self.process = subprocess.Popen(run_job.format(self.jobid).split(),stderr=open(self.path+"/logfile.txt","a"))
 		self.update_state(new_state)
 
 	def pause(self):
@@ -47,6 +47,12 @@ class Job:
 	def interrupt(self):
 		if self.running_status()=="RUNNING":
 			self.update_state("ABORTED")
+		self.process.kill()
+
+	def is_deleted(self):
+		return not os.path.exists(self.path)
+
+	def kill(self):
 		self.process.kill()
 
 
@@ -89,6 +95,24 @@ class Manager:
 				job.update_state(rs)
 				print("job",job.jobid,rs)
 
+	def check_deleted_jobs(self):
+		nr = []
+		for j in self.running:
+			if j.is_deleted():
+				j.kill()
+			else:
+				nr.append(j)
+		self.running = nr
+
+		np = []
+		for j in self.paused:
+			if j.is_deleted():
+				print("killing ",j.jobid,"it was deleted")
+				j.kill()
+			else:
+				np.append(j)
+		self.paused = np
+
 	def check(self):
 		print("checking")
 		for j in browse_jobs():
@@ -97,6 +121,8 @@ class Manager:
 			if get_status(j) == "ABORTED":
 				self.create_job(j,"RESTARTED")
 		self.check_finished_jobs()
+		self.check_deleted_jobs()
+
 		for i in range(min(self.maxrunning, len(self.paused))):
 			self.pause()
 			self.resume()

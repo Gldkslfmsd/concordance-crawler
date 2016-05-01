@@ -258,7 +258,7 @@ function applet_list(id_to_highlight, refresh) {
 						var min = function(a,b) {
 							return a<b?a:b;
 						}
-            output += "<p>Presenting <b>" + (list_start + 1) + "</b> - <b>" + (min(list_start + list_limit,pagging[0])) + "</b> jobs from <b>" + pagging[0] + "</b> jobs in total. | ";
+            output += "<p>Presenting <b>" + (list_start + 1) + "</b> - <b>" + (min(list_start + list_limit,pagging[0])) + "</b> jobs from <b>" + pagging[0] + "</b> jobs in total. Click to row to detail.";
             if (list_start > 0) {
                 output += "<a href='javascript:list_previous()'>Show previous jobs</a>";
             }
@@ -336,7 +336,9 @@ function applet_submit() {
 
 		form += "<p>Target word(s)</p>";
 		form += "<input type='text' id='target' value=''>";
-		form += "<p>Target word part of speech tag regex</p>";
+		form += "<p>Target word part of speech tag regex ";
+		form += "<small><br><br>Fill for example \".*\" for any part of speech, \"V.*\" for verbs, \"N.*\" for nouns etc. See <a href='https://pypi.python.org/pypi/ConcordanceCrawler/'>this link</a> for more info.";
+		form += "</small></p>";
 		form += "<input type='text' id='pos' value='.*'>";
 
     form += "<p>Number of concordances:</p>";
@@ -475,7 +477,7 @@ function applet_submit_click() {
 function applet_document(id) {
     var output = "";
     output += "<div class='box'>";
-    output += "<h2>Job detail #" + id + "</h2>"
+    output += "<h2>" + id + " detail</h2>"
     output += "<div class='state'></div>";
     output += "<div class='content'></div>";
     output += "<div class='relations'></div>";
@@ -794,10 +796,10 @@ function get_document_state(id, box) {
     jQuery.ajax({
         url: "/jobdetail/" + id,
         success: function(data) {
-            if (data.match(/ERROR/)) {
-                box.find(".state").html("<p class='error'>Couldn't retrieve document state.</p>");
-                return;
-            }
+//            if (data.match(/ERROR/)) {
+ //               box.find(".state").html("<p class='error'>Couldn't retrieve document state.</p>");
+  //              return;
+   //         }
 
             var lines = data.split("\n");
             var icon = "";
@@ -835,7 +837,7 @@ function get_document_state(id, box) {
 						var parameters = "<h3>Job parameters</h3>";
 						parameters += "<table class='list'>";
 						parameters += "<tr><td><b>target word</b></td> <td>" + lines[9] + "</td></tr>";
-						parameters += "<tr><td><b>POS tag</b></td> <td>" + lines[10] + "</td></tr>";
+						parameters += "<tr><td><b>POS tag regex</b></td> <td>" + lines[10] + "</td></tr>";
 						parameters += "<tr><td><b>desired number of concordances</b></td> <td>" + lines[11] + "</td></tr>";
 						parameters += "<tr><td><b>max concordances from page</b></td> <td>" + lines[12] + "</td></tr>";
 						parameters += "<tr><td><b>disable English filter</b></td> <td>" + lines[13] + "</td></tr>";
@@ -869,7 +871,7 @@ function get_document_state(id, box) {
 
 						output += "<h3>Download</h3>";
 						output += "<a href='/static/jobs/"+id+"/corpus.json' download>Download corpus.json</a>" + incomplete + "<br>";
-						output += "<a href='/static/jobs/"+id+"/err' download>Download job's logfile</a>";
+						output += "<a href='/static/jobs/"+id+"/logfile.txt' download>Download job's logfile.txt</a>";
 
             box.find(".state").html(output);
 

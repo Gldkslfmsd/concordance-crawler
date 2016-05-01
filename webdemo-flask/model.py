@@ -3,20 +3,21 @@ from time import time, ctime
 import shutil
 
 defaultargs = {
-	"word" : [],
-	"number_of_concordances" : 10,
-	"output" : "corpus.json",
 	"backup_off" : None,
-	"bazword_generator" : "RANDOM",
-	"continue_from_backup" : None,
-	"max_per_page" : None,
-	"part_of_speech" : None,
-	"backup_file" : "backup",
+	"number_of_concordances" : 10,
+	"buffer_size" : 1000000,
 	"disable_english_filter" : None,
-	"encoding" : None,
-	"verbosity" : 0,
-	"format" : "json",
 	"extend_corpus" : None,
+	"verbosity" : 0,
+	"encoding" : None,
+	"max_per_page" : None,
+	"output" : "",
+	"part_of_speech" : ".*",
+	"bazword_generator" : "RANDOM",
+	"format" : "json",
+	"word" : [],
+	"backup_file" : "ConcordanceCrawler.backup",
+	"continue_from_backup" : None,
 }
 
 DIR = 'static/jobs/'
@@ -38,7 +39,6 @@ def create_new_job(data):
 	for k,v in data.items():
 		if k=='target': continue
 		args[k] = v
-	args['part_of_speech'] = 'x'
 	args['number_of_concordances'] = int(args['number_of_concordances'])
 	args['max_per_page'] = int(args['max_per_page'])
 	args['word'] = data['target'].split()
@@ -111,7 +111,7 @@ concordances	0 (0 crawled repeatedly)""".split("\n")
 
 def get_crawling_status(jobid):
 	try:
-		f = open(DIR+jobid+"/err","r")
+		f = open(DIR+jobid+"/logfile.txt","r")
 	except FileNotFoundError:
 		return zero_crawling_status
 	cs = []

@@ -1,6 +1,3 @@
-from traceback import format_exc
-import logging
-import requests
 import ConcordanceCrawler.core.links as links
 from ConcordanceCrawler.core.links import filter_link_by_format
 from ConcordanceCrawler.core.visitor import *
@@ -22,6 +19,8 @@ class CrawlerConfigurator(object):
 		self.after_setup(**kwargs)
 
 	def after_setup(self,**kwargs):
+		'''this is only a method stub, it can be overriden
+		in descendant class'''
 		pass
 
 	
@@ -48,12 +47,11 @@ class ConcordanceCrawler(CrawlerConfigurator):
 		'''Generator crawling concordances		
 		words: a list of strings, words, whose concordances should be
 		crawled. It should be a single word, or a single word and its other forms.
-		The first one is considered as a basic form, links will be found only
+		The first one is considered as a dictionary form, links will be found only
 		with this form.'''
 
-		canonical_form = words[0]
-		for link in self._yield_links(canonical_form):
-#			link['link'] = 'http://gimli.ms.mff.cuni.cz/////'
+		dictionary_form = words[0]
+		for link in self._yield_links(dictionary_form):
 			if not self.crawling_allowed:
 				break
 			for con in self._yield_concordances_from_link(link, words):

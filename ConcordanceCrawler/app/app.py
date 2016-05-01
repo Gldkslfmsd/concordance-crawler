@@ -19,7 +19,7 @@ import re
 from ConcordanceCrawler.core.bazwords import *
 from ConcordanceCrawler.core.encoding import norm_encoding
 from ConcordanceCrawler.app.output_formatter import *
-from ConcordanceCrawler.app.logging_crawler import *
+from ConcordanceCrawler.core.logging_crawler import *
 from ConcordanceCrawler.app.load_from_corpus import load_from_corpus
 from ConcordanceCrawler.__init__ import __version__
 

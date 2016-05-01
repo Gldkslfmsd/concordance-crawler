@@ -1,8 +1,10 @@
+
 from ConcordanceCrawler.core.concordance_crawler import *
 from ConcordanceCrawler.core.links import SERPError
 from ConcordanceCrawler.core.urlrequest import UrlRequestException
 from ConcordanceCrawler.core.visitor import VisitTooLongException
 import requests
+import logging
 
 from ConcordanceCrawler.core.limited_buffer import LimitedBuffer
 

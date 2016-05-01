@@ -88,7 +88,9 @@ class TestVisitor(unittest.TestCase):
 		self.assertTrue(x)
 
 		eng = ["https://en.wikipedia.org/wiki/Russian_language",
-		"https://en.wikipedia.org/wiki/Main_Page", "https://www.usa.gov/", ]
+		"https://en.wikipedia.org/wiki/Main_Page",
+		#"https://www.usa.gov/", 
+		]
 		for url in eng:
 			html, _ = self.visitor.get_raw_html(url)
 			t = self.visitor.get_visible_text(html)

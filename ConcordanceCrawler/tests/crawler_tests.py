@@ -1,7 +1,7 @@
 import unittest
 
 from ConcordanceCrawler.core.concordance_crawler import *
-from ConcordanceCrawler.app.logging_crawler import *
+from ConcordanceCrawler.core.logging_crawler import *
 
 from ConcordanceCrawler.core.bazwords import IncreasingNumbers
 import re

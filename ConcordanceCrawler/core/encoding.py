@@ -1,6 +1,13 @@
 import re
 
 def norm_encoding(document, headers, allowed="utf-8"):
+	'''This method should return document in normalized encoding or None. If None,
+	document will be skipped from extraction.
+	
+	In fact this only returns the same document or None. If the document is html and
+	there is metatag specifying `allowed` encoding, or the encoding is given in http response headers,
+	and these two values are not unequal, then the `document` is returned, None otherwise.
+	'''
 	# missing Content-Type header
 	if not 'Content-Type' in headers:
 		return None

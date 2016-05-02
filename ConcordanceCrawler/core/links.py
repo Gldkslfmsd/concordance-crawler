@@ -19,7 +19,7 @@ class SERPError(Exception):
 	def __init__(self, e=None):
 		self.e = e
 
-def crawl_links(target_word, number = 1, bazword_gen = None):
+def crawl_links(target_word, bazword_gen = None):
 	'''Crawls links from Bing Search. Uses bazword generator to get
 	more keywords and therefore more pages with the target_word.
 
@@ -29,19 +29,16 @@ def crawl_links(target_word, number = 1, bazword_gen = None):
 		bazword_gen -- bazword generator, if not given, RandomShortWords is used
 	
 	Returns:
-		list of links, where a link is a dictionary containing keys 
-			link, rank, snippet, title, visible_link, date, keyword
+		list of links, where a link is a string
 			
 	raises:
 		SERPEror
 	'''
 	bazgen = bazword_gen if bazword_gen else RandomShortWords()
-	links = []
-	for i in range(number):
-		keyword = bazgen.get_bazword() + " " + target_word
-		bingresult = crawl_one_keyword(keyword)
-		links.extend(bingresult)
-	
+
+	keyword = bazgen.get_bazword() + " " + target_word
+	links = [l['link'] for l in crawl_one_keyword(keyword)]
+
 	return links
 
 # 59 links on page is maximum, more is blocked (probably)

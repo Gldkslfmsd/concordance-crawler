@@ -111,14 +111,13 @@ class Visitor():
 		'''Gets list of links, visits them and crawls concordances.
 		
 		Args:
-			links -- list of dicts, where dict is a link and has at least key 'link'
-			target_words
+			links -- list of links, link is a string
 
 		Returns:
 			list of concordances, where a concordance is a dict with keys:
 				url, date, concordance (a sentence), keyword
 		'''
-		url = link['link']
+		url = link
 
 		with stopit.ThreadingTimeout(60) as timeout:
 			concs = self.visit(url,target_words)

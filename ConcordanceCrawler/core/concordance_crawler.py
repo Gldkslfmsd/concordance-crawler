@@ -8,6 +8,18 @@ class CrawlerConfigurator(object):
 	this method'''
 
 	def setup(self, **kwargs):
+		'''setup ConcordanceCrawler
+		
+		kwargs: key=value pairs, keys are configurable attribute names of ConcordanceCrawler,
+			values are their new values
+			
+			all configurable attributes are specified in Visitor.attributes and self.attributes
+		
+		Example usage:
+			crawler = ConcordanceCrawler()
+			crawler.setup(bazgen=IncreasingNumbers(), filter_link=lambda _: True)
+			This will setup a new bazword generator and new filter_link method, which passes all links.
+		'''
 		visitor = self.visitor 
 		for atr in kwargs.keys():
 			if atr in Visitor.attributes:
@@ -24,8 +36,15 @@ class CrawlerConfigurator(object):
 		pass
 
 	
-class ConcordanceCrawler(CrawlerConfigurator):	
-	attributes = ["bazgen", "filter_link"]
+class ConcordanceCrawler(CrawlerConfigurator):
+	'''This is ConcordanceCrawler base class. It allows only crawling of concordances without 
+	progress logging and without error handling.
+	
+	public methods:
+		yield_concordances(words)
+		setup(**kwargs)
+	'''
+	attributes = ["bazgen", "filter_link", "get_links"]
 
 	def __init__(self, bazgen=None):
 
@@ -41,12 +60,14 @@ class ConcordanceCrawler(CrawlerConfigurator):
 
 	@staticmethod
 	def filter_link(link):
+		'''every link must pass this filter before it can be visited'''
 		return filter_link_by_format(link)
 
 
 	def yield_concordances(self,words):
-		'''Generator crawling concordances		
-		words: a list of strings, words, whose concordances should be
+		'''Generator crawling concordances
+				
+		words: a nonempty list of strings. They are words whose concordances should be
 		crawled. It should be a single word, or a single word and its other forms.
 		The first one is considered as a dictionary form, links will be found only
 		with this form.'''
@@ -63,12 +84,12 @@ class ConcordanceCrawler(CrawlerConfigurator):
 		one serp, parses links and then yields them. Then again.
 		'''
 		while self.crawling_allowed:
-			links = self.crawl_links(keyword)
+			links = self.get_links(keyword)
 			for l in links:
-				if self.filter_link(l["link"]):
+				if self.filter_link(l):
 					yield l
 
-	def crawl_links(self, keyword):
+	def get_links(self, keyword):
 		'''
 		returns: list of links, it can be empty
 		raises: SERPError

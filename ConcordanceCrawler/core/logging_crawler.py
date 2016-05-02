@@ -30,6 +30,7 @@ DETAILS = logging.INFO-5
 STATUS = logging.INFO
 
 class Logging(object):
+	'''Logging for LoggingCrawler. It adds many counters for logging of status.'''
 	def __init__(self):
 		self.allow_logging = True
 		self.Logger = logging.getLogger().getChild('ConcordanceCrawlerLogger')
@@ -77,24 +78,17 @@ concordances\t{num_concordances} ({more_times} crawled repeatedly)""".format(
 			more_times=self.repeated_concordances,
 		)
 	)
-"""
-	# briefer version of log_state (could be sometimes useful)
-	# self.brief_log_state()
-
-	#	def brief_log_state(self):
-	#		logging.info(
-	#			("Successfully crawled {num_concordances} concordances from {total_concordances} "+
-	#			"({percent}%)").format(
-	#			num_concordances=self.num_concordances,
-	#			total_concordances = self.total_concordances,
-	#			percent = self.num_concordances/self.total_concordances*100))
-"""
 	
 class LoggingCrawler(ConcordanceCrawler, Logging):	
-	'''Crawls concordances and logs statistics'''
+	'''Crawls concordances, logs progress and statistics and handles errors and exceptions
 	
+	Most of its methods only call parent's methods and add logging and error handling.
+	'''
+	
+	# add allow_logging to configurable attributes
 	attributes = ConcordanceCrawler.attributes + ['allow_logging']
 	
+	# recommended logging format, it includes date to log message
 	log_format = "%(asctime)-15s %(levelname)s: %(message)s"
 
 	def __init__(self, bazgen=None, bufsize=None):
@@ -171,10 +165,10 @@ class LoggingCrawler(ConcordanceCrawler, Logging):
 			return False
 		return True
 
-	def crawl_links(self, *args, **kwargs):
+	def get_links(self, *args, **kwargs):
 		links = []
 		try:
-			links = super(LoggingCrawler, self).crawl_links(*args, **kwargs)
+			links = super(LoggingCrawler, self).get_links(*args, **kwargs)
 		except SERPError:
 			self.Logger.error("SERP error")
 			self.serp_errors += 1
@@ -190,7 +184,7 @@ class LoggingCrawler(ConcordanceCrawler, Logging):
 		return links
 
 	def _yield_concordances_from_link(self, link, words):
-		self.Logger.debug("trying to download {0}".format(link['link']))
+		self.Logger.debug("trying to download {0}".format(link))
 		for c in super(LoggingCrawler, self)._yield_concordances_from_link(link, words):
 			# repeatedly crawled concordances are filtered here
 			if not self.crawled_concordances.contains(c["concordance"]):
@@ -209,15 +203,15 @@ class LoggingCrawler(ConcordanceCrawler, Logging):
 			concordances = super(LoggingCrawler, self).concordances_from_link(link, words)
 		except (requests.exceptions.RequestException, UrlRequestException) as e:
 			self.Logger.error("\'{}\' occured during getting {}".format(
-				e,link['link']))
+				e,link))
 			self.page_errors += 1
 		except TypeError:
 			self.Logger.error("parsing error during processing \'{}\'".format(
-				link['link']))
+				link))
 			self.page_errors += 1
 		except VisitTooLongException:
 			self.Logger.error("processing of \'{}\' took too long".format(
-				link['link']))
+				link))
 			self.page_errors += 1
 		except KeyboardInterrupt:  # terminate whole application
 			raise
@@ -225,25 +219,29 @@ class LoggingCrawler(ConcordanceCrawler, Logging):
 			self.Logger.error("!!! Unknown error occured, {0}".format(format_exc()))
 			self.page_errors += 1
 		else:
-			self.visited_pages.insert(link['link'])
+			self.visited_pages.insert(link)
 			self.log_details("page {0} visited, {1} concordances found".format(
-				link['link'],len(concordances)))
+				link,len(concordances)))
 			self.num_pages += 1
 			self.log_state()
 			return concordances
 
 	def stopping_criterion(self):
 		'''if crawling is unperspective or there is some error with SE, 
-		assign False to self.crawling_allowed here and 
-		it will be aborted.
+		assign False to self.crawling_allowed here and crawler will be aborted soon.
 		'''
 		if self.serp_errors > 10:
 			self.Logger.critical('aborting crawler due to high number of serp errors')
 			self.crawling_allowed = False
 
 
-			
+# sealed
 class EnglishLoggingCrawler(LoggingCrawler):
+	'''This class is used by ConcordanceCrawler command-line application. 
+	
+	It should be a sealed class, I don't recommend anyone to inherit from it, because it uses a dirty trick
+	with `after_setup` which may won't work in child class after reconfiguring `language_filter` etc..
+	'''
 	def __init__(self, bazgen=None, bufsize=None):
 		super(EnglishLoggingCrawler, self).__init__(bazgen=bazgen, bufsize=bufsize)
 	

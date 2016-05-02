@@ -4,7 +4,14 @@
 
 import random
 
-class RandomShortWords():
+# this is an abstract base class
+class AbstractBazwordGenerator(object):
+  
+	def get_bazword(self):
+		'''returns a bazword on every call'''
+		raise NotImplemented("override this in a descendant class")
+
+class RandomShortWords(AbstractBazwordGenerator):
 	"""Generates bazwords that look like 4 random letters"""
 	# this is list of all letters
 	letters = [ chr(a) for a in range(ord('a'),ord('z')+1) ]
@@ -20,7 +27,7 @@ class RandomShortWords():
 
 import ConcordanceCrawler.core.urlrequest as urlrequest
 from bs4 import BeautifulSoup
-class WikipediaRandomArticleTitles():
+class WikipediaRandomArticleTitles(AbstractBazwordGenerator):
 	'''Scrapes random article from wikipedia and yields words from its title.'''
 	
 	def __init__(self):
@@ -39,7 +46,7 @@ class WikipediaRandomArticleTitles():
 	def get_bazword(self):
 		return next(self._gen)
 
-class WikipediaRandomArticle():
+class WikipediaRandomArticle(AbstractBazwordGenerator):
 	'''Scrapes random article from wikipedia and yields its words.'''
 	
 	def __init__(self):
@@ -62,7 +69,7 @@ class WikipediaRandomArticle():
 	def get_bazword(self):
 		return next(self._gen)
 
-class IncreasingNumbers():
+class IncreasingNumbers(AbstractBazwordGenerator):
 	def __init__(self,lower=0):
 		self.state = lower
 

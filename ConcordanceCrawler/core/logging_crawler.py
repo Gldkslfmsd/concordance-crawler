@@ -31,13 +31,16 @@ STATUS = logging.INFO
 
 class Logging(object):
 	def __init__(self):
-		self.links_filtered = 0
+		self.allow_logging = True
+		self.Logger = logging.getLogger().getChild('ConcordanceCrawlerLogger')
+		self.Logger.setLevel(logging.DEBUG)  # logger is on by default
+		  
 		self.num_serps = 0 # number of serp (search engine result pages) downloaded
 		self.serp_errors = 0
 		self.num_pages = 0 # number of visited pages
 		self.page_errors = 0 # number of errors during visiting pages
 		self.num_concordances = 0 # number of found concordances
-		self.links_filtered_suffix = 0
+		self.links_filtered = 0
 		self.links_filtered_rep = 0
 		self.repeated_concordances = 0
 		self.page_enc_filtered = 0
@@ -49,19 +52,24 @@ class Logging(object):
  		self.Logger.log(DETAILS, *a)
 
 	def log_state(self):
-		'logs interesting numbers about progress'''
+		'''logs interesting numbers about progress'''
+
+		if self.allow_logging:
+			self.Logger.setLevel(10)
+		else:
+			self.Logger.setLevel(50)
+		
 		self.Logger.info("""Crawling status 
 serp\t\t{num_serps} ({serp_errors} errors) 
-links crawled\t{num_links} ({suffix} filtered because of format suffix, {rep} crawled repeatedly)
+links crawled\t{num_links} ({links_filtered} filtered, {rep} crawled repeatedly)
 pages visited\t{num_pages} ({enc_filter} filtered by encoding filter, {lan_filter} filtered by language filter, {page_errors} errors)
 concordances\t{num_concordances} ({more_times} crawled repeatedly)""".format(
 			num_serps=self.num_serps,
 			serp_errors=self.serp_errors,
 			num_links=self.links_crawled,
-			suffix=self.links_filtered_suffix,
+			links_filtered=self.links_filtered,
 			rep=self.links_filtered_rep,
 			num_pages=self.num_pages,
-			links_filtered=self.links_filtered,
 			enc_filter=self.page_enc_filtered,
 			lan_filter=self.page_lan_filtered,
 			page_errors=self.page_errors,
@@ -84,13 +92,15 @@ concordances\t{num_concordances} ({more_times} crawled repeatedly)""".format(
 	
 class LoggingCrawler(ConcordanceCrawler, Logging):	
 	'''Crawls concordances and logs statistics'''
+	
+	attributes = ConcordanceCrawler.attributes + ['allow_logging']
+	
+	log_format = "%(asctime)-15s %(levelname)s: %(message)s"
 
 	def __init__(self, bazgen=None, bufsize=None):
 		super(LoggingCrawler, self).__init__(bazgen)
 		Logging.__init__(self)
-		self.Logger = logging.getLogger().getChild('ConcordanceCrawlerLogger')
-		
-		self.Logger.setLevel(50)  # logger is muted by default
+
 
 		if bufsize is None:
 			sizearg = ()  # empty tuple
@@ -151,7 +161,7 @@ class LoggingCrawler(ConcordanceCrawler, Logging):
 		res = self._raw_filter_link(link)
 		if not res:
 			self.Logger.debug('link {0} rejected because of format suffix'.format(link))
-			self.links_filtered_suffix += 1
+			self.links_filtered += 1
 			self.log_state()
 			return False
 		if self.visited_pages.contains(link):

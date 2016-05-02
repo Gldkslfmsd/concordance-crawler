@@ -1,44 +1,62 @@
+'''Example code of using ConcordanceCrawler as a library. 
+
+ConcordanceCrawler is adapted here to crawl Czech concordances, but it can be very 
+easily changed to (nearly) any other language.
+'''
 
 from ConcordanceCrawler.core.logging_crawler import *
+
 import langdetect
 import logging
 
-class CzechConcordanceCrawler(LoggingCrawler):
-    
-    def __init__(self):
-        super().__init__()
-        
-        self.setup(language_filter=self.czech_filter, filter_link=self.filter_non_czech_links)
-   
-       
-    def czech_filter(self, text):
-        if langdetect.detect(text) == 'cs':
-            return True
-        return False
-    
-    def filter_non_czech_links(self, link):
-        if 'cz' in link and ConcordanceCrawler.filter_link(self, link):
-            return True
-        logging.debug('link '+link+' was filtered')
-        self.links_filtered += 1
-        return False
-
-
+# create our own LoggingCrawler object
 crawler = LoggingCrawler()
-crawler.setup(language_filter=CzechConcordanceCrawler.czech_filter)
+     
+def czech_filter(text):
+    '''filter Czech text with usage of langdetect library. 
+    To filter other language simply change 'cs' to other value, e.g. 'de', 'sk', 'pl' etc.
+    '''
+    if langdetect.detect(text) == 'cs':
+        return True
+    return False
+
+def filter_non_czech_links(link):
+    '''This is a filter that every link must pass before we visit it. 
+    To make crawling faster we want to exclude all links on other than cz, net, org or eu domain.
+    (We don't do it perfectly, but simply.)
+    We concatenate our filter with default ConcordanceCrawler.filter_link who filters links 
+    ending on a suffix of non-text file-formats, e.g. pdf, iso, img, doc...
+    '''
+    if any(s in link for s in ('cz', 'net', 'org', 'eu')) and ConcordanceCrawler.filter_link(link):
+        return True
+    
+    # we print a debug message about filtering of this link
+    logging.debug('link '+link+' was filtered')
+    
+    # increment counter of filtered links in our crawler object, it will log this number in statuses
+    crawler.links_filtered += 1
+    return False
 
 
-c = CzechConcordanceCrawler()
-c.Logger.setLevel(logging.DEBUG)
+# setup our own methods to our crawler object
+crawler.setup(language_filter=czech_filter, filter_link=filter_non_czech_links,
+    # logging from crawler can be enabled or disabled by this option
+    # by default it's enabled
+    # it's useful because than you can see whether a crawler works and is not stuck
+    allow_logging=True
+)
 
+# allow logging
 logging.basicConfig(level=logging.DEBUG,
-                    format="%(asctime)-15s %(levelname)s: %(message)s", )
+                    # setup more readable format of log messages
+                    format=LoggingCrawler.log_format, )
 
-
-print(c.czech_filter("ahoj, je tenhle text v češtině? Nebo v čem jiném? by mohl být?"))
 
 import pprint
-for _,x in zip(range(20), c.yield_concordances(["pusa"])):
+
+# yield 20 concordances with any of grammatical forms of Czech word `kůň` (a horse)
+for _,x in zip(range(20), crawler.yield_concordances("kůň koně koněm koni koní koním koních koňmi".split())):
+    # and let them pretty printed to output
     print(pprint.pformat(x))    
 
 

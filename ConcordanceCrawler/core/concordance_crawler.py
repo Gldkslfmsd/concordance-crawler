@@ -12,7 +12,7 @@ class CrawlerConfigurator(object):
 		for atr in kwargs.keys():
 			if atr in Visitor.attributes:
 				setattr(visitor, atr, kwargs[atr])
-			elif atr in ConcordanceCrawler.attributes:
+			elif atr in self.attributes:
 				setattr(self, atr, kwargs[atr])
 			else:
 				raise AttributeError("Attribute '{0}' is not known and cannot be set.".format(atr))
@@ -37,10 +37,10 @@ class ConcordanceCrawler(CrawlerConfigurator):
 		self.page_limited = False
 
 		# if False, yield links ends
-		self.crawling_allowed = True
+		self.crawling_allowed = True	
 
-		
-	def filter_link(self, link):
+	@staticmethod
+	def filter_link(link):
 		return filter_link_by_format(link)
 
 

@@ -39,8 +39,9 @@ class ConcordanceCrawler(CrawlerConfigurator):
 		# if False, yield links ends
 		self.crawling_allowed = True
 
-		# this is another method
-		self.filter_link = filter_link_by_format
+		
+	def filter_link(self, link):
+		return filter_link_by_format(link)
 
 
 	def yield_concordances(self,words):

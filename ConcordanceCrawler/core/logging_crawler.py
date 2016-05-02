@@ -89,7 +89,8 @@ class LoggingCrawler(ConcordanceCrawler, Logging):
 		super(LoggingCrawler, self).__init__(bazgen)
 		Logging.__init__(self)
 		self.Logger = logging.getLogger().getChild('ConcordanceCrawlerLogger')
-		self.Logger.setLevel(50) # mutes all warnings and logs # TODO: why?
+		
+		self.Logger.setLevel(50)  # logger is muted by default
 
 		if bufsize is None:
 			sizearg = ()  # empty tuple
@@ -106,19 +107,6 @@ class LoggingCrawler(ConcordanceCrawler, Logging):
 
 		self._raw_norm_encoding = self.visitor.norm_encoding
 		self.visitor.norm_encoding = self.norm_encoding
-
-	def after_setup(self,**kwargs):
-		if 'filter_link' in kwargs:
-			self._raw_filter_link = self.filter_link
-			self.filter_link = self.filter_link_logwrapper
-
-		if 'language_filter' in kwargs:
-			self._raw_language_filter = self.visitor.language_filter
-			self.visitor.language_filter = self.language_filter_log_wrapper
-
-		if 'norm_encoding' in kwargs:
-			self._raw_norm_encoding = self.visitor.norm_encoding
-			self.visitor.norm_encoding = self.norm_encoding
 
 	def norm_encoding(self, document, headers):
 		res = self._raw_norm_encoding(document, headers)
@@ -234,7 +222,6 @@ class LoggingCrawler(ConcordanceCrawler, Logging):
 			self.log_state()
 			return concordances
 
-	
 	def stopping_criterion(self):
 		'''if crawling is unperspective or there is some error with SE, 
 		assign False to self.crawling_allowed here and 
@@ -243,6 +230,28 @@ class LoggingCrawler(ConcordanceCrawler, Logging):
 		if self.serp_errors > 10:
 			self.Logger.critical('aborting crawler due to high number of serp errors')
 			self.crawling_allowed = False
-		elif self.num_serps >= 10 and self.num_concordances <= 1:
+
+
+			
+class EnglishLoggingCrawler(LoggingCrawler):
+	def __init__(self, bazgen=None, bufsize=None):
+		super(EnglishLoggingCrawler, self).__init__(bazgen=bazgen, bufsize=bufsize)
+	
+	def after_setup(self, **kwargs):
+		if 'filter_link' in kwargs:
+			self._raw_filter_link = self.filter_link
+			self.filter_link = self.filter_link_logwrapper
+	
+		if 'language_filter' in kwargs:
+			self._raw_language_filter = self.visitor.language_filter
+			self.visitor.language_filter = self.language_filter_log_wrapper
+	
+		if 'norm_encoding' in kwargs:
+			self._raw_norm_encoding = self.visitor.norm_encoding
+			self.visitor.norm_encoding = self.norm_encoding
+	
+	def stopping_criterion(self):
+		super(EnglishLoggingCrawler, self).stopping_criterion()
+		if self.num_serps >= 10 and self.num_concordances <= 1:
 			self.Logger.critical('aborting crawler because this job seems unperspective')
 			self.crawling_allowed = False

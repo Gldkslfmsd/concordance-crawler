@@ -362,7 +362,7 @@ def main():
 	log_level = ["DEBUG","DETAILS","STATUS","ERROR"][args['verbosity']]
 
 
-	lc = LoggingCrawler(bazgen,bufsize=bufsize)
+	lc = EnglishLoggingCrawler(bazgen,bufsize=bufsize)
 	if mode == 'backup':
 		lc.visited_pages = load['links']
 		lc.crawled_concordances = load['concordances']

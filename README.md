@@ -246,13 +246,13 @@ Without `textblob` installation we could get the same input by this command:
 ConcordanceCrawler think thinks thinking thought -n 1
 ```
 
-### Use in your own code
+## Customize ConcordanceCrawler!
 
-You can also use ConcordanceCrawler as a library in your own project. Then
-you would be interested in a subpackage ```core```. There isn't any other
-code documentation yet, but will be available later.
+You can also use ConcordanceCrawler as a library in your own project. Then you can for example
+adapt it for your own language, improve or customize its functions or do anything else.
 
-TODO!!!
+Check this [documentation](https://github.com/Gldkslfmsd/concordance-crawler/wiki/Customizing-ConcordanceCrawler) 
+and [example](https://github.com/Gldkslfmsd/concordance-crawler/blob/master/examples/czech_concordance_crawler.py).
 
 ## How does ConcordanceCrawler work?
 

@@ -48,10 +48,10 @@ class Visitor():
 			targets -- a list of target words
 	
 		Returns:
-			a list of pairs (concordance, target_word) or None
+			a list of quadruples (concordance, target_word, start, end) or None
 			e.g.
 			>>> visit('https://someurl.com', ['hi', 'hello'])
-			[('Hi!', 'hi'), ('Hello there!', 'hello')]
+			[('Hi!', 'hi', 0, 2), ('Hello there!', 'hello', 0, 4)]
 
 			>>> visit('http://nonenglishsite.cz/', ['hoovercraft'])
 			None  # returns None if the text e.g. doesn't pass language filter
@@ -65,14 +65,16 @@ class Visitor():
 		if len(raw_data) > 20 * 1024 ** 2:  # document is greater than 20 MB
 			raise ValueError("document is too long")
 
+		data_format = self.predict_format(raw_data)
+		if not self.accept_format(data_format):
+		  return None
+
 		normed_data = self.norm_encoding(raw_data, headers)
 		del raw_data
 		del headers
 		if not normed_data:
 			return None
-		data_format = self.predict_format(normed_data)
-		if not self.accept_format(data_format):
-			return None
+
 		text = self.get_visible_text(normed_data)
 		del normed_data
 		if not self.language_filter(text):

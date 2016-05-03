@@ -3,6 +3,9 @@ import re
 '''This is a simple concordance filter, which uses only regular expression.
 If a sentence contains target word in the same form as given on input,
 a concordance is found.
+
+Regex matching a sentence containing given word is compiled only once and 
+saved to `filters` global dictionary.
 '''
 
 class ReConcordanceFilter:
@@ -25,7 +28,7 @@ def regex_concordance_filtering(sentence, targets):
 		if not target in filters:
 			filters[target] = ReConcordanceFilter(target)
 		res = filters[target].process(sentence)
-		if res:
+		if res is not None:
 			return res
 	return None
 	

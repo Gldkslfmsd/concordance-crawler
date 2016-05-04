@@ -35,7 +35,7 @@ def test_languages(samplelen):
 		sam = prepare_samples(samplelen, texts)
 		print(language)
 		sim = big_test(sam)
-		res["eng"] = sim["eng"]
+		res["English"] = sim["eng"]
 		res[language] = sim["neng"]
 
 	similarities_to_file(res)
@@ -52,7 +52,7 @@ def test_detector():
 	"My hoovercraft is full of eels",
 	"something "*5000]
 	for t in texts:
-		print(det.is_english(t))
+		print(t[:80],det.is_english(t))
 
 def do_big_test(samplelen):
 	'''counts englishness of texts in english_samples.py and
@@ -61,8 +61,34 @@ def do_big_test(samplelen):
 	sim = big_test(samples)
 	similarities_to_file(sim)
 
-if __name__ == "__main__":
-	test()
-	test_languages(100)
+def compare_with_langdetect():
+	print("eng_detect")
 	test_detector()
+
+	import langdetect
+	def langd_englishness(_,text):
+		l = langdetect.detect_langs(text)
+		if 'en' in l:
+			return l['en']
+		return 0
+
+	def langd_is_english(_,text):
+		if langd_englishness(_,text):
+			return True
+		return False
+
+	EngDetector.englishness = langd_englishness
+	EngDetector.is_english = langd_is_english
+
+	print()
+	print("langid")
+	test_detector()
+
+
+if __name__ == "__main__":
+#	test()
+	test_languages(500)
+#	test_detector()
 #	do_big_test(100)
+
+	#compare_with_langdetect()

@@ -11,8 +11,11 @@ from ConcordanceCrawler.core.parsing import parse
 import ConcordanceCrawler.core.urlrequest as urlrequest
 import six
 if six.PY3:
-	def unicode(a):
+	def encode(a):
 		return a
+else:
+	def encode(a):
+		return a.encode('utf-8')
 
 
 class SERPError(Exception):
@@ -51,6 +54,7 @@ def get_keyword_url(keyword):
 		keyword = replacedspaces,
 		number_of_links = LINKS_PER_PAGE
 	)
+
 	return url
 	
 def crawl_one_keyword(keyword):
@@ -82,7 +86,7 @@ def crawl_one_keyword(keyword):
 	for i in links:
 		i['date'] = date
 		i['keyword'] = keyword
-		i['link'] = unicode(i['link'])#.encode('UTF-8')
+		i['link'] = encode(i['link'])   #.encode('UTF-8')
 
 	return links
 

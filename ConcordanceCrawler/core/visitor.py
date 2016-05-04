@@ -37,7 +37,7 @@ class Visitor():
 		self.sentence_filter = lambda _: True  # default sentence filter does nothing
 
 #		open("logfile","w").close()
-	#	self.i = 0
+		#self.i = 0
 	
 	def visit(self, url, targets):
 		'''Visits a page on given url and extracts all sentences containing
@@ -58,11 +58,12 @@ class Visitor():
 			'''
 		raw_data, headers = self.get_raw_html(url)
 
+
 		# headers is CaseInsensitiveDict, because http header fieldnames are case insensitive
 		if ('Content-Type' in headers and not 'text' in headers['Content-Type']):
 			raise ValueError("document is not text")
 
-		if len(raw_data) > 20 * 1024 ** 2:  # document is greater than 20 MB
+		if 'content-length' in headers and headers['content-length'] > 20 * 1024 ** 2:  # document is greater than 20 MB
 			raise ValueError("document is too long")
 
 		data_format = self.predict_format(raw_data)
@@ -70,12 +71,21 @@ class Visitor():
 		  return None
 
 		normed_data = self.norm_encoding(raw_data, headers)
+		 
 		del raw_data
 		del headers
 		if not normed_data:
 			return None
 
 		text = self.get_visible_text(normed_data)
+
+		# saving texts for language filter accuracy test
+		#with open(targets[0] + str(self.i), "w") as f:
+		#	f.write(text)
+		#with open(targets[0] + str(self.i) + ".html", "w") as f:
+		#  	f.write(raw_data)
+		#self.i += 1
+		  
 		del normed_data
 		if not self.language_filter(text):
 			return None
@@ -94,8 +104,6 @@ class Visitor():
 #		f=open("logfile","a")
 #		f.write(targets[0]+str(self.i)+"; header:"+ headers['Content-Type']+"; metatag:"+x+"\n")
 #		f.close()
-#		with open(targets[0]+str(self.i)+".html","w") as f:
-#			f.write(raw_data)
 
 
 		sentences = filter(self.sentence_filter,

@@ -122,7 +122,7 @@ def filter_link_by_format(link):
 	it rejects links of non-text documents (hopefully)
 	'''
 	if any(link.lower().endswith(suffix) for suffix in [
-		'.docx', '.doc', '.pdf', '.ppt', '.pptx', '.odt', '.img']):
+		'.docx', '.doc', '.pdf', '.ppt', '.pptx', '.odt', '.img', '.iso']):
 		return False
 	return True
 

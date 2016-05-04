@@ -29,11 +29,9 @@ class VisibleTextParser:
 		html = re.sub('<!--([^-]|-[^-]|--[^>])*-->',"",html)
 
 		# Taken from here: http://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
-		soup = BeautifulSoup(html, "lxml", parse_only=SoupStrainer(text=True))
+		soup = BeautifulSoup(html, "lxml")
 
 		text = soup.findAll(text=True)
-		soup.decompose()
-
 		visible_texts = "".join(filter(VisibleTextParser._visible, text))
 
 		return visible_texts
@@ -56,8 +54,12 @@ class FormatFilter():
 if __name__=='__main__':
 	vp = VisibleTextParser()
 	import requests
+	import sys
+	doc = open(sys.argv[1], "r").read()
+	print(sys.argv)
+	print(vp.get_visible_text(doc))
 
-
+	"""
 	path = "ConcordanceCrawler/core/viceroy.html"
 	#path = "viceroy.html"
 	f = open(path,'r')
@@ -70,3 +72,5 @@ if __name__=='__main__':
 	x = vp.get_visible_text(t)
 
 	print(x)
+	"""
+	

@@ -58,13 +58,20 @@ class Visitor():
 			'''
 		raw_data, headers = self.get_raw_html(url)
 
-
 		# headers is CaseInsensitiveDict, because http header fieldnames are case insensitive
 		if ('Content-Type' in headers and not 'text' in headers['Content-Type']):
 			raise ValueError("document is not text")
 
-		if 'content-length' in headers and headers['content-length'] > 20 * 1024 ** 2:  # document is greater than 20 MB
+		def is_int(value):
+			try:
+				int(value)
+			except ValueError:
+				return False
+			return True
+			
+		if 'content-length' in headers and is_int(headers['content-length']) and int(headers['content-length']) > 20 * 1024 ** 2:  # document is greater than 20 MB
 			raise ValueError("document is too long")
+		
 
 		data_format = self.predict_format(raw_data)
 		if not self.accept_format(data_format):

@@ -205,10 +205,6 @@ class LoggingCrawler(ConcordanceCrawler, Logging):
 			self.Logger.error("\'{}\' occured during getting {}".format(
 				e,link))
 			self.page_errors += 1
-		except TypeError:
-			self.Logger.error("parsing error during processing \'{}\'".format(
-				link))
-			self.page_errors += 1
 		except VisitTooLongException:
 			self.Logger.error("processing of \'{}\' took too long".format(
 				link))

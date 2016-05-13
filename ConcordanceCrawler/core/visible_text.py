@@ -57,7 +57,10 @@ if __name__=='__main__':
 	import sys
 	doc = open(sys.argv[1], "r").read()
 	print(sys.argv)
-	print(vp.get_visible_text(doc))
+	vis = vp.get_visible_text(doc)
+	f = open("visible", "w")
+	f.write(vis)
+	f.close()
 
 	"""
 	path = "ConcordanceCrawler/core/viceroy.html"

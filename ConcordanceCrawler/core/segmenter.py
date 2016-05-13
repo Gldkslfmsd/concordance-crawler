@@ -5,6 +5,18 @@ from ConcordanceCrawler.core.words_lower import words
 reg = re.compile(r"[a-zA-Z]+\)?[.?!]\(?[a-zA-Z]+")
 
 def sentence_segmentation(text):
+	'''gets a text (string), returns list of sentences.
+	
+	Every item of a list should be one and only one whole sentence. (But in fact there are errors.)
+	
+	As a 'sentence' we define a sequence of words carrying one whole thought. E.g. the text on this line
+	before "E.g." was one sentence. Compound sentence is also 'one sentence'. 'One sentence' is also a title 
+	(beware, they are usually not ended by full stop) or a menu item.
+	
+	This function uses segmentation from `segtok` library, but it
+	improves it by one additional rule. It tries to split also sentences that
+	are not ended by dot and space, if the dot separates two existing English words present in dictionary.
+	'''
 	sentences = list(segmenter.split_multi(text))
 	out_sentences = []
 	for s in sentences:
@@ -25,6 +37,26 @@ def sentence_segmentation(text):
 	return out_sentences
 
 
+"""
+# another unused segmenter versions
+def raw_segtok_sentence_segmentation(text):
+	return list(segmenter.split_multi(text))
+
+
+def regex_sentence_segmentation(text):
+	# NOTE: ... (three dots) get lost, but that would be too complicated
+
+	# cut text to list: [ sentence, delimiter, sentence, delimiter, ... ]
+	# e.g. [ "Hello", "!", " How are you", "?", "I'm fine", "." ]
+	chunks = re.split("([\n\.\?\!])", text)
+
+	# join sentence and its terminal mark
+	# -> [ "Hello!", " How are you?", "I'm fine." ]
+	sentences = [x + y for x, y in zip(chunks[::2], chunks[1::2])]
+
+	return sentences
+
+"""
 
 
 

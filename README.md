@@ -13,7 +13,7 @@ adapt ConcordanceCrawler to any other language.
 
 ## Try web demo!
 
-TODO
+Will be launched soon.
 
 ## Installation
 
@@ -264,10 +264,6 @@ for every keyword, and that's too few. Therefore ConcordanceCrawler lets
 finding keywords as for example "sdtn look", "naxe look", "jzmw look" and
 similar combinations of bazword and target word. By this approach it gets
 sufficient number of different links to crawl concordances.
-
-### Speed and performance 
-
-TODO
 
 ## Contact me!
 

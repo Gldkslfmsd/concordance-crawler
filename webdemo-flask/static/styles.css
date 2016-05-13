@@ -1,0 +1,437 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Arial', sans-serif;
+}
+
+/**
+ * Header & logo
+ */
+
+#header {
+    padding: 10px;
+    height: 40px;
+    background: #1D651E;
+    border-bottom: 1px solid black;
+    box-shadow: 0px 0px 10px grey;
+    margin-bottom: 10px;
+}
+
+#header_content {
+    margin: auto;
+    width: 1050px;
+}
+
+.header-logo {
+    margin-top: 3px;
+    height: 35px;
+}
+
+/**
+ * Columns layout
+ */
+
+#content {
+    margin: auto;
+    width: 1050px;
+}
+
+#left-column {
+    float: left;
+    width: 260px;
+}
+
+#left-column .box {
+    width: 250px;
+    display: block;
+}
+
+#main-column {
+    margin-left: 10px;
+    float: left;
+}
+
+#main-column .box {
+    display: none;
+    width: 750px;
+}
+
+/**
+ * Footer
+ */
+
+#footer {
+    margin-top: 10px;
+    /*position: fixed;*/
+    width: 100%;
+    bottom: 0px;
+    background: white;
+    box-shadow: 0px 0px 20px white;
+}
+
+#footer p {
+    text-align: center;
+    color: #1D651E;
+    font-size: 10pt;
+}
+
+/**
+ * Introduction
+ */
+
+.intro_column {
+    float: left;
+    width: 170px;
+    margin-left: 10px;
+    border: 1px solid silver;
+    border-radius: 5px;
+    height: 150px;
+    background: #fcfff4; /* Old browsers */
+    background: -moz-linear-gradient(top,  #fcfff4 0%, #e9e9ce 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfff4), color-stop(100%,#e9e9ce)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #fcfff4 0%,#e9e9ce 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #fcfff4 0%,#e9e9ce 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #fcfff4 0%,#e9e9ce 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #fcfff4 0%,#e9e9ce 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfff4', endColorstr='#e9e9ce',GradientType=0 ); /* IE6-9 */
+}
+
+.intro_icon {
+    width: 50px;
+    display: block;
+    margin: 20px auto;
+}
+
+.intro_column p {
+    font-size: larger;
+    font-weight: bold;
+    text-align: center;
+}
+
+/**
+ * Messages
+ */
+
+.message .error {
+    border: 1px solid red;
+    border-radius: 3px;
+    box-shadow: 0px 0px 2px red;
+    color: red;
+    padding: 5px;
+    margin: 10px;
+}
+
+.message .ok {
+    border: 1px solid green;
+    border-radius: 3px;
+    box-shadow: 0px 0px 2px green;
+    color: green;
+    padding: 5px;
+    margin: 10px;
+}
+
+/**
+ * Box style
+ */
+
+.box {
+    border-top: 10px solid #1D651E;
+    border-bottom: 1px solid #1D651E;
+    padding: 5px;
+    margin: 1px;
+    float: left;
+}
+
+.box h2 {
+    margin: 0px;
+}
+
+.box .list {
+    margin-top: 10px;
+    border-collapse:    collapse;
+}
+
+.box .list .highlight {
+    background-color: rgb(255, 240, 198);
+}
+
+.box .list tr:hover {
+    background-color: rgba(181, 181, 181, 0.4);
+    cursor: pointer;
+}
+
+.box .list td,
+.box .list th {
+    border: 1px solid silver;
+    padding: 5px;
+    font-size: smaller;
+}
+
+.box .list th {
+    text-align: left;
+    background-color: #1D651E;
+    color: white;
+    cursor: auto;
+}
+
+.box .list th a {
+    text-decoration: none;
+    color: white;
+}
+
+.box .loading {
+    height: 100px;
+    background-image: url("loading.gif");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.box .data {
+    display: none;
+}
+
+.short-loading {
+    display: none;
+
+    float: right;
+    padding-top: 8px;
+    padding-left: 30px;
+    font-size: 12pt;
+    color: grey;
+
+    background-image: url("../images/loading.gif");
+    background-repeat: no-repeat;
+    background-position: left top;
+    background-size: 25%;
+}
+
+/**
+ * Logs
+ */
+
+.state-error {
+    color: red;
+}
+
+.state-bar {
+    width: 400px;
+    height: 20px;
+    border: 1px solid black;
+}
+
+.state-bar-content {
+    height: 20px;
+    background: green;
+}
+
+.state-bar-mini {
+    width: 100px;
+    height: 10px;
+    border: 1px solid black;
+}
+
+.state-bar-content-mini {
+    height: 10px;
+    background: green;
+}
+
+/**
+ * Forms
+ */
+
+textarea {
+    margin-left: 3px;
+    border: 1px solid #999999;
+    width: 600px;
+    border-radius: 5px;
+    height: 200px;
+    display: block;
+}
+
+input {
+    border: 1px solid #BFBFBF;
+    border-radius: 4px;
+    padding: 6px;
+}
+
+input[type="button"] {
+    cursor: pointer;
+}
+
+.ui-selectmenu-button span.ui-selectmenu-text {
+    padding: 0px;
+}
+
+.ui-menu-item,
+.ui-selectmenu-button,
+select {
+    font-weight: normal;
+    font-size: 10pt;
+    padding: 5px;
+}
+
+#new_submit_strategy {
+    width: 200px;
+}
+
+/**
+ * Browsing documents
+ */
+
+.entities {
+    float: left;
+    width: 0px; /* TODO  */
+    /*min-height: 100px;
+    border-top: 10px solid #1D651E;
+    border-bottom: 1px solid #1D651E;
+    padding: 5px;
+    margin-left: 10px;
+		*/
+}
+
+.corpus {
+    float: left;
+    width: 800px;
+}
+
+.corpus textarea {
+	height: 600px;
+	resize: none;
+	width: 780px;
+}
+
+.document_relation {
+    margin-top: 10px;
+    background: white;
+    width: 500px;
+    max-height: 400px;
+    overflow: auto;
+    border: 1px solid silver;
+    border-radius: 3px;
+    line-height: 150%;
+}
+
+.chunk_subject,
+.chunk_object,
+.chunk_predicate,
+.chunk {
+    background-color: yellow;
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 3px;
+}
+
+.chunk_subject {
+    background-color: green
+}
+
+.chunk_predicate {
+    background-color: cyan;
+}
+
+.chunk_object {
+    background-color: red;
+}
+
+.chunk_subject:hover,
+.chunk_object:hover,
+.chunk_predicate:hover,
+.chunk:hover {
+    background-color: orange;
+}
+
+.highlighted_chunk {
+    background-color: red;
+}
+
+.highlighted_chunk:hover {
+    background-color: orange;
+}
+
+.highlighted_entity {
+    padding: 5px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.highlighted_entity:hover {
+    background-color: #eeeeee;
+}
+
+.delete {
+    color: #1D651E;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.relations_relation,
+.dbr_entity,
+.dbe_entity,
+.sb_component_setting {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px silver solid;
+    margin: 10px;
+    margin-left: 20px;
+    box-shadow: silver 0px 0px 2px;
+    background: rgb(249,252,247);
+    background: -moz-linear-gradient(top,  rgba(249,252,247,1) 0%, rgba(245,249,240,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(249,252,247,1)), color-stop(100%,rgba(245,249,240,1)));
+    background: -webkit-linear-gradient(top,  rgba(249,252,247,1) 0%,rgba(245,249,240,1) 100%);
+    background: -o-linear-gradient(top,  rgba(249,252,247,1) 0%,rgba(245,249,240,1) 100%);
+    background: -ms-linear-gradient(top,  rgba(249,252,247,1) 0%,rgba(245,249,240,1) 100%);
+    background: linear-gradient(to bottom,  rgba(249,252,247,1) 0%,rgba(245,249,240,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9fcf7', endColorstr='#f5f9f0',GradientType=0 );
+}
+
+.dbr_entity code,
+.dbe_entity code,
+.sb_component_setting code {
+    font-size: larger;
+    color: navy;
+}
+
+.form {
+    position: relative;
+}
+
+#new_submit_tooltip_en,
+#new_submit_tooltip_cz {
+    width: 400px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px silver solid;
+    box-shadow: silver 0px 0px 2px;
+    background: rgb(249,252,247);
+    background: -moz-linear-gradient(top,  rgba(249,252,247,1) 0%, rgba(245,249,240,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(249,252,247,1)), color-stop(100%,rgba(245,249,240,1)));
+    background: -webkit-linear-gradient(top,  rgba(249,252,247,1) 0%,rgba(245,249,240,1) 100%);
+    background: -o-linear-gradient(top,  rgba(249,252,247,1) 0%,rgba(245,249,240,1) 100%);
+    background: -ms-linear-gradient(top,  rgba(249,252,247,1) 0%,rgba(245,249,240,1) 100%);
+    background: linear-gradient(to bottom,  rgba(249,252,247,1) 0%,rgba(245,249,240,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9fcf7', endColorstr='#f5f9f0',GradientType=0 );
+}
+
+#new_submit_tooltip_cz {
+    display: none;
+}
+
+.new_submit_tooltip_icon {
+    margin: 10px;
+    float: left;
+}
+
+
+/** My extensions for ConcordanceCrawler
+**/
+
+h1 {
+  font-weight: bold;
+  color: #fff;
+  font-size: 32px;
+	margin-top: 0px;
+}

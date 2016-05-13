@@ -33,6 +33,10 @@ def big_test(samples):
 				det.englishness(s)
 			)
 	s = similarities
+	f = open("similarities.py", "a")
+	f.write("similarities = ")
+	f.write(str(s)+"\n\n")
+	f.close()
 	print("neng mean",sum(s["neng"])/(1.0*len(s["neng"])))
 	print("eng mean",sum(s["eng"])/(1.0*len(s["eng"])))
 	return s
@@ -44,10 +48,22 @@ def germanic_samples():
 		texts.extend(t)
 	return texts
 
+
+def lower_iqr(numbers):
+	s = sorted(numbers)
+	n = len(s)
+	a,b = s[n//4], s[n*3//4]
+	return a-1.5*(b-a)
+
+
 def gen_thresholds():
-	lens = [10, 20, 30, 40, 
+	lens = [
+	    10, 20, 30, 40, 
 		50, 60, 70, 80, 90, 100,
-		150, 200, 300, 400, 500, 1000, 1500, 2000, 5000]
+		150, 200, 300, 400, 
+		500,
+		1000, 1500, 2000, 5000
+	]
 	foreign_texts = germanic_samples()
 	f = open("thresholds.py", "w")
 	
@@ -71,9 +87,8 @@ English and Non-English samples with given length.
 			sim = big_test(sam)
 			nengmean = sum(sim["neng"])/(1.0*len(sim["neng"]))
 			engmean = sum(sim["eng"])/(1.0*len(sim["eng"]))
-			# threshold will be set as a center of interval between nengmean and
-			# engmean, but you can change it manually in thresholds.py
-			center = (nengmean+engmean)/2.0
+
+			center = lower_iqr(sim["eng"])
 			f.write(str(l)+": ")
 			f.write(str(center) + ", # ")
 			f.write("nengmean: "+str(nengmean)+" ")

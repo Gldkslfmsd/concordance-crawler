@@ -1,5 +1,5 @@
 import six
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, SoupStrainer
 import re
 
 class VisibleTextParser:
@@ -26,11 +26,14 @@ class VisibleTextParser:
 		humans.
 		'''
 		# we delete html comments
-		html = re.sub('<!--([^-]|-[^-]|--[^>])*-->',"",html,count=len(html)+1000)
+		html = re.sub('<!--([^-]|-[^-]|--[^>])*-->',"",html)
+
 		# Taken from here: http://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
 		soup = BeautifulSoup(html, "lxml")
+
 		text = soup.findAll(text=True)
 		visible_texts = "".join(filter(VisibleTextParser._visible, text))
+
 		return visible_texts
 
 
@@ -46,21 +49,20 @@ class FormatFilter():
 	def accept_format(self,format):
 		return True
 
-def filter_link_by_format(link):
-	'''returns True/False
-	if True, link is accepted and can be visited
-	otherwise rejected
-	'''
-	if any(link.lower().endswith(suffix) for suffix in [
-			'.docx','.doc','.pdf','.ppt','.pptx','.odt','.img']):
-			return False
-	return True
+
 
 if __name__=='__main__':
 	vp = VisibleTextParser()
 	import requests
+	import sys
+	doc = open(sys.argv[1], "r").read()
+	print(sys.argv)
+	vis = vp.get_visible_text(doc)
+	f = open("visible", "w")
+	f.write(vis)
+	f.close()
 
-
+	"""
 	path = "ConcordanceCrawler/core/viceroy.html"
 	#path = "viceroy.html"
 	f = open(path,'r')
@@ -73,3 +75,5 @@ if __name__=='__main__':
 	x = vp.get_visible_text(t)
 
 	print(x)
+	"""
+	

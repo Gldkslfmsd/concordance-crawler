@@ -9,9 +9,9 @@ I call this cosine similarity `englishness`.
 Method is_english(text) returns True/False, it should have TODO accuracy.'''
 
 from re import split
-from .freq import ngrams
-from .thresholds import thresholds
-from .ngrams_extractor import NGramsExtractor
+from ConcordanceCrawler.core.eng_detect.freq import ngrams
+from ConcordanceCrawler.core.eng_detect.thresholds import thresholds
+from ConcordanceCrawler.core.eng_detect.ngrams_extractor import NGramsExtractor
 
 class EngDetector:
 	'''English Detector'''
@@ -101,3 +101,12 @@ class EngDetector:
 		else:
 			return True
 		
+if __name__ == "__main__":
+	import requests
+	t = requests.get("http://lesbartavelles13.free.fr/IMAGE-ISO/ENGLISH6EME.iso").text
+	print("staženo")
+	
+	d = EngDetector()
+
+	print(d.englishness(t))
+

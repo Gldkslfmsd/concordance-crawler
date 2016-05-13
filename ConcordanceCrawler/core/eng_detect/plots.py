@@ -2,12 +2,55 @@
 '''
 
 import matplotlib.pyplot as plt
+import numpy as np
 from similarities import similarities as sims
 
 def plot(sims):
 	keys = sorted(list(sims.keys()))
+	keys.pop(keys.index('English'))
+	keys.append('English')
 	print(keys)
-	plt.boxplot([sims[k] for k in keys])
+	fig, ax1 = plt.subplots(figsize=(len(keys), 10))
+	# this is quite useless
+	fig.canvas.set_window_title('similarity_of_languages')
+#	plt.subplots_adjust(left=0.075, right=0.95, top=0.9, bottom=0.25)
+
+	bp = plt.boxplot([sims[k] for k in keys], notch=0, sym='+', vert=1, whis=1.5)
+
+	plt.setp(bp['boxes'], color='black')
+	plt.setp(bp['whiskers'], color='black')
+	plt.setp(bp['fliers'], color='red', marker='+')
+
+
+# Add a horizontal grid to the plot, but make it very light in color
+# so we can use it for reading data values but not be distracting
+	ax1.yaxis.grid(True, linestyle='-', which='major', color='lightgrey',
+               alpha=0.5)
+
+# Hide these grid behind plot objects
+	ax1.set_axisbelow(True)
+#	ax1.set_title(u'Podobnost textů v různých jazycích s referenčním '
+#	'textem',fontsize=22)
+	ax1.set_xlabel('jazyky',fontsize=15)
+#	ax1.set_ylabel('podobnost', fontsize=15)
+#	plt.boxplot([sims[k] for k in keys])
+
+
+	# Set the axes ranges and axes labels
+#	ax1.set_xlim(0.5, len(keys) + 0.5)
+	ax1.set_ylim(0.3, 1)
+	xtickNames = plt.setp(ax1, xticklabels=keys)
+	plt.setp(xtickNames, rotation=45, fontsize=15)
+
+
+
+
+
+
+
+
+
+
 	plt.show()
 
 def roc(sims):
@@ -38,6 +81,8 @@ def roc(sims):
 
 	
 plot(sims)
+import sys
+sys.exit()
 try:
 	roc(sims)
 except:

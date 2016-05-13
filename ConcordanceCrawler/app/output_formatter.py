@@ -1,8 +1,12 @@
 import six
 if six.PY2:
 	from simplejson import dumps
+	def correct_encode(string):
+		return string.encode('utf-8')
 else:
 	from json import dumps
+	def correct_encode(a):
+		return a
 
 '''Output formatter classes.
 
@@ -31,7 +35,7 @@ class OutputFormatter(object):
 		# every formatter must close the file in the end
 		self.output_stream.close()
 
-def create_formatter(format,output_stream):
+def create_formatter(format,output_stream,extending):
 	'''creates output formatter for given format
 
 	Args:
@@ -45,20 +49,23 @@ def create_formatter(format,output_stream):
 		ValueError, if format is not "json" or "xml"
 	'''
 	if format=='json':
-		return JsonFormatter(output_stream)
+		return JsonFormatter(output_stream,extending)
 	elif format=='xml':
-		return XmlFormatter(output_stream)
+		return XmlFormatter(output_stream,extending)
 	else:
 		raise ValueError("format must be \'json\' or \'xml\'")
 
 class JsonFormatter(OutputFormatter):
 	'''Writes pretty-printed concordances in json.
 	'''
-	def __init__(self,output_stream):
+	def __init__(self,output_stream,extending=False):
 		super(JsonFormatter, self).__init__(output_stream)
 		# writes [ to output as a begining symbol of list of concordances...
-		self.output_stream.write("[")
-		self.first = True
+		if not extending:
+			self.output_stream.write("[")
+			self.first = True
+		else:
+			self.first = False
 
 	def output(self,concordance):
 		'''writes a concordance in json format to output_stream
@@ -80,8 +87,8 @@ class JsonFormatter(OutputFormatter):
 		# needful because I'm printing just one concordance per one call of this
 		# function, but together I want a whole list. There isn't any option to
 		# make an extra indent for every row.
-		result = comma + dumps([concordance],indent=' '*4)[2:-2]
-		self.output_stream.write(result)
+		result = comma + dumps([concordance],indent=' '*4,ensure_ascii=False)[2:-2]
+		self.output_stream.write(correct_encode(result))
 		self.flush()
 
 	def close(self):
@@ -92,9 +99,30 @@ class JsonFormatter(OutputFormatter):
 class XmlFormatter(OutputFormatter):
 	'''Writes pretty-printed concordances in xml.
 	'''
-	def __init__(self,output_stream):
+	def __init__(self,output_stream,extending=False):
 		super(XmlFormatter, self).__init__(output_stream)
-		self.output_stream.write("<root>\n")
+		if not extending:
+			self.output_stream.write('<?xml version="1.0"?>\n')
+			self.output_stream.write("<concordances>\n")
+
+	def escape(self,string):
+		rep = [
+			("&", "&amp;"),
+			("<", "&lt;"),
+			(">", "&gt;"),
+			('"', '&lt;'),
+			("'", "&apos;"),
+		]
+		for what, forwhat in rep:
+			string = string.replace(what, forwhat)
+		return string
+		
+	def tag(self,key,value,endsep=""):
+		ekey = self.escape(key)
+		evalue = self.escape(str(value))
+		eendsep = self.escape(endsep)
+		return "<"+ekey+">"+evalue+eendsep+"</"+ekey+">"
+
 
 	def output(self,concordance):
 		'''writes a concordance in xml format to output_stream
@@ -102,12 +130,26 @@ class XmlFormatter(OutputFormatter):
 		Args:
 			concordance: concordance as a dict
 		'''
-		xml = dicttoxml(concordance, root=False, custom_root="item")
-		pretty = parseString(xml).toprettyxml()
-		result = pretty
-		self.output_stream.write(result)
+		xml = "\t<item>"+ "\n\t\t"+"\n\t\t".join(self.tag(k,v) for k,v in concordance.items())+"\n\t"+ "</item>\t\n"
+		self.output_stream.write(xml)
 		self.flush()
 
 	def close(self):
-		self.output_stream.write("</root>\n")
+		self.output_stream.write("</concordances>\n")
 		super(XmlFormatter, self).close()
+
+if __name__ == "__main__":
+	from sys import stdout
+	form = create_formatter("xml", stdout)
+	form.output({"a":5,"csdfsdf":None})
+	form.output({"a":5})
+
+#	form.close()
+
+	form = create_formatter("xml", stdout)
+	form.output({"a":5,"cs><neco><sdf":None})
+	form.output({"a":5})
+
+	form.close()
+
+

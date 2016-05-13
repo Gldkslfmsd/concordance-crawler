@@ -1,5 +1,14 @@
+# encoding=utf-8
 import unittest
-from ConcordanceCrawler.app.output_formatter import JsonFormatter
+from ConcordanceCrawler.app.output_formatter import JsonFormatter, XmlFormatter
+
+import six
+if six.PY2:
+	from simplejson import dumps
+else:
+	from json import dumps
+
+
 
 class TestFormatter(unittest.TestCase):
 
@@ -21,9 +30,27 @@ class TestFormatter(unittest.TestCase):
 		self.assertTrue(f.read()==correct)
 		f.close()
 
-	# TODO
 	def test_xml(self):
-		pass
+		f = open("x.xml","w")
+		jf = XmlFormatter(f)
+		jf.output({'a':'b'})
+		jf.output({"b":"a"})
+		jf.close()
+		f = open("x.xml","r")
+		correct = """<?xml version="1.0"?>
+<concordances>
+	<item>
+		<a>b</a>
+	</item>	
+	<item>
+		<b>a</b>
+	</item>	
+</concordances>
+"""
+		a = f.read()
+		self.assertTrue(a==correct)
+		f.close()
 
 if __name__=='__main__':
 	unittest.main()
+

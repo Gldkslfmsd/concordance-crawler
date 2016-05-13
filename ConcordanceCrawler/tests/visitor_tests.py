@@ -6,12 +6,12 @@ class TestVisitor(unittest.TestCase):
 	visitor = Visitor()
 
 	def test_get_raw_html(self):
-		raw_html = self.visitor.get_raw_html("http://www.airliners.net/aviation-forums/general_aviation/read.main/306713/")
+		raw_html, headers = self.visitor.get_raw_html("http://www.airliners.net/aviation-forums/general_aviation/read.main/306713/")
 		text = "do Lufthansa and United Airlines operate between their hubs please?"
 		self.assertTrue(text in raw_html)
 
 	def test_get_html_visible_text(self):
-		raw_html = self.visitor.get_raw_html("https://en.wikipedia.org/wiki/Special:Random")
+		raw_html, _ = self.visitor.get_raw_html("https://en.wikipedia.org/wiki/Special:Random")
 
 		visible = self.visitor.get_visible_text(raw_html)
 		self.assertTrue("<br>" not in visible)
@@ -88,9 +88,12 @@ class TestVisitor(unittest.TestCase):
 		self.assertTrue(x)
 
 		eng = ["https://en.wikipedia.org/wiki/Russian_language",
-		"https://en.wikipedia.org/wiki/Main_Page", "https://www.usa.gov/", ]
+		"https://en.wikipedia.org/wiki/Main_Page",
+		#"https://www.usa.gov/", 
+		]
 		for url in eng:
-			t = self.visitor.get_visible_text(self.visitor.get_raw_html(url))
+			html, _ = self.visitor.get_raw_html(url)
+			t = self.visitor.get_visible_text(html)
 			self.assertTrue(self.visitor.language_filter(t))
 
 		neng = [
@@ -100,20 +103,18 @@ class TestVisitor(unittest.TestCase):
 			"https://es.wikipedia.org/wiki/Especial:Aleatoria",
 			]
 		for url in neng:
-			t = self.visitor.get_visible_text(self.visitor.get_raw_html(url))
+			html, _ = self.visitor.get_raw_html(url)
+			t = self.visitor.get_visible_text(html)
 			self.assertFalse(self.visitor.language_filter(t))
 
-
-
-
-	# TODO
-	def test_norm_encoding(self):
-		pass
-
+	
 	def test_concordances_filtering(self):
 		# todo
 		#self.assertTrue(self.visitor.concordance_filtering("večer","Dobrý večer, ..."))
 		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer ...",["večer"]))
+		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer...",["večer"]))
+		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer!",["večer"]))
+		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer?sdfas",["večer"]))
 
 	# todo: delete
 	def test_split(self):
@@ -126,6 +127,47 @@ class TestVisitor(unittest.TestCase):
 	def test_visit_links(self):
 		concs = self.visitor.concordances_from_link({"link":"https://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation"},["string"])
 		self.assertTrue(len(concs)>0)
+
+
+	def test_norm_encoding(self):
+		meta_utf = 'sdfas <meta charset="utf-8"'
+		meta_UTF = 'sdfas <meta charset="UTF-8"'
+
+		header_utf = 	{"Content-Type": "text/html; charset=UTF-8;"}
+		header_ct_nothing = {"Content-Type": "text/html;"}
+		header_iso = {"Content-Type": "text/html; charset=iso-8859-1;"}
+
+		true = [
+			(meta_utf, header_utf),
+			(meta_UTF, header_utf),
+			(meta_utf, header_ct_nothing),
+			("sfdasdfsa charset=\"utf-8\"",header_utf),
+			("sfdasdfsa charset=\"utf-8;sdfs \"",header_utf),
+			("sfdasdfsa charset=\"utf-8;sdfs \"",header_ct_nothing),
+			("sfdasdfsa charset=utf-8 ;sdfs \"",header_utf),
+			("sfdasdfsa charset=utf-8 ;sdfs \"",header_ct_nothing),
+			("sfdasdfsa charset='utf-8' ;sdfs \"",header_utf),
+			("sfdasdfsa charset='utf-8' ;sdfs \"",header_ct_nothing),
+			]
+
+		false = [
+			(meta_utf, {}),
+			("sfdasdfsa fsdfasfdsa fdsfdasfdsa charset=sdfafdsafasfasf",header_utf),
+			("sfdasdfsacharset=utf-16",header_utf),
+			("sfdasdfsa charset=\"iso-8859-1\"",header_utf),
+			("sfdasdfsa ",header_iso),
+			("sfdasdfsa ",header_ct_nothing),
+			(meta_utf, header_iso),
+			]
+
+
+		for a,b in true:
+			x = self.visitor.norm_encoding(a, headers=b)
+			self.assertIsNotNone(x)
+
+		for a,b in false:
+			x = self.visitor.norm_encoding(a, headers=b)
+			self.assertIsNone(x)
 
 
 if __name__=='__main__':

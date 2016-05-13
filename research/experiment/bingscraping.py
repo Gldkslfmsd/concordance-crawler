@@ -104,7 +104,7 @@ def one_scrape(id):
 	# keyword will be a random bazword and a word "employ", you can change it
 	url = get_keyword_url(rsw.get_bazword() + " employ")
 	rawhtml = requests.get(url).text
-	f = open("raw_"+str(id)+".html","w")
+	f = open("raw_bing_"+str(id)+".html","w")
 	f.write(rawhtml)
 	f.close()
 	if is_blocked(rawhtml):
@@ -133,5 +133,5 @@ def is_blocked(rawhtml):
 
 # with this configuration your experiment will last 60 seconds and you try
 # 37 requests (which is maximum)
-sec = 60
+sec = 6
 events_per_minute(37*sec,seconds=sec,event=one_scrape)

@@ -4,7 +4,14 @@
 
 import random
 
-class RandomShortWords():
+# this is an abstract base class
+class AbstractBazwordGenerator(object):
+  
+	def get_bazword(self):
+		'''returns a bazword on every call'''
+		raise NotImplemented("override this in a descendant class")
+
+class RandomShortWords(AbstractBazwordGenerator):
 	"""Generates bazwords that look like 4 random letters"""
 	# this is list of all letters
 	letters = [ chr(a) for a in range(ord('a'),ord('z')+1) ]
@@ -20,7 +27,7 @@ class RandomShortWords():
 
 import ConcordanceCrawler.core.urlrequest as urlrequest
 from bs4 import BeautifulSoup
-class WikipediaRandomArticleTitles():
+class WikipediaRandomArticleTitles(AbstractBazwordGenerator):
 	'''Scrapes random article from wikipedia and yields words from its title.'''
 	
 	def __init__(self):
@@ -28,7 +35,7 @@ class WikipediaRandomArticleTitles():
 
 	def _generate(self):
 		while True:
-			x = urlrequest.get_raw_html('https://en.wikipedia.org/wiki/Special:Random')
+			x,_ = urlrequest.get_raw_html('https://en.wikipedia.org/wiki/Special:Random')
 			pagetitle = BeautifulSoup(x,"lxml").html.head.title.string
 			# there is " - Wikipedia, the free encyclopedia" in the end of every
 			# page title, I'm removing it
@@ -39,7 +46,7 @@ class WikipediaRandomArticleTitles():
 	def get_bazword(self):
 		return next(self._gen)
 
-class WikipediaRandomArticle():
+class WikipediaRandomArticle(AbstractBazwordGenerator):
 	'''Scrapes random article from wikipedia and yields its words.'''
 	
 	def __init__(self):
@@ -48,7 +55,7 @@ class WikipediaRandomArticle():
 	def _generate(self):
 		while True:
 			url = "https://en.wikipedia.org/wiki/Special:Random"
-			html = urlrequest.get_raw_html(url)
+			html, _ = urlrequest.get_raw_html(url)
 			soup = BeautifulSoup(html,"lxml").html
 			divs = soup('div',{"id":"mw-content-text"})
 			if len(divs)==0: # article is probably empty
@@ -62,7 +69,7 @@ class WikipediaRandomArticle():
 	def get_bazword(self):
 		return next(self._gen)
 
-class IncreasingNumbers():
+class IncreasingNumbers(AbstractBazwordGenerator):
 	def __init__(self,lower=0):
 		self.state = lower
 

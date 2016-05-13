@@ -5,9 +5,10 @@ from collections import OrderedDict
 class LimitedBuffer(object):
 	'''stores limited number of objects'''
 
-	def __init__(self, maxsize=10000):
-		if maxsize <= 0:
-			raise ValueError("maxsize must be positive integer")
+	def __init__(self, maxsize=1000000):
+		if maxsize < 0:
+			raise ValueError("maxsize must be nonnegative integer")
+
 		self.maxsize = maxsize
 		self.size = 0
 
@@ -17,6 +18,9 @@ class LimitedBuffer(object):
 	def insert(self, item):
 		if item in self.items_set:
 			return
+		if self.maxsize == 0:
+			return
+
 		if self.size == self.maxsize:
 			r = self.deque.popleft()
 			self.items_set.remove(r)

@@ -125,7 +125,7 @@ class TestVisitor(unittest.TestCase):
 			s.split(2)
 
 	def test_visit_links(self):
-		concs = self.visitor.concordances_from_link({"link":"https://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation"},["string"])
+		concs = self.visitor.concordances_from_link("https://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation",["string"])
 		self.assertTrue(len(concs)>0)
 
 

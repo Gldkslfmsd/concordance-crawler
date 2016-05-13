@@ -109,20 +109,21 @@ class Visitor():
 				concordances.append((s, target, start, end))
 		return concordances
 
-	def concordances_from_link(self, link, target_words):
+	def concordances_from_link(self, link, targets):
 		'''Gets list of links, visits them and crawls concordances.
 		
 		Args:
-			links -- list of links, link is a string
+			link
+			targets
 
 		Returns:
 			list of concordances, where a concordance is a dict with keys:
-				url, date, concordance (a sentence), keyword
+				url, date, concordance (a sentence), keyword etc.
 		'''
 		url = link
 
 		with stopit.ThreadingTimeout(60) as timeout:
-			concs = self.visit(url,target_words)
+			concs = self.visit(url,targets)
 
 		if timeout.state != stopit.ThreadingTimeout.EXECUTED:
 			raise VisitTooLongException()

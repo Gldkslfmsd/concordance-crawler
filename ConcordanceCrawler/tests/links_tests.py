@@ -25,7 +25,7 @@ class TestLinks(unittest.TestCase):
 		self.assertTrue(links != [])
 
 		for l in links:
-			x = all(k in ['visible_link', 'rank', 'link', 'title', 'snippet', 'date', 'keyword'] for k in l.keys())
+			x = l.startswith("http")
 			self.assertTrue(x)
 
 	def test_keyword_url(self):

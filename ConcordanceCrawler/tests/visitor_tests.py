@@ -108,7 +108,7 @@ class TestVisitor(unittest.TestCase):
 	
 	def test_concordances_filtering(self):
 		self.assertTrue(self.visitor.concordance_filtering("Dobrý \n\nVečer", ["večer"]))
-		self.assertTrue(self.visitor.concordance_filtering("Dobrý veČer, ...", ["večer"]))
+		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer, ...", ["večer"]))
 		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer ...",["večer"]))
 		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer...",["večer"]))
 		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer!",["večer"]))

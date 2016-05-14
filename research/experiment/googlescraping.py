@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 '''Experiment:
+upper limit: 60 seconds, 40 requests per second is too much, Google blocks us
 '''
 
 # this comes from concordance crawler, but it may change, so I copy this
@@ -103,12 +104,11 @@ def is_blocked(rawhtml):
 	if len(rawhtml)<120:
 		return True 
 
-	# I can see this in Czech Republic, in other countries it may differ!
-	return 'Omluvte přerušení' in rawhtml
+	return 'unusual traffic' in rawhtml
 
 
 
 # with this configuration your experiment will last 60 seconds and you try
 # 37 requests (which is maximum)
-sec = 10
-events_per_minute(3*sec,seconds=sec,event=one_scrape)
+sec = 60
+events_per_minute(40*sec,seconds=sec,event=one_scrape)

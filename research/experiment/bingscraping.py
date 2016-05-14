@@ -133,5 +133,5 @@ def is_blocked(rawhtml):
 
 # with this configuration your experiment will last 60 seconds and you try
 # 37 requests (which is maximum)
-sec = 6
-events_per_minute(37*sec,seconds=sec,event=one_scrape)
+sec = 180
+events_per_minute(40*sec,seconds=sec,event=one_scrape)

@@ -208,7 +208,7 @@ Here you can see some informations about progress of crawling. We ordered one se
 ```
 
 ```
-2016-04-30 14:52:53,220 STATUS: ConcordanceCrawler version 1.0.0 started, press Ctrl+C for 	interrupt
+2016-04-30 14:52:53,220 STATUS: ConcordanceCrawler version 1.0.2 started, press Ctrl+C for 	interrupt
 2016-04-30 14:52:53,811 DETAILS: crawled SERP, parsed 50 links
 2016-04-30 14:52:53,812 STATUS: Crawling status 
 serp		1 (0 errors) 

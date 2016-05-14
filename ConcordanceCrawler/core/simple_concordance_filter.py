@@ -12,7 +12,10 @@ class ReConcordanceFilter:
 
 	def __init__(self, target):
 		self.target = target
-		self.regex = re.compile(r"(\s|^)("+re.escape(target)+r")(\s|$|[\.?!])",flags=re.IGNORECASE)
+		#self.regex = re.compile(r"(\s|^)("+re.escape(target)+r")(\s|$|[-\]\[\.?!,:'\"/+*()\{\}<>#&@~=])",flags=re.IGNORECASE)
+		
+		self.regex = re.compile(r"(\s|^)(" + re.escape(target) + r")(\W|$)",
+		flags=re.IGNORECASE | re.MULTILINE | re.UNICODE)
 
 	def process(self, sentence):
 		m = self.regex.search(sentence)

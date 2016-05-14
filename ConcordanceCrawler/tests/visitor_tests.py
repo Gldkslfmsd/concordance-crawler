@@ -20,7 +20,6 @@ class TestVisitor(unittest.TestCase):
 		self.assertTrue("Transclusion expansion time report" not in visible)
 		self.assertTrue("window.RLQ.push" not in visible)
 
-	# TODO
 	def test_predict_format(self):
 		pass
 
@@ -78,7 +77,6 @@ class TestVisitor(unittest.TestCase):
 #		]
 #		sentences = self.visitor.sentence_segmentation(text)
 #		for a,b in zip(sentences,right):
-#			# TODO
 #			#self.assertEqual(a,b)
 #			pass
 
@@ -109,24 +107,15 @@ class TestVisitor(unittest.TestCase):
 
 	
 	def test_concordances_filtering(self):
-		# todo
-		#self.assertTrue(self.visitor.concordance_filtering("večer","Dobrý večer, ..."))
+		self.assertTrue(self.visitor.concordance_filtering("Dobrý \n\nVečer", ["večer"]))
+		self.assertTrue(self.visitor.concordance_filtering("Dobrý veČer, ...", ["večer"]))
 		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer ...",["večer"]))
 		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer...",["večer"]))
 		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer!",["večer"]))
 		self.assertTrue(self.visitor.concordance_filtering("Dobrý večer?sdfas",["večer"]))
 
-	# todo: delete
-	def test_split(self):
-		s = 'hello world'
-		self.assertEqual(s.split(), ['hello', 'world'])
-		# check that s.split fails when the separator is not a string
-		with self.assertRaises(TypeError):
-			s.split(2)
-
 	def test_visit_link(self):
 		concs = self.visitor.concordances_from_link("https://en.wikipedia.org/wiki/President_of_the_United_States",["president", "presidents"])
-		print(concs)
 		self.assertTrue(len(concs)>0)
 
 

@@ -1,7 +1,5 @@
 from collections import deque
 
-from collections import OrderedDict
-
 class LimitedBuffer(object):
 	'''stores limited number of objects'''
 

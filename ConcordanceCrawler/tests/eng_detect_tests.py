@@ -4,7 +4,6 @@ import re
 import regex
 
 from ConcordanceCrawler.core.eng_detect.eng_detect import *
-from ConcordanceCrawler.core.bazwords import IncreasingNumbers
 
 def dict_equals(A,B):
 	Aitems = set(A.items()) 

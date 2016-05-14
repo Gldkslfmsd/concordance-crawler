@@ -2,14 +2,6 @@
 import unittest
 from ConcordanceCrawler.app.output_formatter import JsonFormatter, XmlFormatter
 
-import six
-if six.PY2:
-	from simplejson import dumps
-else:
-	from json import dumps
-
-
-
 class TestFormatter(unittest.TestCase):
 
 	def test_json(self):

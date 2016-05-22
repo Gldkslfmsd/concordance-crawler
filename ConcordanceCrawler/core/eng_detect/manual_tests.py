@@ -87,7 +87,7 @@ def compare_with_langdetect():
 
 if __name__ == "__main__":
 #	test()
-	test_languages(500)
+	test_languages(100)
 #	test_detector()
 #	do_big_test(100)
 

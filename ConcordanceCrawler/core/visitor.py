@@ -58,7 +58,7 @@ class Visitor():
 			'''
 		raw_data, headers = self.get_raw_html(url)
 
-		data_format = self.predict_format(raw_data)
+		data_format = self.predict_format(raw_data, headers)
 		if not self.accept_format(data_format):
 		  return None
 

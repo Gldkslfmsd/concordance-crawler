@@ -37,8 +37,8 @@ pip install git+https://github.com/Gldkslfmsd/concordance-crawler.git
 
 (For Python2 just substitute 3 for 2.)
 
-If you want to use also automatic conjugating of English verbs (or
-inflecting of nouns or comparing of adjectives), then install also
+If you want to use also automatic lemmatizing and part-of-speech tagging, 
+then install also
 `textblob` library, but it's not necessary, you can use ConcordanceCrawler
 pretty well without it. It's quite huge, because it uses `nltk`. For
 installing it just type `pip install textblob` and `python -m textblob.download_corpora`.
@@ -97,7 +97,7 @@ manually and use all its forms as additional values for `word` argument.
 
 *Example usage:* assume that target word is `fly` and given regex is
 `V.*`, it means we want to crawl only verbs. Then a word `flies` (tagged
-`VBS`) matches, as well as `flew` whose tag is `VBD`.  On the other hand an
+`VBZ`) matches, as well as `flew` whose tag is `VBD`.  On the other hand an
 insect `fly` with tag `NN` doesn't match, so sentences with this word will
 be ignored.  
 

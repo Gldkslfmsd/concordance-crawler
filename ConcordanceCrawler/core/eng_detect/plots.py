@@ -13,13 +13,15 @@ def plot(sims):
 	fig, ax1 = plt.subplots(figsize=(len(keys), 10))
 	# this is quite useless
 	fig.canvas.set_window_title('similarity_of_languages')
-#	plt.subplots_adjust(left=0.075, right=0.95, top=0.9, bottom=0.25)
+	plt.subplots_adjust(left=0.075, right=0.95, top=0.9, bottom=0.25)
 
 	bp = plt.boxplot([sims[k] for k in keys], notch=0, sym='+', vert=1, whis=1.5)
 
-	plt.setp(bp['boxes'], color='black')
-	plt.setp(bp['whiskers'], color='black')
-	plt.setp(bp['fliers'], color='red', marker='+')
+	lw=3
+	plt.setp(bp['boxes'], color='black', linewidth=lw)
+	plt.setp(bp['whiskers'], color='black', linewidth=lw)
+	plt.setp(bp['fliers'], color='red', marker='+', linewidth=lw)
+	plt.setp(bp['caps'], color='black', linewidth=lw)
 
 
 # Add a horizontal grid to the plot, but make it very light in color
@@ -31,8 +33,8 @@ def plot(sims):
 	ax1.set_axisbelow(True)
 #	ax1.set_title(u'Podobnost textů v různých jazycích s referenčním '
 #	'textem',fontsize=22)
-	ax1.set_xlabel('jazyky',fontsize=15)
-#	ax1.set_ylabel('podobnost', fontsize=15)
+	#ax1.set_xlabel('jazyky',fontsize=30)
+	#ax1.set_ylabel('podobnost', fontsize=30)
 #	plt.boxplot([sims[k] for k in keys])
 
 
@@ -40,7 +42,7 @@ def plot(sims):
 #	ax1.set_xlim(0.5, len(keys) + 0.5)
 	ax1.set_ylim(0.3, 1)
 	xtickNames = plt.setp(ax1, xticklabels=keys)
-	plt.setp(xtickNames, rotation=45, fontsize=15)
+	plt.setp(xtickNames, rotation=45, fontsize=30)
 
 
 

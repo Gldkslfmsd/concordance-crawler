@@ -7,3 +7,8 @@ Therefore you can find here project documentation and final report in Czech.
 ```dokumentace.pdf``` was created by this command:
 
 ```pdfcsplain dokumentace.tex```
+
+
+
+`Customizing-ConcordanceCrawler` is a documentation of ConcordanceCrawler
+library.

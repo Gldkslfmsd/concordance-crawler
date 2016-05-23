@@ -6,7 +6,7 @@ from time import sleep
 import signal
 import sys
 
-run_job = 'ConcordanceCrawler  --continue-from-backup '+DIR+'{0}/backup --extend-corpus '+DIR+'{0}/corpus.json'
+run_job = '/home/machacek/p3/bin/ConcordanceCrawler  --continue-from-backup '+DIR+'{0}/backup --extend-corpus '+DIR+'{0}/corpus.json'
 
 class Job:
 	def __init__(self, jobid):
@@ -60,7 +60,7 @@ class Manager:
 	def __init__(self):
 		self.running = []
 		self.paused = []
-		self.maxrunning = 1
+		self.maxrunning = 3
 
 	def pause(self):
 		if not self.running:

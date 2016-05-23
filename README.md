@@ -11,16 +11,16 @@ ConcordanceCrawler is a console application whose main purpose is
 crawling of English verbs or other words, but you can also use its API. It allows you to
 adapt ConcordanceCrawler to any other language. 
 
-## Try web demo!
+## Try out web demo!
 
-Will be launched soon.
+Click here: http://quest.ms.mff.cuni.cz:10381/
 
 ## Installation
 
 I recommend ConcordanceCrawler installation in Python virtual environment (see
 https://virtualenv.pypa.io/ ). All dependent libraries will be installed automaticaly except one.
 The only nontrivial dependency is `lxml`, you must install it globaly with root permissions. On the other hand it's needed 
-for fast parsing. Install `lxml` by following command (if you use Python 3) or follow instructions on its [homepage](http://lxml.de/installation.html):
+for fast parsing. Install `lxml` by following command (if you use Python 3 and Debian/Ubuntu) or follow instructions on its [homepage](http://lxml.de/installation.html):
 
 ```
 sudo apt-get install python3-lxml

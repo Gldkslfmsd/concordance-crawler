@@ -353,7 +353,7 @@ function applet_submit() {
 		form += "<select id='bazgen' size='1'>";
 		var bazgens = {
 			'RANDOM':'random 4-letter words',
-			'WIKI_ARTICLES': 'words from titles of random Wikipedia articles',
+			'WIKI_ARTICLES': 'words from random Wikipedia articles',
 			'WIKI_TITLES': 'words from titles of random Wikipedia articles',
 			'NUMBERS': 'increasing numbers from 1'
 		};

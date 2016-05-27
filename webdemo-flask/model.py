@@ -64,9 +64,14 @@ def create_new_job(data):
 	return 'OK'
 
 def get_status(jobid):
-	f = open(DIR+jobid+"/status","r")
+	try:
+		f = open(DIR+jobid+"/status","r")
+	except IOError:
+		return "DELETED"
 	status = f.readlines()[-1].strip()
 	f.close()
+	if status=="FINISHED" and get_percent_str(jobid)!="100":
+		return "ABORTED"
 	return status
 
 def get_args(jobid):

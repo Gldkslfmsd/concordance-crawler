@@ -97,7 +97,12 @@ def deletejob(jobid):
 @app.route("/concordances/<path:jobid>")
 def concordances(jobid,start=0,limit=100):
 	corpus = get_corpus(jobid, start, limit)
-	return "[OK]\n"+"".join(corpus)
+	if get_percent_str(jobid)=="100":
+		status = "[END]"
+	else:
+		status = "[OK]"
+	print(status)
+	return status+"\n"+"".join(corpus)
 
 
 last_call = 0  # time where jobmanager was last seen living
@@ -117,4 +122,7 @@ def serverstatus():
 
 if __name__ == "__main__":
 	#app.debug=True
+
+	app.config.update(SEND_FILE_MAX_AGE_DEFAULT=5)
+	print(app.config)
 	app.run("0.0.0.0",port=81, threaded=True)

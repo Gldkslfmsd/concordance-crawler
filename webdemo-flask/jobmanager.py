@@ -7,6 +7,7 @@ import signal
 import sys
 
 run_job = '/home/machacek/p3/bin/ConcordanceCrawler  --continue-from-backup '+DIR+'{0}/backup --extend-corpus '+DIR+'{0}/corpus.json'
+print(DIR)
 
 class Job:
 	def __init__(self, jobid):

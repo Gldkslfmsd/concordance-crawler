@@ -18,64 +18,35 @@ var list_limit = 10;
 var list_order_by = "ctime";
 var list_order_dir = "DESC";
 
-// FIXME:
-// Map strategy ID to pretty name. This should be fix with
-// dynamic loading of available strategies.
-var strategies = {
-    'intlib_en': 'English legal text',
-    'intlib_cz': 'Czech legal text'
-};
-
-var dbes = {
-    'entities_en': 'English legal text',
-    'entities_cz': 'Czech legal text'
-};
-
-var dbrs = {
-    'relations_en': 'English legal text',
-    'relations_cz': 'Czech legal text'
-};
-
 // Start with welcome screen
 jQuery('body').ready(function() {
     applet_server_status();
     applet_text_box('home');
 });
 
+var page = "document";
+
 // Functions in menu
 function run_text(text_id) {
+		page = "text";
     clear_main_column();
     applet_text_box(text_id);
 }
 
 function run_list(id_to_highlight, refresh) {
+		page = "list";
     clear_main_column();
     applet_list(id_to_highlight, refresh);
 }
 
 function run_submit() {
+		page = "submit";
     clear_main_column();
     applet_submit();
 }
 
-function run_sb() {
-    clear_main_column();
-    applet_sb();
-}
-
-function run_dbe() {
-    clear_main_column();
-    applet_dbe();
-}
-
-/*
-function run_dbr() {
-    clear_main_column();
-    applet_dbr();
-}
-*/
-
 function run_document(id) {
+		page = "document";
     clear_main_column();
     applet_document(id);
 }
@@ -115,7 +86,7 @@ function applet_server_status() {
             jQuery('#applet_server_status').html("<p>Couldn't retrieve server status</p>");
         }
     });
-    setTimeout('applet_server_status()', 5000);
+    setTimeout('applet_server_status()', 10000);
 }
 
 function applet_text_box(text_id) {
@@ -170,6 +141,9 @@ function applet_list(id_to_highlight, refresh) {
     jQuery.ajax({
         url: "/listjobs/start=" + list_start + "/limit=" + list_limit + "/order_by=" + list_order_by + "/order_dir=" + list_order_dir,
         success: function(data) {
+						if (page!="list") {
+							return;
+						}
             var jobs = data.split('\n');
 
             // Sorting icon
@@ -349,8 +323,11 @@ function applet_submit() {
 
 		form += "<p><input type='checkbox' id='disable' name='disable'>Disable English filter</p>";
 
-		form += "<p>Bazword generator</p>";
-		form += "<select id='bazgen' size='1'>";
+		form += "<p>Bazword generator";
+		form += "<small><br><br>A nonsense bazword will be added to every search engine query to increase possible number of links ";
+		form += "<br>returned by search engine. Select a strategy for bazword generating.";
+		form += "</small>";
+		form += "</p><select id='bazgen' size='1'>";
 		var bazgens = {
 			'RANDOM':'random 4-letter words',
 			'WIKI_ARTICLES': 'words from random Wikipedia articles',
@@ -363,8 +340,8 @@ function applet_submit() {
 		form += "</select>";
 		form += '<p>Encoding</p>';
 		var encs = {
-			'utf-8': 'utf-8',
 			'ascii': 'ascii',
+			'utf-8': 'utf-8',
 			'any': 'any' 
 		};
 		form += "<select id='enc' size='1'>";
@@ -492,6 +469,7 @@ function applet_document(id) {
     // Document status
     get_document_state(id, box);
     get_document_content(id, box);
+		
     //get_document_relations(id, box);
 }
 
@@ -529,187 +507,6 @@ function applet_sb() {
     box.find('.loading').slideUp();
 }
 
-function applet_sb_click() {
-    // Hide form, show loading
-    jQuery('.form').slideUp();
-    box.find('.loading').slideDown();
-
-    // Read data
-    strategy = jQuery('#sb_strategy').val();
-
-    // Check data
-    if (!strategy.match(/^\w+$/)) {
-        message = "<p class='error'>Incorrect extraction strategy. Please, select one from the menu.</p>";
-        run_sb();
-        return;
-    }
-
-    // Everything OK, submit query on the server
-    jQuery.ajax({
-        url: "./index.cgi?command=strategy-html",
-        data: {
-          strategy_id: strategy,
-        },
-        success: function(data) {
-            if (data.match(/OK/)) {
-                data = data.replace("[OK]\n", "");
-                box.find('.loading').slideUp();
-                box.find('.data').slideUp();
-                box.find(".data").html(data);
-                box.find(".data").slideDown();
-            }
-            else {
-                message = "<p class='error'>" + data + "</p>";
-                run_sb();
-            }
-        },
-        error: function() {
-        }
-    });
-}
-
-function applet_dbe() {
-    // Clear timeout
-    clearTimeout(timeout);
-
-    // Form
-    var form = "";
-    form += "<p>Select Database of Entities: ";
-    form += "<select id='dbe_id'>";
-    for (dbe_id in dbes) {
-        form += "<option value='" + dbe_id + "'>" + dbes[dbe_id] + "</option>";
-    }
-    form += "</select> ";
-    form += "<input id='dbe_submit' type='button' value='Browse' onClick='applet_dbe_click()'>";
-
-    // Output
-    var output = "";
-    output += "<div class='box'>";
-    output += "<h2>Browse Database of Entities</h2>"
-    output += "<div class='loading'></div>";
-    output += "<div class='message'>" + message + "</div>";
-    output += "<div class='form'>";
-    output += form;
-    output += "</div>";
-    output += "<div class='data'></div>";
-    output += "</div>";
-
-    // Hide loading and show table
-    box = jQuery('#main-column').append(output);
-    jQuery('#main-column').find('.box').each(function() {
-        jQuery(this).slideDown();
-    });
-    box.find('.loading').slideUp();
-}
-
-function applet_dbe_click() {
-    // Hide form, show loading
-    jQuery('.form').slideUp();
-    box.find('.loading').slideDown();
-
-    // Read data
-    dbe_id = jQuery('#dbe_id').val();
-
-    // Check data
-    if (!dbe_id.match(/^\w+$/)) {
-        message = "<p class='error'>Incorrect DBE ID. Please, select one from the menu.</p>";
-        run_dbe();
-        return;
-    }
-
-    // Everything OK, submit query on the server
-    jQuery.ajax({
-        url: "/concordances/" + dbe_id,
-        success: function(data) {
-            if (data.match(/OK/)) {
-                data = data.replace("[OK]\n", "");
-                box.find('.loading').slideUp();
-                box.find('.data').slideUp();
-                box.find(".data").html(data);
-                box.find(".data").slideDown();
-            }
-            else {
-                message = "<p class='error'>" + data + "</p>";
-                run_sb();
-            }
-        },
-        error: function() {
-        }
-    });
-}
-
-function applet_dbr() {
-    // Clear timeout
-    clearTimeout(timeout);
-
-    // Form
-    var form = "";
-    form += "<p>Select Database of Relations: ";
-    form += "<select id='dbr_id'>";
-    for (dbr_id in dbrs) {
-        form += "<option value='" + dbr_id + "'>" + dbrs[dbr_id] + "</option>";
-    }
-    form += "</select> ";
-    form += "<input id='dbr_submit' type='button' value='Browse' onClick='applet_dbr_click()'>";
-
-    // Output
-    var output = "";
-    output += "<div class='box'>";
-    output += "<h2>Browse Database of Relations</h2>"
-    output += "<div class='loading'></div>";
-    output += "<div class='message'>" + message + "</div>";
-    output += "<div class='form'>";
-    output += form;
-    output += "</div>";
-    output += "<div class='data'></div>";
-    output += "</div>";
-
-    // Hide loading and show table
-    box = jQuery('#main-column').append(output);
-    jQuery('#main-column').find('.box').each(function() {
-        jQuery(this).slideDown();
-    });
-    box.find('.loading').slideUp();
-}
-
-function applet_dbr_click() {
-    // Hide form, show loading
-    jQuery('.form').slideUp();
-    box.find('.loading').slideDown();
-
-    // Read data
-    dbr_id = jQuery('#dbr_id').val();
-
-    // Check data
-    if (!dbr_id.match(/^\w+$/)) {
-        message = "<p class='error'>Incorrect DBR ID. Please, select one from the menu.</p>";
-        run_dbr();
-        return;
-    }
-
-    // Everything OK, submit query on the server
-    jQuery.ajax({
-        url: "./index.cgi?command=dbr-html",
-        data: {
-          dbr_id: dbr_id,
-        },
-        success: function(data) {
-            if (data.match(/OK/)) {
-                data = data.replace("[OK]\n", "");
-                box.find('.loading').slideUp();
-                box.find('.data').slideUp();
-                box.find(".data").html(data);
-                box.find(".data").slideDown();
-            }
-            else {
-                message = "<p class='error'>" + data + "</p>";
-                run_sb();
-            }
-        },
-        error: function() {
-        }
-    });
-}
 
 function clear_main_column() {
     jQuery('#main-column').find('.box').each(function() {
@@ -718,49 +515,25 @@ function clear_main_column() {
     });
 }
 
-function get_document_relations(doc_id, box) {
-    jQuery.ajax({
-        url: "./index.cgi?command=content-relations&doc_id=" + doc_id,
-        success: function(data) {
-            var output = "";
-            output += "<h3>Relations</h3>";
-
-            var lines = data.split(/\n/);
-            for (var i = 1; i < lines.length - 3; i += 3) {
-                output += "<div class='relations_relation'>";
-                output += "<h4>" + lines[i] + "</h4>";
-                output += "<table class='list'>";
-                output += "<tr><th>Subject</th><th>Predicate</th><th>Object</th></tr>";
-
-                var fields = lines[i + 1].split(/\t/);
-                output += "<tr>";
-                output += "<td>" + fields[1] + "</td>";
-                output += "<td>" + fields[3] + "</td>";
-                output += "<td>" + fields[5] + "</td>";
-                output += "</tr>";
-                output += "</table>";
-
-                output += "<div class='document_relation'>";
-                output += lines[i + 2];
-                output += "</div>";
-                output += "</div>";
-            }
-
-            box.find(".relations").html(output);
-        },
-        error: function() {
-            box.find(".relations").html("<h3>Relations</h3><div class='document'><p>Couldn't retrieve relations.</p></div>");
-        }
-    });
-}
-
 function get_document_content(doc_id, box) {
+		clearTimeout(timeout);
+
+    if (!box) {
+        box = jQuery('#main-column .box');
+	  }
     box.find(".content").html("<h3>Corpus preview</h3><div class='loading'></div>");
 
     jQuery.ajax({
         url: "/concordances/" + doc_id,
         success: function(data) {
+						code = data.split("\n")[0];
+						if (code.match(/\[END\]/))
+							end = true;
+						else
+							end = false;
             data = data.replace("[OK]\n", "");
+            data = data.replace("[END]\n", "");
+
 						var corpus = "<h3>Corpus preview</h3>";
 						// TODO: I can add browsing options
 						corpus += "<div class='corpus'>";
@@ -775,11 +548,21 @@ function get_document_content(doc_id, box) {
                 highlight_chunk(doc_id, chunk_id, box);
             });
 						*/
+						if (!end) {
+							setTimeout('get_document_state("' + doc_id + '");', 3000);
+							setTimeout('get_document_content("'+doc_id+'");', 5000);
+						}
+
+
         },
         error: function() {
             box.find(".content").html("<h3>Corpus preview</h3><div class='document'><p>Couldn't retrieve corpus.</p></div><div class='entities'></div><div style='clear: both'></div>");
+
         }
     });
+
+//		if (x==0)
+//			setTimeout('get_document_content("'+doc_id+'"); get_document_state("' + doc_id + '");', 3000);
 }
 
 
@@ -787,7 +570,7 @@ function get_document_content(doc_id, box) {
 
 
 function get_document_state(id, box) {
-    clearTimeout(timeout);
+//    clearTimeout(timeout);
 
     if (!box) {
         box = jQuery('#main-column .box');
@@ -903,5 +686,5 @@ function get_document_state(id, box) {
     });
 
     var call = "get_document_state('" + id + "')";
-    timeout = setTimeout(call, 10000);
+    timeout = setTimeout(call, 3000);
 }

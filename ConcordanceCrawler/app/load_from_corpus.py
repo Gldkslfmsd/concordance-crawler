@@ -1,5 +1,6 @@
 import re
 from ConcordanceCrawler.core.limited_buffer import LimitedBuffer
+from ConcordanceCrawler.app.output_formatter import create_formatter
 
 
 def is_row(tag, line):
@@ -19,7 +20,7 @@ def extract_value(tag, line, format):
 
 def load_from_corpus(filename, format):
 	assert format in ("xml", "json"), "unknown format"
-	maxid = 1
+	maxid = 0
 	links = LimitedBuffer()
 	concordances = LimitedBuffer()
 	with open(filename, "r") as f:
@@ -34,10 +35,24 @@ def load_from_corpus(filename, format):
 			elif is_row('url', line):
 				url = extract_value('url', line, format)
 				links.insert(url)
+
+	if maxid==0:
+		mode = "w"
+	else:
+		mode = "a"
+
+	outstream = open(filename, mode)
+	of = create_formatter(
+		format=format,
+		output_stream=outstream,
+		extending= maxid!=0,
+		)
 	return {
 		'links':links,
 		'concordances':concordances,
-		'maxid':maxid
+		'maxid':maxid,
+		'output': outstream,
+		'formatter': of,
 	}
 				
 

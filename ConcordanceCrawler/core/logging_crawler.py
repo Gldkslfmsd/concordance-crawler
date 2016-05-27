@@ -256,6 +256,6 @@ class EnglishLoggingCrawler(LoggingCrawler):
 	
 	def stopping_criterion(self):
 		super(EnglishLoggingCrawler, self).stopping_criterion()
-		if self.num_serps >= 10 and self.num_concordances <= 1:
+		if self.num_serps >= 10 and self.num_concordances < 1:
 			self.Logger.critical('aborting crawler because this job seems unperspective')
 			self.crawling_allowed = False

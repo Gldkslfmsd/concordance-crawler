@@ -329,7 +329,7 @@ def load_from_backup(args):
 		"from current version of ConcordanceCrawler.")
 
 	load = load_from_corpus(nargs['output'],nargs['format'])
-	nargs['output'] = open(nargs['output'], 'a')
+	nargs['output'] = load['output']
 
 	return nargs, load
 
@@ -378,8 +378,8 @@ def main():
 	of = create_formatter(
 		format=args["format"],
 		output_stream=args["output"],
-		extending=False if mode=="run" else True
-		)
+		extending=False
+		) if mode == "run" else load['formatter']
 
 	# setup crawler
 	lc.max_per_page = max_per_page

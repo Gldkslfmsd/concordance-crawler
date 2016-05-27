@@ -50,6 +50,6 @@ if __name__=="__main__":
 
 	#print(get_raw_html("http://httpbin.org/absolute-redirect/30"))
 	a = "http://ambit.tiddlyspace.com/"
-	#print(get_raw_html(a))
+	print(get_raw_html(a))
 	
 	print(get_raw_html("http://cve.mitre.org/data/downloads/allitems.html"))
